@@ -125,7 +125,7 @@ body {
 }
 
 .input-group input:focus {
-  border-color: rgba(167, 139, 250);
+  border-color: rgb(0, 0, 0);
 }
 
 .forgot {

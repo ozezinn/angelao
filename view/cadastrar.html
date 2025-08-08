@@ -50,21 +50,25 @@
             <div class="container">
                 <div class="form-container">
   <p class="title">cadastrar</p>
-  <form class="form">
+  <form class="form" action="cadastro_controller.php" method="POST">
     <div class="input-group">
-      <label for="name">Name</label>
-      <input placeholder="" id="username" name="username" type="text"/>
+        <label for="nome">Nome</label>
+        <input placeholder="" name="username" type="text"/>
     </div>
     <div class="input-group">
-      <label for="phone">numero</label>
-      <input placeholder="" id="phone" name="phone" type="phone" />
-      <label for="email">Email</label>
-      <input placeholder="" id="email" name="email" type="email" />
-      <label for="location">CPF</label>
-      <input placeholder="" type="email" />
+        <label for="email">Email</label>
+        <input placeholder="" name="email" type="email" />
     </div>
-    <button style="margin-top:6%;" class="sign">cadastrar-se</button>
-  </form>
+    <div class="input-group">
+        <label for="senha">senha</label>
+        <input placeholder="Insira uma Senha" name="senha" type="password" />
+    </div>
+    <div class="input-group">
+        <label for="cpf">CPF</label>
+        <input placeholder="" name="cpf" type="text" />
+    </div>
+    <button style="margin-top:6%;" class="sign" type="submit">cadastrar-se</button>
+</form>
   <div class="social-message">
     <div class="line"></div>
     <a class="message" href="">luumina</a>
