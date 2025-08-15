@@ -1,7 +1,7 @@
 :root {
-    --preto:#000;
+    --preto: #000;
     --branco: #fff;
-    --cinza-claro: #f5f5f5;  
+    --cinza-claro: #f5f5f5;
     --cinza-medio: #bdbdbd;
     --cinza-escuro: #424242;
 }
@@ -17,50 +17,60 @@ body {
     padding: 1rem 0;
     position: absolute;
 }
+
 .navbar.scrolled {
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 .navbar.navbar-internal {
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 .navbar-brand {
     margin-top: 20px;
     font-weight: 700;
     margin-left: -140px;
     font-family: 'Poppins', sans-serif;
-    
+
 }
+
 .navbar-logo {
     margin-top: 10px;
     width: 77px;
-    height:  60px;
+    height: 60px;
     margin-left: 250px;
-    
+
 }
+
 .nav-link {
     font-weight: 500;
-    margin-top: 20px ;
+    margin-top: 20px;
     font-family: 'Poppins', sans-serif;
 }
-.section-titlee{
+
+.section-titlee {
     font-family: 'Poppins', sans-serif;
 }
+
 #hero {
     height: 100vh;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://fotografiadicas.com.br/wp-content/uploads/2017/10/30-Fotografo-Profissional-Amador-fotografia-dicas-2-min.png') no-repeat center center;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://fotografiadicas.com.br/wp-content/uploads/2017/10/30-Fotografo-Profissional-Amador-fotografia-dicas-2-min.png') no-repeat center center;
     background-size: cover;
     color: white;
     position: relative;
 }
+
 .hero-content {
-    background-color: rgba(0,0,0,0.2);
+    background-color: rgba(0, 0, 0, 0.2);
     padding: 2rem;
     border-radius: 10px;
     font-family: 'Poppins', sans-serif;
 }
+
 .hero-contentt {
     border-radius: 10px;
 }
+
 .btn-primary-custom {
     background-color: transparent;
     border: 2px solid var(--cinza-escuro);
@@ -69,13 +79,16 @@ body {
     font-weight: 600;
     transition: all 0.3s ease;
 }
+
 .btn-primary-custom:hover {
     background-color: var(--cinza-escuro);
     color: var(--branco);
 }
+
 .page-content {
-    padding-top: 80px; 
+    padding-top: 80px;
 }
+
 .group {
     display: flex;
     line-height: 28px;
@@ -84,9 +97,9 @@ body {
     max-width: 1900px;
     margin-left: auto;
     margin-right: auto;
-   }
-   
-   .input {
+}
+
+.input {
     width: 600px;
     height: 40px;
     line-height: 28px;
@@ -99,22 +112,23 @@ body {
     transition: .3s ease;
     margin-left: auto;
     margin-right: auto;
-    
-   }
-   
-   .input::placeholder {
+
+}
+
+.input::placeholder {
     color: #9e9ea7;
-    
-   }
-   
-   .input:focus, input:hover {
+
+}
+
+.input:focus,
+input:hover {
     outline: none;
     border-color: var(--cinza-medio);
     background-color: var(--branco);
     box-shadow: 0 0 0 4px var(--cinza-medio);
-   }
-   
-   .icon {
+}
+
+.icon {
     position: absolute;
     left: 1rem;
     fill: #9e9ea7;
@@ -122,7 +136,7 @@ body {
     height: 1rem;
     margin-left: auto;
     margin-right: auto;
-   }
+}
 
 .btn {
     margin-top: 15px;
@@ -131,23 +145,23 @@ body {
     color: #ffffff;
     letter-spacing: 2px;
     border-radius: 10px;
-    border: 2px  #343a39;
+    border: 2px #343a39;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     transition: .4s;
     font-family: 'Poppins', sans-serif;
-   }
-   
-   .btn span:last-child {
+}
+
+.btn span:last-child {
     display: none;
-   }
-   
-   .btn:hover {
+}
+
+.btn:hover {
     transition: .4s;
     border: 2px #000000;
     background-color: #bdbdbd;
     color: #ffffff;
-   }
-   
-   .btn:active {
+}
+
+.btn:active {
     background-color: #bdbdbd;
-   }
+}

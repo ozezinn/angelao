@@ -3,11 +3,13 @@
 // Inclui a classe de conexão que você criou
 require_once 'conexao.php';
 
-class UsuarioModel {
+class UsuarioModel
+{
     private $conn;
 
     // Construtor que recebe a conexão PDO
-    public function __construct(PDO $conn) {
+    public function __construct(PDO $conn)
+    {
         $this->conn = $conn;
     }
 
@@ -20,7 +22,8 @@ class UsuarioModel {
      * @param string $tipo_usuario O tipo de usuário (e.g., 'cliente', 'profissional').
      * @return bool Retorna true se o cadastro for bem-sucedido, false caso contrário.
      */
-    public function cadastrar($nome, $email, $senha, $tipo_usuario = 'cliente') {
+    public function cadastrar($nome, $email, $senha, $tipo_usuario = 'cliente')
+    {
         try {
             // 1. Criptografa a senha antes de salvar no banco de dados
             $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
@@ -37,7 +40,6 @@ class UsuarioModel {
 
             // 4. Executa a query e retorna o resultado
             return $stmt->execute();
-
         } catch (PDOException $e) {
             // Em caso de erro, exibe a mensagem (em produção, você pode logar o erro)
             echo "Erro ao cadastrar usuário: " . $e->getMessage();

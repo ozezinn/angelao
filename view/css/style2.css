@@ -1,79 +1,83 @@
 :root {
-    --preto:#000;
-    --branco: #fff;
-    --cinza-claro: #f5f5f5;  
-    --cinza-medio: #bdbdbd;
-    --cinza-escuro: #424242;
+  --preto: #000;
+  --branco: #fff;
+  --cinza-claro: #f5f5f5;
+  --cinza-medio: #bdbdbd;
+  --cinza-escuro: #424242;
 }
 
 body {
-    font-family: "Yalta Sans W04 Light";
-    color: #424242;
-    background-color: #ffffff;
+  font-family: "Yalta Sans W04 Light";
+  color: #000000;
+  background-color: #ffffff;
 }
 
 .navbar {
-    transition: background-color 0.4s ease;
-    padding: 1rem 0;
-    position: absolute;
+  transition: background-color 0.4s ease;
+  padding: 1rem 0;
+  position: absolute;
+  background-color: #424242;
 }
+
 .navbar.scrolled {
-    background-color: var(--preto);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar.navbar-internal {
-    background-color: var(--cinza-escuro);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand {
-    margin-top: 20px;
-    font-weight: 700;
-    margin-left: -140px;
-    font-family: 'Poppins', sans-serif;
-    
+  margin-top: 20px;
+  font-weight: 700;
+  margin-left: -140px;
+  font-family: 'Poppins', sans-serif;
+
 }
+
 .navbar-logo {
-    margin-top: 10px;
-    width: 77px;
-    height:  60px;
-    margin-left: 250px;
-    
+  margin-top: 10px;
+  width: 77px;
+  height: 60px;
+  margin-left: 250px;
+
 }
+
 .nav-link {
-    font-weight: 500;
-    margin-top: 20px ;
-    font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  margin-top: 20px;
+  font-family: 'Poppins', sans-serif;
 }
+
 .btn {
-    margin-top: 15px;
-    background-color: #424242;
-    padding: 14px 30px;
-    color: #000000;
-    letter-spacing: 2px;
-    border-radius: 10px;
-    border: 2px  #343a39;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-    transition: .4s;
-    font-family: 'Poppins', sans-serif;
-   }
-   
-   .btn span:last-child {
-    display: none;
-   }
-   
-   .btn:hover {
-    transition: .4s;
-    border: 2px #000000;
-    background-color: #bdbdbd;
-    color: #ffffff;
-   }
-   
-   .btn:active {
-    background-color: #bdbdbd;
-   }
-   .title {
+  margin-top: 15px;
+  background-color: #424242;
+  padding: 14px 30px;
+  color: #000000;
+  letter-spacing: 2px;
+  border-radius: 10px;
+  border: 2px #343a39;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  transition: .4s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn span:last-child {
+  display: none;
+}
+
+.btn:hover {
+  transition: .4s;
+  border: 2px #000000;
+  background-color: #bdbdbd;
+  color: #ffffff;
+}
+
+.btn:active {
+  background-color: #bdbdbd;
+}
+
+.title {
   text-align: center;
   font-size: 1.5rem;
   line-height: 2rem;
@@ -81,7 +85,7 @@ body {
   margin-left: auto;
   margin-right: auto;
   font-family: 'Poppins', sans-serif;
-   
+
 }
 
 .form {
@@ -149,7 +153,7 @@ body {
   border-radius: 0.375rem;
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
-  
+
 }
 
 .social-message {
@@ -197,10 +201,11 @@ body {
   line-height: 1rem;
   color: rgba(156, 163, 175, 1);
 }
+
 .form-container {
   width: 320px;
   border-radius: 0.75rem;
-  background-color:#fff;
+  background-color: #fff;
   padding: 2rem;
   color: #424242;
   margin-left: auto;
@@ -208,21 +213,24 @@ body {
   margin-top: 200px;
 
 }
+
 .forgot {
   display: flex;
   justify-content: flex-end;
   font-size: 0.75rem;
   line-height: 1rem;
-  color: rgba(156, 163, 175,1);
+  color: rgba(156, 163, 175, 1);
   margin: 8px 0 14px 0;
 }
 
-.forgot a,.signup a {
+.forgot a,
+.signup a {
   color: #bdbdbd;
   text-decoration: none;
   font-size: 14px;
 }
 
-.forgot a:hover, .signup a:hover {
+.forgot a:hover,
+.signup a:hover {
   text-decoration: underline rgb(0, 0, 0);
 }

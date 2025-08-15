@@ -32,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Falha no cadastro. Tente novamente.";
     }
-
 } else {
     // Se não for POST, redireciona de volta para o formulário
     header("Location: cadastrar.html");
