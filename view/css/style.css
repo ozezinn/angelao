@@ -8,8 +8,8 @@
 
 body {
     font-family: "Yalta Sans W04 Light";
-    color: var(--text-color-light);
-    background-color: var(--background-light);
+    color: var(--cinza-escuro);
+    background-color: var(--cinza-medio);
 }
 
 .navbar {
@@ -18,27 +18,23 @@ body {
     position: absolute;
 }
 .navbar.scrolled {
-    background-color: var(--primary-color);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 .navbar.navbar-internal {
-    background-color: var(--primary-color);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
 .navbar-brand {
     margin-top: 20px;
     font-weight: 700;
-    margin-left: 0px;
+    margin-left: -140px;
     font-family: 'Poppins', sans-serif;
-
     
 }
 .navbar-logo {
     margin-top: 10px;
     width: 77px;
     height:  60px;
-    margin-left: 0px;
+    margin-left: 250px;
     
 }
 .nav-link {
@@ -127,7 +123,7 @@ body {
     margin-left: auto;
     margin-right: auto;
    }
-   /* From Uiverse.io by Shakil-Babu */ 
+
 .btn {
     margin-top: 15px;
     background-color: #424242;

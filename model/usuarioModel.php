@@ -3,10 +3,6 @@
 // Inclui a classe de conexão que você criou
 require_once 'conexao.php';
 
-/**
- * A classe UsuarioModel é responsável por interagir com a tabela 'usuarios'.
- * Ela lida com a lógica de negócio e as operações de banco de dados.
- */
 class UsuarioModel {
     private $conn;
 
