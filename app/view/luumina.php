@@ -18,34 +18,7 @@
 
 <body>
 
-    <header>
-        <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark fixed-top">
-
-            <div class="container">
-                <img class="navbar-logo" src="../view/img/logoBranca.png"></a>
-                <a class="navbar-brand" href="luumina.html">luumina</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="luumina.html">Início</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="cadastrarPro.html">Seja Um Profissional</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="cadastrar.html">Cadastrar</a>
-                        </li>
-                        <li">
-                            <a class="btn" href="login.html">Entrar</a>
-                            </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <?php require_once __DIR__ . '/layout/header.php'; ?>
 
     <main>
         <section id="hero" class="d-flex align-items-center justify-content-center text-center">
