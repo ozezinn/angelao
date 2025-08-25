@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cadastrar - luumina.com</title>
+    <title>luumina.com/cadastrarProfissional</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://db.onlinewebfonts.com/c/9b2f63108a5ca5afb6e3b268bca3dd9c?family=Yalta+Sans+W04+Light" rel="stylesheet">
+    <link href="https://db.onlinewebfonts.com/c/9b2f63108a5ca5afb6e3b268bca3dd9c?family=Yalta+Sans+W04+Light"
+        rel="stylesheet">
 
 
-    <link id="color-theme" rel="stylesheet" href="css/style4.css">
+    <link id="color-theme" rel="stylesheet" href="css/input.css">
 </head>
+
 <body>
 
     <header>
         <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark fixed-top">
-            <img class="navbar-logo" src="../view/img/logoBranca.png"></a>
+
             <div class="container">
-                
+                <img class="navbar-logo" src="../view/img/logoBranca.png"></a>
                 <a class="navbar-brand" href="luumina.html">luumina</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -31,14 +34,15 @@
                             <a class="nav-link" href="luumina.html">Início</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="cadastrarPro.html">Seja Um Profissional</a>
+                            <a class="nav-link active" aria-current="page" href="cadastrarPro.html">Seja Um
+                                Profissional</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="cadastrar.html">Cadastrar</a>
                         </li>
                         <li">
                             <a class="btn" href="login.html">Entrar</a>
-                        </li>
+                            </li>
                     </ul>
                 </div>
             </div>
@@ -46,31 +50,37 @@
     </header>
 
     <main class="page-content">
-        <section id="servicos" class="py-5 bg-light-custom">
+        <section id="servicos">
             <div class="container">
                 <div class="form-container">
-  <p class="title">Cadastrar Perfil Pro</p>
-  <form class="form">
-    <div class="input-group">
-      <label for="name">Name</label>
-      <input placeholder="" id="username" name="username" type="text"/>
-    </div>
-    <div class="input-group">
-      <label for="phone">numero</label>
-      <input placeholder="" id="phone" name="phone" type="phone" />
-      <label for="email">Email</label>
-      <input placeholder="" id="email" name="email" type="email" />
-      <label for="location">CPF</label>
-      <input placeholder="" type="email" />
-    </div>
-    <button style="margin-top:6%;" class="sign">cadastrar-se</button>
-  </form>
-  <div class="social-message">
-    <div class="line"></div>
-    <a class="message" href="">luumina</a>
-    <div class="line"></div>
-  </div>
-</div>
+                    <p class="title">Cadastrar Profissional</p>
+                    <form class="form" action="../controller/cadastroController.php" method="POST">
+                        <div class="input-group">
+                            <label for="nome">Nome</label>
+                            <input placeholder="" name="nome" type="text" />
+                        </div>
+
+                        <div class="input-group">
+                            <label for="email">Email</label>
+                            <input placeholder="" name="email" type="email" />
+                        </div>
+
+                        <div class="input-group">
+                            <label for="senha">senha</label>
+                            <input placeholder="" name="senha" type="text" />
+                        </div>
+                        <div class="input-group">
+                            <label for="cpf">CPF</label>
+                            <input placeholder="" name="cpf" type="text" />
+                        </div>
+                        <button style="margin-top:6%;" class="sign" type="submit">cadastrar-se</button>
+                    </form>
+                    <div class="social-message">
+                        <div class="line"></div>
+                        <a class="message" href="luumina.html">luumina</a>
+                        <div class="line"></div>
+                    </div>
+                </div>
 
             </div>
         </section>
@@ -83,4 +93,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
 </body>
+
 </html>

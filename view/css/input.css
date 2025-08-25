@@ -9,7 +9,7 @@
 body {
   font-family: "Yalta Sans W04 Light";
   color: #000000;
-  background-color: #ffffff;
+  background-color: #bdbdbd;
 }
 
 .navbar {
@@ -30,7 +30,6 @@ body {
 .navbar-brand {
   margin-top: 20px;
   font-weight: 700;
-  margin-left: -140px;
   font-family: 'Poppins', sans-serif;
 
 }
@@ -39,7 +38,7 @@ body {
   margin-top: 10px;
   width: 77px;
   height: 60px;
-  margin-left: 250px;
+  
 
 }
 
@@ -89,7 +88,7 @@ body {
 }
 
 .form {
-  margin-top: 1.5rem;
+  margin-top: 100px;
   color: #000;
 }
 

@@ -1,49 +1,84 @@
 <?php
+require_once 'Conexao.php';
 
-// Inclui a classe de conexão que você criou
-require_once 'conexao.php';
-
-class UsuarioModel
+class Usuario
 {
-    private $conn;
+    private $id_usuario;
+    private $nome;
+    private $email;
+    private $senha_hash;
+    private $tipo_usuario;
 
-    // Construtor que recebe a conexão PDO
-    public function __construct(PDO $conn)
+    public function setNome($nome)
     {
-        $this->conn = $conn;
+        $this->nome = trim($nome);
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = trim($email);
+    }
+
+    public function setSenha($senha)
+    {
+        // A senha nunca é armazenada diretamente.
+        // Geramos um hash seguro para guardar no banco.
+        $this->senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+    }
+
+    public function setTipoUsuario($tipo)
+    {
+        $this->tipo_usuario = $tipo;
+    }
+
+    // --- Métodos de Interação com o Banco de Dados ---
+
+    /**
+     * Insere o usuário atual no banco de dados.
+     * @return bool Retorna true se o cadastro foi bem-sucedido, false caso contrário.
+     */
+    public function cadastrar()
+    {
+        try {
+            // Verifica se já existe um usuário com o mesmo email
+            if ($this->emailJaExiste()) {
+                return false;
+            }
+
+            $pdo = Conexao::conectar();
+
+            // Prepara a query SQL
+            $sql = "INSERT INTO usuarios (nome, email, senha_hash, tipo_usuario) VALUES (:nome, :email, :senha_hash, :tipo_usuario)";
+
+            $stmt = $pdo->prepare($sql);
+
+            // Associa os valores das propriedades do objeto aos parâmetros da query
+            $stmt->bindValue(':nome', $this->nome);
+            $stmt->bindValue(':email', $this->email);
+            $stmt->bindValue(':senha_hash', $this->senha_hash);
+            $stmt->bindValue(':tipo_usuario', $this->tipo_usuario);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            // Em um sistema real, você deveria registrar este erro em um log.
+            // error_log("Erro ao cadastrar usuário: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**
-     * Cadastra um novo usuário no banco de dados.
-     *
-     * @param string $nome O nome do usuário.
-     * @param string $email O email do usuário (deve ser único).
-     * @param string $senha A senha do usuário (será criptografada).
-     * @param string $tipo_usuario O tipo de usuário (e.g., 'cliente', 'profissional').
-     * @return bool Retorna true se o cadastro for bem-sucedido, false caso contrário.
+     * Verifica se um email já está cadastrado no banco.
+     * @return bool Retorna true se o email já existe, false caso contrário.
      */
-    public function cadastrar($nome, $email, $senha, $tipo_usuario = 'cliente')
+    private function emailJaExiste()
     {
-        try {
-            // 1. Criptografa a senha antes de salvar no banco de dados
-            $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+        $pdo = Conexao::conectar();
+        $sql = "SELECT id_usuario FROM usuarios WHERE email = :email";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':email', $this->email);
+        $stmt->execute();
 
-            // 2. Prepara a query SQL com placeholders para evitar SQL Injection
-            $sql = "INSERT INTO usuarios (nome, email, senha_hash, tipo_usuario) VALUES (:nome, :email, :senha_hash, :tipo_usuario)";
-            $stmt = $this->conn->prepare($sql);
-
-            // 3. Atribui os valores aos placeholders
-            $stmt->bindParam(':nome', $nome);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':senha_hash', $senha_hash);
-            $stmt->bindParam(':tipo_usuario', $tipo_usuario);
-
-            // 4. Executa a query e retorna o resultado
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            // Em caso de erro, exibe a mensagem (em produção, você pode logar o erro)
-            echo "Erro ao cadastrar usuário: " . $e->getMessage();
-            return false;
-        }
+        // Se a contagem de linhas for maior que 0, o email já existe
+        return $stmt->rowCount() > 0;
     }
 }
