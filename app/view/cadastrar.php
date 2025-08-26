@@ -14,7 +14,7 @@
         rel="stylesheet">
 
 
-    <link id="color-theme" rel="stylesheet" href="css/input.css">
+    <link id="color-theme" rel="stylesheet" href="../../public/css/input.css">
 </head>
 
 <body>
@@ -42,8 +42,8 @@
                             <input placeholder="" name="senha" type="text" />
                         </div>
                         <div class="input-group">
-                            <label for="tipo_usuario">Eu sou um</label><br><br>
-                            <select name="tipo_usuario" id="tipo_usuario" required>
+                            <label for="tipoUsuario">Eu sou um</label><br><br>
+                            <select name="tipoUsuario" id="tipoUsuario" required>
                                 <option value="" disabled selected>Selecione uma opção</option>
                                 <option value="cliente">Cliente</option>
                                 <option value="profissional">Profissional</option>

@@ -3,7 +3,7 @@
 session_start();
 
 // Inclui o Model de Usuário
-require_once '../model/Usuario.php';
+require_once '../model/usuarioModel.php';
 
 // 1. VERIFICAÇÃO: Checa se o formulário foi realmente enviado (método POST)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nome = !empty($_POST['nome']) ? trim($_POST['nome']) : null;
     $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
     $senha = !empty($_POST['senha']) ? trim($_POST['senha']) : null;
-    $tipo_usuario = !empty($_POST['tipo_usuario']) ? trim($_POST['tipo_usuario']) : null;
+    $tipoUsuario = !empty($_POST['tipoUsuario']) ? trim($_POST['tipoUsuario']) : null;
 
     // Verifica se todos os campos foram preenchidos
     if ($nome && $email && $senha && $tipo_usuario) {

@@ -14,7 +14,7 @@
         rel="stylesheet">
 
 
-    <link id="color-theme" rel="stylesheet" href="css/input.css">
+    <link id="color-theme" rel="stylesheet" href="../../public/css/input.css">
 </head>
 
 <body>

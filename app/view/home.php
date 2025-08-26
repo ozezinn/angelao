@@ -1,25 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>luumina.com</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://db.onlinewebfonts.com/c/9b2f63108a5ca5afb6e3b268bca3dd9c?family=Yalta+Sans+W04+Light"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="../../public/css/style.css">
-</head>
-
-<body>
-
-    <?php require_once __DIR__ . '/layout/header.php'; ?>
-
+<?php 
+require_once __DIR__ . '/layout/header.php';
+?>
+<link rel="stylesheet" href="../../public/css/input.css">
     <main>
         <section id="hero" class="d-flex align-items-center justify-content-center text-center">
             <div class="hero-content">
@@ -50,13 +32,13 @@
             </div>
         </section>
     </main>
-
-    <footer class="footer-custom text-center p-4">
-        <p class="mb-0">© 2025 luumina. todos direitos reservados.</p>
-    </footer>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
-</body>
 
-</html>
+
+<div class="noticia-container">
+    <h2 class="noticia-titulo"><?php //echo htmlspecialchars($noticia['titulo']); ?></h2>
+    <div class="noticia-paragrafo"><?php //echo  ($noticia['texto']); ?></div>
+</div>
+
+<?php require_once __DIR__ . '/layout/footer.php';?>
