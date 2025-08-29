@@ -26,7 +26,7 @@
             <div class="container">
                 <div class="form-container">
                     <p class="title">Cadastrar</p>
-                    <form class="form" action="../controller/cadastroController.php" method="POST">
+                    <form class="form" action="abc.php?action=cadastrar" method="POST">
                         <div class="input-group">
                             <label for="nome">Nome</label>
                             <input placeholder="" name="nome" type="text" />
@@ -42,8 +42,8 @@
                             <input placeholder="" name="senha" type="text" />
                         </div>
                         <div class="input-group">
-                            <label for="tipoUsuario">Eu sou um</label><br><br>
-                            <select name="tipoUsuario" id="tipoUsuario" required>
+                            <label for="tipo">Eu sou um</label><br><br>
+                            <select name="tipo" id="tipo" required>
                                 <option value="" disabled selected>Selecione uma opção</option>
                                 <option value="cliente">Cliente</option>
                                 <option value="profissional">Profissional</option>

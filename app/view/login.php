@@ -22,14 +22,14 @@
 
     <div class="form-container">
         <p class="title">Login</p>
-        <form class="form">
+        <form class="form"action="abc.php?action=autenticar" method="post">
             <div class="input-group">
-                <label for="Nome">Nome</label>
-                <input type="text" name="Nome" id="Nome" placeholder="">
+                <label for="nome">Nome</label>
+                <input type="text" name="nome" id="nome" placeholder="">
             </div>
             <div class="input-group">
-                <label for="Senha">Senha</label>
-                <input type="Senha" name="Senha" id="Senha" placeholder="">
+                <label for="senha">Senha</label>
+                <input type="password" name="senha" id="senha" placeholder="">
                 <div class="forgot">
                     <a rel="noopener noreferrer" href="">Recuperar Senha ?</a>
                 </div>

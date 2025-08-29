@@ -1,34 +1,30 @@
 <?php
 
-class Conexao
-{
-    private static $pdo;
-    private static $host = "localhost";
-    private static $dbname = "dbLuumina";
-    private static $user = "root";
-    private static $senha = "";
+Class Conexao {
+// conexão no banco
+    private $pdo;
+    private $host = "localhost";
+    private $dbname = "dbluumina";
+    private $user = "root";
+    private $senha = "";
+          
+    public function conectar()
+        {
+               try{        
+                    $this->pdo = new PDO("mysql:dbname=".$this->dbname.";host=".$this->host 
+                    ,$this->user, $this->senha);
+                    }
+                catch (PDOException $e){
 
-    public static function conectar()
-    {
-        if (!isset(self::$pdo)) {
-            try {
-                self::$pdo = new PDO(
-                    "mysql:dbname=" . self::$dbname . ";host=" . self::$host,
-                    self::$user,
-                    self::$senha,
-                    [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        // resultados em arrays por padrão.
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-                    ]
-                );
-            } catch (PDOException $e) {
-                // Em vez de 'echo' e 'exit', você pode lançar a exceção
-                // para que a camada superior (Controller) possa tratá-la.
-                // Aqui, podemos adicionar mais contexto ao erro se quisermos.
-                throw new PDOException("Erro ao conectar ao banco de dados: " . $e->getMessage());
+                    echo "ERRO DE CONEXÃO NO PDO: ".$e->getMessage();
+                     exit();
+                }
+                catch (Exception $e){
+                    echo "ERRO não passou da conexao: ".$e->getMessage();
+                    exit();
+                }
+                return $this->pdo;
             }
+
         }
-        return self::$pdo;
-    }
-}
+        ?>
