@@ -1,7 +1,7 @@
 <?php 
 require_once __DIR__ . '/layout/header.php';
 ?>
-<link rel="stylesheet" href="../../public/css/input.css">
+<link rel="stylesheet" href="../../public/css/style.css">
     <main>
         <section id="hero" class="d-flex align-items-center justify-content-center text-center">
             <div class="hero-content">

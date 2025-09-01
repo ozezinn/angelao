@@ -13,7 +13,7 @@
     <link href="https://db.onlinewebfonts.com/c/9b2f63108a5ca5afb6e3b268bca3dd9c?family=Yalta+Sans+W04+Light"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
 </head>
 
 <body>
@@ -51,12 +51,9 @@
         </section>
     </main>
 
-    <footer class="footer-custom text-center p-4">
-        <p class="mb-0">© 2025 luumina. todos direitos reservados.</p>
-    </footer>
+    <?php require_once __DIR__ . '/layout/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
 </body>
 
 </html>

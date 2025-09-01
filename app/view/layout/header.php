@@ -23,7 +23,7 @@
                             <a class="nav-link" href="luumina.php">Início</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="cadastrarPro.php">Seja Um Profissional</a>
+                            <a class="nav-link" href="cadastrar.php">Seja Um Profissional</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="cadastrar.php">Cadastrar</a>

@@ -11,6 +11,6 @@ class homeController
     //executar o metodo getNoticia
     $noticia = $noticiaModel->getNoticia();
     //exibir o conteudo na home
-    require_once __DIR__ . '/../view/home.php';
+    require_once __DIR__ . '/../view/luumina.php';
   }
 }
