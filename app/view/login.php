@@ -31,18 +31,18 @@
                 <label for="senha">Senha</label>
                 <input type="password" name="senha" id="senha" placeholder="">
                 <div class="forgot">
-                    <a rel="noopener noreferrer" href="">Recuperar Senha ?</a>
+                    <a rel="noopener noreferrer" href="">Recuperar Senha?</a>
                 </div>
             </div>
             <button class="sign">Login</button>
         </form>
-        <p class="signup">Voce ainda nao tem conta?
-            <a rel="noopener noreferrer" href="cadastrar.html" class="">cadastrar-se</a>
+        <p class="signup">Voce ainda não tem conta?
+            <a rel="noopener noreferrer" href="cadastrar.php" class="">Cadastrar-se</a>
         </p>
     </div>
 
     <footer class="footer-custom text-center p-4">
-        <p class="mb-0">© 2025 luumina. todos direitos reservados.</p>
+        <p class="mb-0">© 2025 luumina. Todos direitos reservados.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

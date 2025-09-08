@@ -4,7 +4,7 @@ use dbLuumina;
 CREATE TABLE usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL,
     senha_hash VARCHAR(255) NOT NULL,
     tipo_usuario ENUM('cliente', 'profissional', 'admin') NOT NULL,
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -51,3 +51,4 @@ CREATE TABLE solicitacoes_orcamento (
     status_solicitacao ENUM('novo', 'em andamento', 'concluído') NOT NULL DEFAULT 'novo',
     FOREIGN KEY (id_cliente) REFERENCES usuarios(id_usuario) ON DELETE SET NULL
 );
+ALTER TABLE profissionais ADD COLUMN cpf VARCHAR(14) NOT NULL;

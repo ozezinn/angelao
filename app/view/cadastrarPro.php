@@ -39,31 +39,71 @@
 
                         <div class="input-group">
                             <label for="senha">senha</label>
-                            <input placeholder="" name="senha" type="text" />
+                            <input placeholder="" name="senha" type="password" />
                         </div>
                         <div class="input-group">
-                            <label for="cpf">CPF</label>
-                            <input placeholder="" name="cpf" type="text" />
-                        </div>
+    <label for="cpf">CPF</label>
+    <input placeholder="000.000.000-00" name="cpf" id="cpf" type="text" maxlength="14" />
+    <small id="cpf-erro" style="color: red; display: none;">CPF inválido</small>
+</div>
                         <button style="margin-top:6%;" class="sign" type="submit">cadastrar-se</button>
                     </form>
                     <div class="social-message">
                         <div class="line"></div>
-                        <a class="message" href="luumina.html">luumina</a>
+                        <a class="message" href="luumina.php">luumina</a>
                         <div class="line"></div>
                     </div>
-                </div>
 
             </div>
         </section>
     </main>
 
     <footer class="footer-custom text-center p-4">
-        <p class="mb-0">© 2025 luumina. todos direitos reservados.</p>
+        <p class="mb-0">© 2025 luumina. Todos direitos reservados.</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <script>
+function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, ''); 
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false; 
+
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+    let resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.charAt(9))) return false;
+
+    soma = 0;
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.charAt(10))) return false;
+
+    return true;
+}
+
+document.getElementById('cpf').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    e.target.value = value;
+});
+
+document.getElementById('cpf').addEventListener('blur', function(e) {
+    const cpf = e.target.value;
+    const erro = document.getElementById('cpf-erro');
+    if (cpf && !validarCPF(cpf)) {
+        erro.style.display = 'block';
+    } else {
+        erro.style.display = 'none';
+    }
+});
+</script>
+
+</script>
 </body>
 
 </html>

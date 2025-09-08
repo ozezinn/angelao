@@ -4,16 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRASIL - CONFIE EM MIM</title>
-    <link rel="stylesheet" href="../css/input.css">
+    <title>luumina</title>
+    <link rel="stylesheet" href="../css/style.css">
+    
 </head>
 
 <body>
     <header>
         <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark fixed-top">
             <div class="container">
-                <img class="navbar-logo" src="../view/img/logoBranca.png"></a>
-                <a class="navbar-brand" href="luumina.php">luumina</a>
+                <div class="d-flex align-items-center">
+    <a href="luumina.php">
+        <img class="navbar-logo" src="../view/img/logoBranca.png" alt="Luumina Logo">
+    </a>
+    <a class="navbar-brand ms-2" href="luumina.php">luumina</a>
+</div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -23,13 +28,13 @@
                             <a class="nav-link" href="luumina.php">Início</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="cadastrar.php">Seja Um Profissional</a>
+                            <a class="nav-link" href="abc.php?action=index&tipo=profissional">Seja Um Profissional</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="cadastrar.php">Cadastrar</a>
+                            <a class="nav-link " aria-current="page" href="cadastrar.php">Cadastrar</a>
                         </li>
-                        <li">
-                            <a class="btn" href="login.php">Entrar</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Entrar</a>
                             </li>
                     </ul>
                 </div>

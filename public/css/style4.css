@@ -1,167 +1,259 @@
+/*
+  ========================================
+  PADRONIZAÇÃO BASEADA NO INPUT.CSS
+  ========================================
+  - Paleta de cores e variáveis unificadas
+  - Fontes consistentes e modernas
+  - Organização modular por seções
+  - Sombras, espaçamentos e efeitos padronizados
+*/
+
+/*
+  ========================================
+  VARIÁVEIS GLOBAIS
+  ========================================
+*/
+
 :root {
-    --preto: #000;
-    --branco: #fff;
-    --cinza-claro: #f5f5f5;
-    --cinza-medio: #bdbdbd;
-    --cinza-escuro: #424242;
+  /* Paleta */
+  --cor-preto: #000;
+  --cor-branco: #fff;
+  --cor-cinza-claro: #f5f5f5;
+  --cor-cinza-medio: #bdbdbd;
+  --cor-cinza-escuro: #424242;
+
+  /* Fontes */
+  --fonte-corpo: "Yalta Sans W04 Light", sans-serif;
+  --fonte-titulos: "Poppins", sans-serif;
+
+  /* Sombras */
+  --sombra-suave: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --sombra-media: 0 6px 14px rgba(0, 0, 0, 0.12);
+  --sombra-forte: 0 8px 22px rgba(0, 0, 0, 0.18);
+
+  /* Transição padrão */
+  --transicao-padrao: all 0.3s ease;
 }
+
+/*
+  ========================================
+  BODY
+  ========================================
+*/
 
 body {
-    font-family: "Yalta Sans W04 Light";
-    color: var(--cinza-escuro);
-    background-color: var(--cinza-medio);
+  font-family: var(--fonte-corpo);
+  color: var(--cor-cinza-escuro);
+  background-color: var(--cor-cinza-medio);
+  line-height: 1.6;
+  letter-spacing: 0.2px;
 }
+
+/*
+  ========================================
+  NAVBAR
+  ========================================
+*/
 
 .navbar {
-    transition: background-color 0.4s ease;
-    padding: 1rem 0;
-    position: absolute;
+  padding: 1rem 0;
+  position: absolute;
+  background-color: transparent;
+  transition: background-color 0.4s ease, box-shadow 0.3s ease;
 }
 
-.navbar.scrolled {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
+.navbar.scrolled,
 .navbar.navbar-internal {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--sombra-suave);
+  background-color: var(--cor-branco);
 }
 
 .navbar-brand {
-    margin-top: 20px;
-    font-weight: 700;
-    margin-left: -140px;
-    font-family: 'Poppins', sans-serif;
-
+  margin-top: 20px;
+  margin-left: -140px;
+  font-family: var(--fonte-titulos);
+  font-weight: 700;
+  font-size: 1.3rem;
+  transition: var(--transicao-padrao);
 }
 
 .navbar-logo {
-    margin-top: 10px;
-    width: 77px;
-    height: 60px;
-    margin-left: 250px;
-
+  margin-top: 10px;
+  margin-left: 250px;
+  width: 77px;
+  height: 60px;
 }
 
 .nav-link {
-    font-weight: 500;
-    margin-top: 20px;
-    font-family: 'Poppins', sans-serif;
+  margin-top: 20px;
+  font-family: var(--fonte-titulos);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--cor-preto);
+  transition: var(--transicao-padrao);
 }
 
-.section-titlee {
-    font-family: 'Poppins', sans-serif;
+.nav-link:hover {
+  color: var(--cor-cinza-escuro);
 }
+
+/*
+  ========================================
+  HERO SECTION
+  ========================================
+*/
 
 #hero {
-    height: 100vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://fotografiadicas.com.br/wp-content/uploads/2017/10/30-Fotografo-Profissional-Amador-fotografia-dicas-2-min.png') no-repeat center center;
-    background-size: cover;
-    color: white;
-    position: relative;
+  height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('https://fotografiadicas.com.br/wp-content/uploads/2017/10/30-Fotografo-Profissional-Amador-fotografia-dicas-2-min.png') no-repeat center center;
+  background-size: cover;
+  color: var(--cor-branco);
+  position: relative;
 }
 
 .hero-content {
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 2rem;
-    border-radius: 10px;
-    font-family: 'Poppins', sans-serif;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  border-radius: 10px;
+  font-family: var(--fonte-titulos);
+  box-shadow: var(--sombra-media);
 }
 
 .hero-contentt {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
+/*
+  ========================================
+  BOTÕES
+  ========================================
+*/
+
 .btn-primary-custom {
-    background-color: transparent;
-    border: 2px solid var(--cinza-escuro);
-    color: var(--cinza-escuro);
-    padding: 12px 30px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+  background-color: transparent;
+  border: 2px solid var(--cor-cinza-escuro);
+  color: var(--cor-cinza-escuro);
+  padding: 12px 30px;
+  font-weight: 600;
+  border-radius: 8px;
+  font-family: var(--fonte-titulos);
+  transition: var(--transicao-padrao);
+  cursor: pointer;
 }
 
 .btn-primary-custom:hover {
-    background-color: var(--cinza-escuro);
-    color: var(--branco);
-}
-
-.page-content {
-    padding-top: 80px;
-}
-
-.group {
-    display: flex;
-    line-height: 28px;
-    align-items: center;
-    position: relative;
-    max-width: 1900px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.input {
-    width: 600px;
-    height: 40px;
-    line-height: 28px;
-    padding: 0 1rem;
-    padding-left: 2.5rem;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    outline: none;
-    color: var(--cinza-escuro);
-    transition: .3s ease;
-    margin-left: auto;
-    margin-right: auto;
-
-}
-
-.input::placeholder {
-    color: #9e9ea7;
-
-}
-
-.input:focus,
-input:hover {
-    outline: none;
-    border-color: var(--cinza-medio);
-    background-color: var(--branco);
-    box-shadow: 0 0 0 4px var(--cinza-medio);
-}
-
-.icon {
-    position: absolute;
-    left: 1rem;
-    fill: #9e9ea7;
-    width: 1rem;
-    height: 1rem;
-    margin-left: auto;
-    margin-right: auto;
+  background-color: var(--cor-cinza-escuro);
+  color: var(--cor-branco);
+  box-shadow: var(--sombra-media);
+  transform: translateY(-2px);
 }
 
 .btn {
-    margin-top: 15px;
-    background-color: #424242;
-    padding: 14px 30px;
-    color: #ffffff;
-    letter-spacing: 2px;
-    border-radius: 10px;
-    border: 2px #343a39;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-    transition: .4s;
-    font-family: 'Poppins', sans-serif;
+  margin-top: 15px;
+  background-color: var(--cor-cinza-escuro);
+  padding: 14px 30px;
+  color: var(--cor-branco);
+  letter-spacing: 2px;
+  border-radius: 10px;
+  border: 2px solid #343a39;
+  box-shadow: var(--sombra-suave);
+  transition: var(--transicao-padrao);
+  font-family: var(--fonte-titulos);
+  font-weight: 600;
 }
 
 .btn span:last-child {
-    display: none;
+  display: none;
 }
 
 .btn:hover {
-    transition: .4s;
-    border: 2px #000000;
-    background-color: #bdbdbd;
-    color: #ffffff;
+  background-color: var(--cor-cinza-medio);
+  color: var(--cor-preto);
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-media);
 }
 
 .btn:active {
-    background-color: #bdbdbd;
+  background-color: var(--cor-cinza-claro);
+  transform: translateY(0);
+  box-shadow: var(--sombra-suave);
+}
+
+/*
+  ========================================
+  FORMULÁRIOS E INPUTS
+  ========================================
+*/
+
+.group {
+  display: flex;
+  line-height: 28px;
+  align-items: center;
+  position: relative;
+  max-width: 1900px;
+  margin: 0 auto;
+}
+
+.input {
+  width: 600px;
+  height: 40px;
+  line-height: 28px;
+  padding: 0 1rem 0 2.5rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  outline: none;
+  color: var(--cor-cinza-escuro);
+  background-color: var(--cor-branco);
+  transition: var(--transicao-padrao);
+  margin: 0 auto;
+  font-family: var(--fonte-corpo);
+  font-size: 0.95rem;
+}
+
+.input::placeholder {
+  color: #9e9ea7;
+}
+
+.input:focus,
+.input:hover {
+  border-color: var(--cor-cinza-medio);
+  background-color: var(--cor-branco);
+  box-shadow: 0 0 0 4px var(--cor-cinza-medio);
+}
+
+.icon {
+  position: absolute;
+  left: 1rem;
+  fill: #9e9ea7;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+}
+
+/*
+  ========================================
+  SEÇÕES E TÍTULOS
+  ========================================
+*/
+
+.section-titlee {
+  font-family: var(--fonte-titulos);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--cor-cinza-escuro);
+  margin-bottom: 1rem;
+}
+    
+/*
+  ========================================
+  CONTEÚDO DAS PÁGINAS
+  ========================================
+*/
+
+.page-content {
+  padding-top: 80px;
+  color: var(--cor-cinza-escuro);
+  font-family: var(--fonte-corpo);
+  line-height: 1.6;
 }

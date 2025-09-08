@@ -1,19 +1,21 @@
-create database if not exists dbluumina
-default character set utf8mb4
-collate utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS dbluumina
+DEFAULT CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 
-use dbluumina;
+USE dbluumina;
 
-create table usuario (
-idUsuario int auto_increment primary key,
-nome varchar(255) not null,
-senha varchar(255) not null,
-email varchar(120) not null
+CREATE TABLE tipoUsuario (
+    idTipo INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(50) NOT NULL UNIQUE
 );
 
-create table tipoUsuario (
-idTipo int auto_increment primary key,
-idUsuario int not null,
-descricao varchar(50) not null,
-foreign key (idUsuario) references usuario(idUsuario)
+CREATE TABLE usuario (
+    idUsuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    idTipo INT NOT NULL,
+    FOREIGN KEY (idTipo) REFERENCES tipoUsuario(idTipo)
 );
+
+

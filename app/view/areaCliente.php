@@ -27,7 +27,7 @@ $nome = $_SESSION['usuario_nome'];
     <link href="https://db.onlinewebfonts.com/c/9b2f63108a5ca5afb6e3b268bca3dd9c?family=Yalta+Sans+W04+Light"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="../../public/css/style4.css">
+    <link rel="stylesheet" href="../../public/css/input.css">
 </head>
 
 <body>
@@ -36,6 +36,13 @@ $nome = $_SESSION['usuario_nome'];
         <div class="welcome-box">
             <h1>Olá, cliente(a)!</h1>
             <p>Seja bem-vindo(a) à sua área exclusiva de acesso.</p>
+            <nav>
+    <ul>
+        <li><a href="abc.php?action=alterarSenha">Alterar Senha</a></li>
+        <a href="abc.php?action=logout" class="btn btn-active">Sair</a>
+    </ul>
+</nav>
+>
         </div>
         
         <section id="hero" class="d-flex align-items-center justify-content-center text-center">

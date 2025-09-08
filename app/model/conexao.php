@@ -1,10 +1,10 @@
 <?php
 
 Class Conexao {
-// conexão no banco
+
     private $pdo;
     private $host = "localhost";
-    private $dbname = "dbluumina";
+    private $dbname = "dbLuumina";
     private $user = "root";
     private $senha = "";
           
