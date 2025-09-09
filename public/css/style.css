@@ -11,9 +11,35 @@ body {
     color: var(--cinza-escuro);
     background-color: var(--cinza-medio);
 }
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-#tabela-profissionais {
-    display: none;
+#searchResults {
+    position: absolute;
+    top: 100%; /* Posiciona logo abaixo do input */
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    z-index: 1000;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* Estilo para cada item na lista de resultados */
+.result-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    text-align: left;
+    color: #333;
+}
+
+.result-item:hover {
+    background-color: #f2f2f2;
 }
 .navbar {
     transition: background-color 0.4s ease;

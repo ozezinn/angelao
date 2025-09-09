@@ -169,8 +169,27 @@ public function atualizarUsuario($idUsuario, $nome, $email) {
     $stmt->bindParam(':id', $idUsuario);
     return $stmt->execute();
 }
-
-
+ public function buscarProfissionaisPorNome($nome) 
+    {
+        // A consulta SQL usa LIKE para buscar por partes do nome
+        // O uso de prepared statements é CRUCIAL para evitar SQL Injection
+        $sql = "SELECT id, nome, email FROM usuarios WHERE nome LIKE :nome AND tipo = 'profissional' LIMIT 10";
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            
+            // Adiciona os caracteres '%' para a busca LIKE
+            $searchTerm = '%' . $nome . '%';
+            $stmt->bindParam(':nome', $searchTerm);
+            
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Em um projeto real, você deveria logar este erro
+            return []; // Retorna um array vazio em caso de falha
+        }
+    }
 
 }
 ?>
