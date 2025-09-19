@@ -15,11 +15,11 @@ class Conexao {
         }
 
         // Usamos a nova função para pegar as credenciais
-        $host = get_env_var('MYSQL_HOST');
-        $port = get_env_var('MYSQL_PORT');
-        $dbname = get_env_var('MYSQL_DATABASE');
-        $user = get_env_var('MYSQL_USER');
-        $senha = get_env_var('MYSQL_PASSWORD');
+        $host = get_env_var('maglev.proxy.rlwy.net');
+        $port = get_env_var('33172');
+        $dbname = get_env_var('railway');
+        $user = get_env_var('root');
+        $senha = get_env_var('XZZjMrtNewUrVfaHAOstUIygwHKUGbUo');
 
         // Adicionamos uma verificação para dar um erro mais claro se a variável não for encontrada
         if (!$host) {
