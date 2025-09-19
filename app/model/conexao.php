@@ -1,30 +1,39 @@
 <?php
 
-Class Conexao {
+class Conexao {
 
     private $pdo;
-    private $host = "localhost";
-    private $dbname = "dbLuumina";
-    private $user = "root";
-    private $senha = "";
+
+    private $host;
+    private $port;
+    private $dbname;
+    private $user;
+    private $senha;
           
     public function conectar()
-        {
-               try{        
-                    $this->pdo = new PDO("mysql:dbname=".$this->dbname.";host=".$this->host 
-                    ,$this->user, $this->senha);
-                    }
-                catch (PDOException $e){
+    {
+        $this->host = getenv('mysql.railway.internal');
+        $this->port = getenv('3306');
+        $this->dbname = getenv('railway');
+        $this->user = getenv('root');
+        $this->senha = getenv('XZZjMrtNewUrVfaHAOstUIygwHKUGbUo');
 
-                    echo "ERRO DE CONEXÃO NO PDO: ".$e->getMessage();
-                     exit();
-                }
-                catch (Exception $e){
-                    echo "ERRO não passou da conexao: ".$e->getMessage();
-                    exit();
-                }
-                return $this->pdo;
-            }
+        try {        
+            
+            $dsn = "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->dbname;
+            $this->pdo = new PDO($dsn, $this->user, $this->senha);
+            
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        } catch (PDOException $e) {
+            echo "ERRO DE CONEXÃO NO PDO: " . $e->getMessage();
+            exit();
+        } catch (Exception $e) {
+            echo "ERRO: " . $e->getMessage();
+            exit();
         }
-        ?>
+        
+        return $this->pdo;
+    }
+}
+?>
