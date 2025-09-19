@@ -4,35 +4,27 @@ class Conexao {
 
     private $pdo;
 
-    private $host;
-    private $port;
-    private $dbname;
-    private $user;
-    private $senha;
-          
     public function conectar()
     {
-        $this->host = getenv('mysql.railway.internal');
-        $this->port = getenv('3306');
-        $this->dbname = getenv('railway');
-        $this->user = getenv('root');
-        $this->senha = getenv('XZZjMrtNewUrVfaHAOstUIygwHKUGbUo');
+        $host = getenv('MYSQL_HOST');
+        $port = getenv('MYSQL_PORT');
+        $dbname = getenv('MYSQL_DATABASE');
+        $user = getenv('MYSQL_USER');
+        $senha = getenv('MYSQL_PASSWORD');
 
         try {        
-            
-            $dsn = "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->dbname;
-            $this->pdo = new PDO($dsn, $this->user, $this->senha);
-            
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // A string de conexão foi atualizada para usar a PORTA e todas as outras variáveis
+            $dsn = "mysql:host=" . $host . ";port=" . $port . ";dbname=" . $dbname;
+            $this->pdo = new PDO($dsn, $user, $senha);
 
-        } catch (PDOException $e) {
-            echo "ERRO DE CONEXÃO NO PDO: " . $e->getMessage();
-            exit();
-        } catch (Exception $e) {
-            echo "ERRO: " . $e->getMessage();
-            exit();
+            // Configura o PDO para lançar exceções em caso de erro (boa prática)
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
-        
+        catch (PDOException $e){
+            // Em um site de produção, é melhor não mostrar o erro detalhado
+            die("ERRO DE CONEXÃO: Não foi possível conectar ao banco de dados.");
+        }
+
         return $this->pdo;
     }
 }
