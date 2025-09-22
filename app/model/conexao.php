@@ -14,11 +14,11 @@ class Conexao {
         }
 
         // AGORA USANDO OS NOMES DE VARIÁVEIS ORIGINAIS DO RAILWAY
-        $host = get_env_var('MYSQL_HOST');
-        $port = get_env_var('MYSQL_PORT');
-        $dbname = get_env_var('MYSQL_DATABASE');
-        $user = get_env_var('MYSQL_USER');
-        $senha = get_env_var('MYSQL_PASSWORD');
+        $host = get_env_var('MYSQLHOST');
+        $port = get_env_var('MYSQLPORT');
+        $dbname = get_env_var('MYSQLDATABASE');
+        $user = get_env_var('MYSQLUSER');
+        $senha = get_env_var('MYSQLPASSWORD');
 
         if (!$host || !$port || !$dbname || !$user || !$senha) {
             die("ERRO CRÍTICO: Não foi possível encontrar uma ou mais variáveis de ambiente do Railway (MYSQL_HOST, MYSQL_PORT, etc.). Verifique o painel do seu serviço MySQL.");
