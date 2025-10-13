@@ -92,7 +92,7 @@ switch ($action) {
         break;
 
     default:
-        echo "404 - Página não encotrada";
+        echo "404 - Página não encontrada";
         break;
 }
 ?>
