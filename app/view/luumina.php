@@ -10,8 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://db.onlinewebfonts.com/c/9b2f63108a5ca5afb6e3b268bca3dd9c?family=Yalta+Sans+W04+Light"
-        rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
 </head>
@@ -22,30 +20,166 @@
 
     <main>
         <section id="hero" class="d-flex align-items-center justify-content-center text-center">
-            <div class="hero-content">
-                <h1 class="display-4 fw-bold">Eternizando suas memorias </h1>
-                <p class="hero-contentt" class="lead my-4">Encontre um Profissional Aqui.</p>
-                <nav class="navbar">
-
-                    <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
-                        <g>
-                            <path
-                                d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
-                            </path>
-                        </g>
-                    </svg>
-                    <input placeholder="Search" type="search" class="input" width="200px">
-                </nav>
+            <div class="container">
+                <h1 class="display-5 fw-bold mb-4">O fotógrafo ideal para<br>eternizar seus momentos.</h1>
+                <div class="hero-search-container">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="search" class="form-control form-control-lg hero-search-input"
+                        placeholder="Busque por tipo de evento, cidade ou nome do profissional...">
+                </div>
             </div>
         </section>
 
-        <section id="produtos" class="py-5 bg-light-custom">
+        <section id="categories" class="py-5">
             <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="section-titlee">Nossos Profissionais</h2>
-                    <p class="text-muted">Aqui vai ficar alguns profisionais em destaque.</p>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">Especialidades</h2>
                 </div>
-                <div class="row">
+                <div class="row g-4">
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/casamento.jpeg" alt="Casamentos">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Casamentos</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/corporativo.jpg" alt="Eventos Corporativos">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Eventos Corporativos</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/ensaio.jpg" alt="Ensaios">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Ensaios</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/aniversario.jpg" alt="Aniversários">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Aniversários</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/formatura.jpg" alt="Formaturas">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Formaturas</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/eventos-religiosos.jpg" alt="Batizados e Eventos Religiosos">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Eventos Religiosos</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/chas-de-bebe.jpg" alt="Chás de Bebê e Chás Revelação">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Chás de Bebê</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/produtos.jpg" alt="Fotografia de Produtos">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Produtos</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/gastronomia.jpg" alt="Gastronomia">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Gastronomia</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/arquitetura.jpg" alt="Arquitetura e Imóveis">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Arquitetura</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/moda.jpg" alt="Moda">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Moda</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/institucional.jpg" alt="Institucional">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Institucional</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/esportes.jpg" alt="Fotografia Esportiva">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Esportes</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/shows.jpg" alt="Shows e Espetáculos">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Shows</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/drone.jpg" alt="Fotografia com Drone (Aérea)">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Drone</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/pet.jpg" alt="Fotografia Pet">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Pet</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/viagem.jpg" alt="Fotografia de Viagem e Turismo">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Viagem</h5>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="#" class="category-card">
+                            <img src="../view/img/categorias/boudoir.jpg" alt="Boudoir: Ensaios sensuais e de autoestima">
+                            <div class="category-card-overlay">
+                                <h5 class="category-card-title">Boudoir</h5>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
