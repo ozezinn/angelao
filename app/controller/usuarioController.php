@@ -7,10 +7,6 @@ require_once '../model/usuarioModel.php';
 
 class UsuarioController {
     private $controle;
-
-
-
-    
     public function __construct() {
         $this->controle = new UsuarioModel();
         if (session_status() === PHP_SESSION_NONE) {
