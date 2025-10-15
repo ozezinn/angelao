@@ -45,11 +45,6 @@
                         <li class="nav-item me-3">
                             <a href="cadastrar.php" class="btn btn-primary btn-custom-nav">Criar conta</a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="bi bi-globe fs-5"></i>
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </div>
