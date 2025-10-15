@@ -45,7 +45,7 @@
         <p>O Luumina, na sua função de intermediador, não será responsável pela qualidade dos serviços, pela veracidade das informações fornecidas pelos usuários, pela conduta dos usuários ou por quaisquer danos, perdas ou prejuízos resultantes das negociações entre Clientes e Fotógrafos.</p>
 
         <h2>9. Lei Aplicável e Foro</h2>
-        <p>Estes Termos serão regidos pelas leis da República Federativa do Brasil. Fica eleito o Foro da Comarca de [Cidade/Estado onde o Luumina está sediado] para dirimir quaisquer questões decorrentes destes Termos.</p>
+        <p>Estes Termos serão regidos pelas leis da República Federativa do Brasil. Fica eleito o Foro da Comarca de Franco da Rocha - SP para dirimir quaisquer questões decorrentes destes Termos.</p>
 
         <p class="mt-5 text-muted"><em>Data da Última Atualização: 15 de Outubro de 2025</em></p>
     </div>

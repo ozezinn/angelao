@@ -38,7 +38,7 @@
         <p>O Luumina implementa um conjunto robusto de medidas de segurança técnicas e administrativas para proteger os dados pessoais contra acessos não autorizados e outras ameaças. Isso inclui criptografia, firewalls e controles de acesso rigorosos.</p>
         
         <h2>6. Fale com o Luumina</h2>
-        <p>Para quaisquer dúvidas sobre esta Política de Privacidade, entre em contato conosco através dos canais de atendimento disponíveis na Plataforma ou pelo e-mail [endereço de e-mail de contato do Luumina].</p>
+        <p>Para quaisquer dúvidas sobre esta Política de Privacidade, entre em contato conosco através dos canais de atendimento disponíveis na Plataforma ou pelo e-mail luumina@gmail.com.</p>
 
         <p class="mt-5 text-muted"><em>Data da Última Atualização: 15 de Outubro de 2025</em></p>
     </div>
