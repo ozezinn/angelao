@@ -1,9 +1,9 @@
 :root {
-    --preto: #121212;
+    --preto: #000000;
     --branco: #fff;
     --cinza-claro: #f8f9fa;
     --cinza-escuro: #343a40;
-    --azul-principal: #0d6efd;
+    --cor-principal: #424242; /* Cor principal para botões */
 }
 
 body {
@@ -12,6 +12,7 @@ body {
     background-color: var(--branco);
 }
 
+/* --- NAVBAR --- */
 .navbar {
     background-color: rgba(18, 18, 18, 0.7);
     backdrop-filter: blur(10px);
@@ -41,19 +42,30 @@ body {
     border-radius: 8px;
     font-weight: 600;
     padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
 .btn-primary.btn-custom-nav {
-    background-color: var(--azul-principal);
-    border-color: var(--azul-principal);
+    background-color: var(--cor-principal);
+    border-color: var(--cor-principal);
 }
 
+.btn-primary.btn-custom-nav:hover {
+    background-color: var(--preto);
+    border-color: var(--preto);
+}
+
+
+/* --- HERO SECTION --- */
 #hero {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../app/view/img/back.jpg');
     background-size: cover;
     background-position: center;
     color: white;
     height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-search-container {
@@ -77,6 +89,7 @@ body {
     font-size: 1.2rem;
 }
 
+/* --- SEÇÃO CATEGORIAS --- */
 #categories {
     background-color: var(--branco);
 }
@@ -125,7 +138,40 @@ body {
     margin: 0;
 }
 
+/* --- FOOTER --- */
 .footer-custom {
     background-color: var(--cinza-claro);
     border-top: 1px solid #dee2e6;
 }
+
+/* --- ESTILOS PARA PÁGINA "COMO FUNCIONA" --- */
+.page-content {
+    padding-top: 70px; 
+}
+
+.page-header {
+    background-color: var(--cinza-claro);
+}
+
+.how-it-works .step-card {
+    padding: 2rem;
+    border-radius: 12px;
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.how-it-works .step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.our-philosophy .philosophy-list {
+    font-size: 1.1rem;
+}
+
+.our-philosophy .philosophy-list i {
+    font-size: 1.5rem;
+}
+
