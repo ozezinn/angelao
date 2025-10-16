@@ -1,6 +1,7 @@
 <?php
 
-class Conexao {
+class Conexao
+{
 
     private $pdo;
 
@@ -9,22 +10,21 @@ class Conexao {
         // --- INÍCIO DA ALTERAÇÃO ---
 
         // Credenciais do banco de dados local (padrão do XAMPP)
-      $host = get_env_var('MYSQL_HOST');
-        $port = get_env_var('MYSQL_PORT');
-        $dbname = get_env_var('MYSQL_DATABASE');
-        $user = get_env_var('MYSQL_USER');
-        $senha = get_env_var('MYSQL_PASSWORD');
+        $host = getenv('MYSQL_HOST');
+        $port = getenv('MYSQL_PORT');
+        $dbname = getenv('MYSQL_DATABASE');
+        $user = getenv('MYSQL_USER');
+        $senha = getenv('MYSQL_PASSWORD');
 
         // --- FIM DA ALTERAÇÃO ---
 
-        try {         
+        try {
             $dsn = "mysql:host=" . $host . ";port=" . $port . ";dbname=" . $dbname;
             $this->pdo = new PDO($dsn, $user, $senha);
-            
+
             // Define o modo de erro do PDO para exceção, o que é uma boa prática
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        }
-        catch (PDOException $e){
+        } catch (PDOException $e) {
             // Se a conexão falhar, exibe uma mensagem de erro detalhada
             die("ERRO NA CONEXÃO COM O BANCO DE DADOS LOCAL: " . $e->getMessage());
         }
