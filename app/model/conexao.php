@@ -10,11 +10,11 @@ class Conexao
         // --- INÍCIO DA ALTERAÇÃO ---
 
         // Credenciais do banco de dados local (padrão do XAMPP)
-        $host = getenv('MYSQL_HOST');
-        $port = getenv('MYSQL_PORT');
-        $dbname = getenv('MYSQL_DATABASE');
-        $user = getenv('MYSQL_USER');
-        $senha = getenv('MYSQL_PASSWORD');
+        $host = getenv('MYSQLHOST');
+        $port = getenv('MYSQLPORT');
+        $dbname = getenv('MYSQLDATABASE');
+        $user = getenv('MYSQLUSER');
+        $senha = getenv('MYSQLPASSWORD');
 
         // --- FIM DA ALTERAÇÃO ---
 
