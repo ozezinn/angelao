@@ -34,6 +34,11 @@ class UsuarioModel {
         if ($stmt->execute()) return $this->pdo->lastInsertId();
         return false;
     }
+    public function buscarPorEmail($email) {
+        $stmt = $this->pdo->prepare("SELECT id_usuario FROM usuarios WHERE email = ?");
+        $stmt->execute([$email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     private function inserirProfissional($idUsuario, $cpf) {
         $stmt = $this->pdo->prepare("
@@ -104,6 +109,11 @@ class UsuarioModel {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function buscarProfissionalPorUsuarioId($id_usuario) {
+        $stmt = $this->pdo->prepare("SELECT id_profissional FROM profissionais WHERE id_usuario = ?");
+        $stmt->execute([$id_usuario]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     public function buscarTodosProfissionais() {
         $stmt = $this->pdo->prepare("
@@ -112,6 +122,77 @@ class UsuarioModel {
             JOIN profissionais p ON u.id_usuario = p.id_usuario
             WHERE u.tipo_usuario = 'profissional'
         ");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function getProfissionalData($id_usuario) {
+        $stmt = $this->pdo->prepare("
+            SELECT u.nome, p.* FROM profissionais p
+            JOIN usuarios u ON p.id_usuario = u.id_usuario
+            WHERE p.id_usuario = ?
+        ");
+        $stmt->execute([$id_usuario]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Busca as especialidades de um profissional específico.
+     */
+    public function getProfissionalEspecialidades($id_profissional) {
+        $stmt = $this->pdo->prepare("
+            SELECT e.nome_especialidade 
+            FROM profissional_especialidades pe
+            JOIN especialidades e ON pe.id_especialidade = e.id_especialidade
+            WHERE pe.id_profissional = ?
+        ");
+        $stmt->execute([$id_profissional]);
+        // fetchAll com PDO::FETCH_COLUMN retorna um array simples: ['Casamentos', 'Ensaios']
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Busca todos os itens do portfólio de um profissional.
+     */
+    public function getPortfolioItems($id_profissional) {
+        $stmt = $this->pdo->prepare("SELECT id_item, titulo, caminho_arquivo FROM portifolio WHERE id_profissional = ? ORDER BY id_item DESC");
+        $stmt->execute([$id_profissional]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+     public function addPortfolioItem($id_profissional, $titulo, $descricao, $id_servico, $caminho_arquivo, $tipo_midia = 'foto') {
+    // ======================================================
+    // MUDANÇA AQUI: Adicionamos a coluna 'tipo_midia' à query
+    // ======================================================
+    $sql = "INSERT INTO portifolio (id_profissional, titulo, descricao, id_servico, caminho_arquivo, tipo_midia) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    try {
+        $stmt = $this->pdo->prepare($sql);
+        // Se o usuário não selecionar um serviço, o valor será null
+        // ======================================================
+        // MUDANÇA AQUI: Adicionamos $tipo_midia ao array de execução
+        // ======================================================
+        $stmt->execute([$id_profissional, $titulo, $descricao, $id_servico, $caminho_arquivo, $tipo_midia]);
+        return true;
+    } catch (PDOException $e) {
+        // ESSA LINHA É SUA MELHOR AMIGA PARA DEBUG:
+        error_log("Erro ao adicionar item ao portfólio: " . $e->getMessage());
+        return false;
+    }
+}
+
+    /**
+     * Busca o catálogo completo de todas as especialidades disponíveis.
+     */
+    public function getAllEspecialidades() {
+        $stmt = $this->pdo->prepare("SELECT nome_especialidade FROM especialidades ORDER BY nome_especialidade ASC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+    
+    /**
+     * Busca o catálogo completo de todos os serviços disponíveis.
+     */
+    public function getAllServicos() {
+        $stmt = $this->pdo->prepare("SELECT id_servico, nome_servico FROM servicos ORDER BY nome_servico ASC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -189,7 +270,74 @@ public function atualizarUsuario($idUsuario, $nome, $email) {
             // Em um projeto real, você deveria logar este erro
             return []; // Retorna um array vazio em caso de falha
         }
+    }public function updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades) {
+        $this->pdo->beginTransaction();
+        try {
+            // 1. Atualiza a tabela 'usuarios' (apenas o nome)
+            $stmt = $this->pdo->prepare("UPDATE usuarios SET nome = ? WHERE id_usuario = ?");
+            $stmt->execute([$nome, $id_usuario]);
+
+            // 2. Atualiza a tabela 'profissionais'
+            // Apenas atualiza a foto se um novo caminho foi fornecido
+            $sql_profissionais = "UPDATE profissionais SET localizacao = ?, biografia = ?";
+            $params_profissionais = [$localizacao, $biografia];
+            if ($caminho_foto) {
+                $sql_profissionais .= ", foto_perfil = ?";
+                $params_profissionais[] = $caminho_foto;
+            }
+            $sql_profissionais .= " WHERE id_profissional = ?";
+            $params_profissionais[] = $id_profissional;
+            $stmt = $this->pdo->prepare($sql_profissionais);
+            $stmt->execute($params_profissionais);
+
+            // 3. Atualiza as especialidades (apaga as antigas e insere as novas)
+            $stmt = $this->pdo->prepare("DELETE FROM profissional_especialidades WHERE id_profissional = ?");
+            $stmt->execute([$id_profissional]);
+            
+            if (!empty($especialidades)) {
+                $stmt = $this->pdo->prepare("INSERT INTO profissional_especialidades (id_profissional, id_especialidade) VALUES (?, (SELECT id_especialidade FROM especialidades WHERE nome_especialidade = ?))");
+                foreach ($especialidades as $esp_nome) {
+                    $stmt->execute([$id_profissional, $esp_nome]);
+                }
+            }
+            
+            // Se tudo deu certo, confirma a transação
+            $this->pdo->commit();
+            return true;
+
+        } catch (PDOException $e) {
+            // Se algo deu errado, desfaz tudo
+            $this->pdo->rollBack();
+            // Opcional: registrar o erro em um log
+            // error_log($e->getMessage());
+            return false;
+        }
     }
+
+    /**
+     * Exclui um item de portfólio, garantindo que ele pertença ao profissional logado.
+     * Retorna o caminho do arquivo para exclusão física, ou false se não encontrou.
+     */
+    public function deletePortfolioItem($id_item, $id_profissional) {
+        // Primeiro, busca o caminho do arquivo para poder excluí-lo depois
+        $stmt = $this->pdo->prepare("SELECT caminho_arquivo FROM portifolio WHERE id_item = ? AND id_profissional = ?");
+        $stmt->execute([$id_item, $id_profissional]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($resultado) {
+            $caminho_arquivo = $resultado['caminho_arquivo'];
+
+            // Se encontrou, agora exclui o registro do banco
+            $stmt = $this->pdo->prepare("DELETE FROM portifolio WHERE id_item = ? AND id_profissional = ?");
+            $stmt->execute([$id_item, $id_profissional]);
+            
+            return $caminho_arquivo;
+        }
+
+        // Retorna false se o item não foi encontrado ou não pertence ao profissional (medida de segurança)
+        return false;
+    }
+    
 
 }
 ?>

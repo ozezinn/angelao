@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-define('BASE_URL', 'http://localhost:8080/'); // Ajuste conforme seu servidor
+define('BASE_URL', 'http://localhost/angelao/app/view/');
 
 require_once '../controller/usuarioController.php';
 
@@ -37,8 +37,8 @@ switch ($action) {
         break;
 
     case 'areaProfissional':
-        include '../view/areaProfissional.php';
-        break;
+    $controle->showAreaProfissional();
+    break;
 
     case 'areaCliente':
         include '../view/areaCliente.php';
@@ -59,6 +59,33 @@ switch ($action) {
     case 'gerenciarClientes':
     include '../view/gerenciarClientes.php';
     break;
+    case 'editarUsuario':
+        // ...
+        break;
+
+    // ======================================================
+    // NOVAS ROTAS ADICIONADAS AQUI
+    // ======================================================
+    case 'updateProfile':
+        // Rota que recebe os dados do formulário do modal "Editar Perfil"
+        $controle->updateProfile();
+        break;
+
+    case 'deleteFoto':
+        // Rota para excluir um item do portfólio
+        $controle->deletePortfolioItem();
+        break;
+
+    // ======================================================
+    // NOVA ROTA PARA O UPLOAD DE FOTOS
+    // ======================================================
+    case 'uploadFotoPortfolio':
+        $controle->uploadFotoPortfolio();
+        break;
+        
+    case 'excluirConta':
+        $controle->excluirMinhaConta();
+        break;
 
     case 'excluirProfissional':
         $id = $_GET['id'] ?? null;

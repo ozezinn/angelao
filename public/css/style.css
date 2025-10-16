@@ -214,4 +214,38 @@ body {
 .footer-links a:hover {
     color: var(--preto);
     text-decoration: underline;
+}/* --- ESTILOS PARA O NOVO DROPDOWN DE USUÁRIO --- */
+
+/* Ajusta o link principal do dropdown */
+.navbar .dropdown-toggle::after {
+    /* Deixa a setinha do dropdown mais sutil */
+    color: var(--branco);
+    margin-left: 0.5em; /* Adiciona um espaço antes da seta */
+}
+
+/* Customiza a aparência do menu suspenso */
+.dropdown-menu-dark-custom {
+    background-color: rgba(30, 30, 30, 0.75); /* Fundo escuro e translúcido */
+    backdrop-filter: blur(10px); /* O mesmo efeito de vidro da navbar */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem; /* Bordas arredondadas */
+    margin-top: 0.5rem !important; /* Pequeno espaço entre o menu e a navbar */
+}
+
+/* Estiliza os links dentro do dropdown */
+.dropdown-menu-dark-custom .dropdown-item {
+    color: var(--cinza-claro);
+    padding: 0.6rem 1.2rem; /* Mais espaçamento interno */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Efeito hover nos links do dropdown */
+.dropdown-menu-dark-custom .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--branco);
+}
+
+/* Estiliza a linha divisória */
+.dropdown-menu-dark-custom .dropdown-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
