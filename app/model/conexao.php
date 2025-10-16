@@ -9,11 +9,11 @@ class Conexao
     {
         // --- INÍCIO DA ALTERAÇÃO ---
 
-        $host = 'localhost';     
-        $port = '3306';            
-        $dbname = 'dbLuumina';     
-        $user = 'adm';            
-        $senha = 'Luumina2010@';               
+        $host = '127.0.0.1'; // <-- AQUI ESTÁ A MUDANÇA
+        $port = '3306';
+        $dbname = 'dbLuumina';
+        $user = 'adm';
+        $senha = 'Luumina2010@';
 
         // --- FIM DA ALTERAÇÃO ---
 
