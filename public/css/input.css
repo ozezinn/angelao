@@ -1,4 +1,3 @@
-
 :root {
   /* Paleta de cores */
   --cor-preto: #000;
@@ -6,15 +5,22 @@
   --cor-cinza-claro: #f5f5f5;
   --cor-cinza-medio: #bdbdbd;
   --cor-cinza-escuro: #424242;
-  --cor-link-hover: var(--cor-preto); /* Definindo uma variável específica para a cor de hover do link */
+  --cor-link-hover: var(--cor-preto);
 
   /* Tipografia */
   --fonte-corpo: "Yalta Sans W04 Light", sans-serif;
   --fonte-titulos: 'Poppins', sans-serif;
 }
 
+/* MELHORIA: Reset básico para consistência entre navegadores */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  font-family: var(--fonte-corpo);
+  font-family: var(--fonte-corpo); /* MELHORIA: Adicionado fallback */
   color: var(--cor-preto);
   background-color: var(--cor-cinza-medio);
 }
@@ -39,7 +45,7 @@ body {
 
 .navbar-brand {
   margin-top: 20px;
-  font-family: var(--fonte-titulos);
+  font-family: var(--fonte-titulos), sans-serif; /* MELHORIA: Adicionado fallback */
   font-weight: 700;
 }
 
@@ -51,7 +57,7 @@ body {
 
 .nav-link {
   margin-top: 20px;
-  font-family: var(--fonte-titulos);
+  font-family: var(--fonte-titulos), sans-serif; /* MELHORIA: Adicionado fallback */
   font-weight: 500;
 }
 
@@ -62,21 +68,16 @@ body {
 */
 
 .btn {
-  /* Modelo de caixa e layout */
   padding: 14px 30px;
   margin-top: 15px;
-
-  /* Visual e Cores */
   background-color: var(--cor-cinza-escuro);
   color: var(--cor-preto);
   border: 2px solid #343a39;
   border-radius: 10px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-  transition: all 0.4s ease; /* Use 'all' para uma transição mais suave em várias propriedades */
-
-  /* Tipografia */
+  transition: all 0.4s ease;
   letter-spacing: 2px;
-  font-family: var(--fonte-titulos);
+  font-family: var(--fonte-titulos), sans-serif; /* MELHORIA: Adicionado fallback */
 }
 
 .btn span:last-child {
@@ -87,12 +88,12 @@ body {
   background-color: var(--cor-cinza-medio);
   border-color: var(--cor-preto);
   color: var(--cor-branco);
-  transform: translateY(-2px); /* Adiciona um leve efeito de elevação no hover */
+  transform: translateY(-2px);
 }
 
 .btn:active {
   background-color: var(--cor-cinza-medio);
-  transform: translateY(0); /* Reseta a posição ao clicar */
+  transform: translateY(0);
 }
 
 /*
@@ -102,24 +103,22 @@ body {
 */
 
 .form {
-  margin-top: 100px;
+  margin-top: 100px; /* Reduzido para consistência, ajuste se necessário */
   color: var(--cor-preto);
 }
 
 .form-container {
-  /* Modelo de caixa e layout */
-  width: 320px;
+  max-width: 400px;
+  width: 95%;
   padding: 2rem;
-  margin: 200px auto 0; /* Abreviado para margem: superior, horizontal, inferior */
-
-  /* Visual e Cores */
+  margin: 150px auto;
   background-color: var(--cor-branco);
   border-radius: 0.75rem;
   color: var(--cor-cinza-escuro);
 }
 
 .input-group {
-  margin-top: 0.25rem;
+  margin-top: 1rem;
   font-size: 1rem;
   font-weight: bold;
   line-height: 1.25rem;
@@ -132,7 +131,11 @@ body {
   color: var(--cor-cinza-escuro);
 }
 
-.input-group input {
+/* NOVA REGRA UNIFICADA PARA INPUT E SELECT 
+  Garante que todos os campos tenham a mesma aparência.
+*/
+.input-group input,
+.input-group select {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid #374151;
@@ -140,10 +143,33 @@ body {
   outline: none;
   background-color: var(--cor-branco);
   color: var(--cor-preto);
+  font-family: var(--fonte-corpo), sans-serif;
+  font-size: 1rem; /* Garante o mesmo tamanho de fonte */
+  line-height: 1.25rem; /* Garante a mesma altura de linha */
+  -webkit-appearance: none; /* Remove estilos padrão do iOS */
+  -moz-appearance: none;    /* Remove estilos padrão do Firefox */
+  appearance: none;        /* Remove estilos padrão do navegador */
 }
 
-.input-group input:focus {
+/* Adiciona um ícone de seta para os selects para compensar a remoção do estilo padrão */
+.input-group select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+}
+
+
+/* Regra unificada para o estado de foco */
+.input-group input:focus,
+.input-group select:focus {
   border-color: var(--cor-preto);
+}
+
+/* Estilo para quando o select estiver desabilitado */
+.input-group select:disabled {
+  background-color: var(--cor-cinza-claro);
+  cursor: not-allowed;
 }
 
 .sign {
@@ -155,51 +181,24 @@ body {
   border: none;
   border-radius: 0.375rem;
   font-weight: 600;
-  font-family: var(--fonte-titulos);
+  font-family: var(--fonte-titulos), sans-serif;
   text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-/*
-  ========================================
-  TÍTULOS E TEXTOS
-  ========================================
-*/
+.sign:hover {
+  background-color: #2a2e30;
+}
+
 
 .title {
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 1.5rem auto; /* Ajustado para espaçamento consistente */
   text-align: center;
   font-size: 1.5rem;
   line-height: 2rem;
   font-weight: 700;
-  font-family: var(--fonte-titulos);
-}
-
-.forgot,
-.signup {
-  text-align: center;
-  color: rgba(156, 163, 175, 1);
-}
-
-.forgot {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  margin: 8px 0 14px 0;
-}
-
-.forgot a,
-.signup a {
-  font-size: 14px;
-  color: var(--cor-cinza-medio);
-  text-decoration: none;
-}
-
-.forgot a:hover,
-.signup a:hover {
-  text-decoration: underline;
-  text-decoration-color: var(--cor-link-hover);
+  font-family: var(--fonte-titulos), sans-serif; /* MELHORIA: Adicionado fallback */
 }
 
 /*
@@ -245,4 +244,124 @@ body {
   width: 1.25rem;
   height: 1.25rem;
   fill: var(--cor-branco);
+}
+/* CORREÇÃO: A chave extra foi removida daqui */
+
+/*
+  ========================================
+  ESTILOS PARA CHECKBOXES DE ESPECIALIDADES (VERSÃO CUSTOMIZADA)
+  ========================================
+*/
+
+.checkbox-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Mantendo as 3 colunas */
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+.checkbox-item {
+
+  display: flex;
+  align-items: flex-start;
+  background-color: var(--cor-cinza-claro);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  position: relative; /* Essencial para a técnica funcionar */
+  cursor: pointer; /* O item todo se torna clicável */
+  padding: 8px;
+}
+
+.checkbox-item:hover {
+  background-color: #e0e0e0;
+}
+
+/* 1. Escondemos o checkbox padrão, mas ele ainda funciona */
+.checkbox-item input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* 2. O texto (label) ganha um espaço à esquerda para o nosso checkbox customizado */
+.checkbox-item label {
+  font-weight: normal;
+  color: var(--cor-cinza-escuro);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding-left: 28px; /* Espaço para o nosso "quadradinho" */
+  position: relative;
+}
+
+/* 3. Criamos o "quadradinho" (a caixa do nosso checkbox) */
+.checkbox-item label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+    top: 0.15em;
+  transform: none;
+  width: 20px;
+  height: 20px;
+  background: var(--cor-branco);
+  border: 2px solid var(--cor-cinza-escuro);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+/* 4. Criamos o símbolo de "check" (✓), que começa invisível */
+.checkbox-item label::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 4px;
+  width: 6px;
+  height: 12px;
+  border: solid var(--cor-branco);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg) scale(0); /* Começa com escala 0 (invisível) */
+  transition: transform 0.2s ease;
+}
+
+/* 5. MÁGICA: Quando o input (escondido) é selecionado... */
+.checkbox-item input[type="checkbox"]:checked + label::before {
+  /* ...o nosso "quadradinho" muda de cor */
+  background-color: var(--cor-cinza-escuro);
+  border-color: var(--cor-cinza-escuro);
+}
+
+.checkbox-item input[type="checkbox"]:checked + label::after {
+  /* ...e o nosso "check" (✓) aparece! */
+  transform: rotate(45deg) scale(1);
+}
+
+/*
+  ========================================
+  LINK PARA LOGIN NA PÁGINA DE CADASTRO
+  ========================================
+*/
+
+.signup-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--cor-cinza-escuro);
+}
+
+.signup-link a {
+  color: var(--cor-preto);
+  font-weight: 600;
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
 }
