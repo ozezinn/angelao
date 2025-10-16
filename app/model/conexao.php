@@ -9,12 +9,11 @@ class Conexao
     {
         // --- INÍCIO DA ALTERAÇÃO ---
 
-        // Credenciais do banco de dados local (padrão do XAMPP)
-        $host = getenv('MYSQLHOST');
-        $port = getenv('MYSQLPORT');
-        $dbname = getenv('MYSQLDATABASE');
-        $user = getenv('MYSQLUSER');
-        $senha = getenv('MYSQLPASSWORD');
+        $host = 'localhost';     
+        $port = '3306';            
+        $dbname = 'dbLuumina';     
+        $user = 'adm';            
+        $senha = 'Luumina2010@';               
 
         // --- FIM DA ALTERAÇÃO ---
 
