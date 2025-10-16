@@ -40,7 +40,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/aniversario.jpg" alt="Aniversários">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Aniversários</h5>
+                                <h5 class="category-card-title">Aniversário</h5>
                             </div>
                         </a>
                     </div>
@@ -65,7 +65,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/casamento.jpeg" alt="Casamentos">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Casamentos</h5>
+                                <h5 class="category-card-title">Casamento</h5>
                             </div>
                         </a>
                     </div>
@@ -73,7 +73,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/chas-de-bebe.jpg" alt="Chás de Bebê e Chás Revelação">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Chás de Bebê</h5>
+                                <h5 class="category-card-title">Chá de Bebê</h5>
                             </div>
                         </a>
                     </div>
@@ -89,7 +89,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/ensaio.jpg" alt="Ensaios">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Ensaios</h5>
+                                <h5 class="category-card-title">Ensaio</h5>
                             </div>
                         </a>
                     </div>
@@ -97,7 +97,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/esportes.jpg" alt="Fotografia Esportiva">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Esportes</h5>
+                                <h5 class="category-card-title">Esporte</h5>
                             </div>
                         </a>
                     </div>
@@ -105,7 +105,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/corporativo.jpg" alt="Eventos Corporativos">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Eventos Corporativos</h5>
+                                <h5 class="category-card-title">Evento Corporativo</h5>
                             </div>
                         </a>
                     </div>
@@ -114,7 +114,7 @@
                             <img src="../view/img/categorias/eventos-religiosos.jpg"
                                 alt="Batizados e Eventos Religiosos">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Eventos Religiosos</h5>
+                                <h5 class="category-card-title">Evento Religioso</h5>
                             </div>
                         </a>
                     </div>
@@ -122,7 +122,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/formatura.jpg" alt="Formaturas">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Formaturas</h5>
+                                <h5 class="category-card-title">Formatura</h5>
                             </div>
                         </a>
                     </div>
@@ -162,7 +162,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/produtos.jpg" alt="Fotografia de Produtos">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Produtos</h5>
+                                <h5 class="category-card-title">Produto</h5>
                             </div>
                         </a>
                     </div>
@@ -170,7 +170,7 @@
                         <a href="#" class="category-card">
                             <img src="../view/img/categorias/shows.jpg" alt="Shows e Espetáculos">
                             <div class="category-card-overlay">
-                                <h5 class="category-card-title">Shows</h5>
+                                <h5 class="category-card-title">Show</h5>
                             </div>
                         </a>
                     </div>
