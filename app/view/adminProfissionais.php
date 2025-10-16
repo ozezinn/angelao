@@ -22,6 +22,7 @@ $profissionais = $model->buscarTodosProfissionais();
 </head>
 <body>
     <?php require_once __DIR__ . '/layout/header.php'; ?>
+    
 
     <main class="container py-5">
         <h2>Profissionais Cadastrados</h2>

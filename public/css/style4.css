@@ -372,3 +372,18 @@ body {
     font-weight: 500;
     font-size: 0.9rem;
 }
+/* Em: public/css/style4.css */
+
+.portfolio-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.portfolio-card .card-img-top {
+    height: 250px;
+    object-fit: cover;
+}

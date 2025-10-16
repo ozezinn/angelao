@@ -49,6 +49,40 @@ class UsuarioModel {
         $stmt->bindParam(':cpf', $cpf);
         return $stmt->execute();
     }
+    public function searchProfissionais($term) {
+    // Verifica se o termo de busca está vazio ou contém apenas espaços
+    if (empty(trim($term))) {
+        // SE ESTIVER VAZIO: Busca os 5 profissionais mais recentes
+        $sql = "SELECT u.id_usuario, u.nome, p.foto_perfil, p.localizacao 
+                FROM usuarios u
+                JOIN profissionais p ON u.id_usuario = p.id_usuario
+                WHERE u.tipo_usuario = 'profissional'
+                ORDER BY u.data_cadastro DESC 
+                LIMIT 5";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    } else {
+        // SE NÃO ESTIVER VAZIO: Faz a busca normal com LIKE
+        $sql = "SELECT u.id_usuario, u.nome, p.foto_perfil, p.localizacao 
+                FROM usuarios u
+                JOIN profissionais p ON u.id_usuario = p.id_usuario
+                WHERE u.tipo_usuario = 'profissional' AND u.nome LIKE ?
+                LIMIT 5";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $searchTerm = '%' . $term . '%';
+            $stmt->execute([$searchTerm]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+}
 
     public function validar($nome, $senhaDigitada) {
         $stmt = $this->pdo->prepare("

@@ -39,7 +39,11 @@ switch ($action) {
     case 'areaProfissional':
     $controle->showAreaProfissional();
     break;
-
+    
+    case 'verPerfil':
+        $controle->showPublicProfile();
+        break;
+        
     case 'areaCliente':
         include '../view/areaCliente.php';
         break;
@@ -60,32 +64,28 @@ switch ($action) {
     include '../view/gerenciarClientes.php';
     break;
     case 'editarUsuario':
-        // ...
         break;
 
-    // ======================================================
-    // NOVAS ROTAS ADICIONADAS AQUI
-    // ======================================================
+        case 'searchProfissionais':
+        $controle->searchProfissionais();
+        break;
+
     case 'updateProfile':
-        // Rota que recebe os dados do formulário do modal "Editar Perfil"
         $controle->updateProfile();
         break;
 
     case 'deleteFoto':
-        // Rota para excluir um item do portfólio
         $controle->deletePortfolioItem();
         break;
 
-    // ======================================================
-    // NOVA ROTA PARA O UPLOAD DE FOTOS
-    // ======================================================
     case 'uploadFotoPortfolio':
         $controle->uploadFotoPortfolio();
         break;
-        
+
     case 'excluirConta':
         $controle->excluirMinhaConta();
         break;
+
 
     case 'excluirProfissional':
         $id = $_GET['id'] ?? null;

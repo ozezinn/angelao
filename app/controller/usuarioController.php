@@ -127,6 +127,58 @@ class UsuarioController {
     }
     exit();
 }
+public function showPublicProfile() {
+    // 1. Pega o ID do profissional da URL
+    $id_usuario = $_GET['id'] ?? null;
+
+    // 2. Validação: Se não houver ID ou não for um número, mostra erro.
+    if (!$id_usuario || !filter_var($id_usuario, FILTER_VALIDATE_INT)) {
+        http_response_code(404);
+        echo "Perfil não encontrado.";
+        exit();
+    }
+
+    // 3. Busca todos os dados necessários usando o Model
+    // (Reutilizamos os métodos que já criamos para a área do profissional!)
+    $profissional_data = $this->controle->getProfissionalData($id_usuario);
+
+    // 4. Validação: Se não encontrou um profissional com esse ID, mostra erro.
+    if (!$profissional_data) {
+        http_response_code(404);
+        echo "Perfil de profissional não encontrado.";
+        exit();
+    }
+    
+    // 5. Prepara as variáveis para a View
+    $id_profissional = $profissional_data['id_profissional'];
+    $nome = $profissional_data['nome'] ?? 'Nome não encontrado';
+    $foto_perfil = $profissional_data['foto_perfil'] ?? 'view/img/profile-placeholder.jpg';
+    $biografia = $profissional_data['biografia'] ?? '';
+    $localizacao = $profissional_data['localizacao'] ?? '';
+    
+    // Busca os dados relacionados
+    $especialidades = $this->controle->getProfissionalEspecialidades($id_profissional);
+    $portfolio_imagens = $this->controle->getPortfolioItems($id_profissional);
+
+    // 6. Carrega a view do perfil, que agora terá acesso a todas essas variáveis
+    require_once '../view/perfil.php';
+}
+public function searchProfissionais() {
+    // Pega o termo de busca enviado pelo JavaScript via GET
+    $term = $_GET['term'] ?? '';
+
+    $resultados = [];
+    if (!empty($term)) {
+        $resultados = $this->controle->searchProfissionais($term);
+    }
+
+    // Define o cabeçalho para indicar que a resposta é JSON
+    header('Content-Type: application/json');
+    // Converte o array de resultados para o formato JSON e o imprime na tela
+    echo json_encode($resultados);
+    // Encerra o script para não enviar mais nada
+    exit();
+}
  public function showAreaProfissional() {
         // Garante que apenas um profissional logado possa acessar
         if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {

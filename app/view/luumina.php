@@ -20,15 +20,17 @@
 
     <main>
         <section id="hero" class="d-flex align-items-center justify-content-center text-center">
-            <div class="container">
-                <h1 class="display-5 fw-bold mb-4">O fotógrafo ideal para<br>eternizar seus momentos.</h1>
-                <div class="hero-search-container">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="search" class="form-control form-control-lg hero-search-input"
-                        placeholder="Busque por tipo de evento, cidade ou nome do profissional...">
-                </div>
-            </div>
-        </section>
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-4">O fotógrafo ideal para<br>eternizar seus momentos.</h1>
+        
+        <div class="hero-search-container">
+            <i class="bi bi-search search-icon"></i>
+            <input type="search" class="form-control form-control-lg hero-search-input"
+                   id="searchInput" placeholder="Busque por nome do profissional..."
+                   autocomplete="off"> <div id="searchResults" class="search-results-container"></div>
+        </div>
+        </div>
+</section>
 
         <section id="categories" class="py-5">
             <div class="container">
@@ -190,6 +192,7 @@
     <?php require_once __DIR__ . '/layout/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="ajaxBusca.js"></script>
 </body>
 
 </html>
