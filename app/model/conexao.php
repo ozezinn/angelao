@@ -6,16 +6,22 @@ class Conexao {
 
     public function conectar()
     {
+         // AGORA USANDO OS NOMES DE VARIÁVEIS ORIGINAIS DO RAILWAY
+        $host = get_env_var('MYSQL_HOST');
+        $port = get_env_var('MYSQL_PORT');
+        $dbname = get_env_var('MYSQL_DATABASE');
+        $user = get_env_var('MYSQL_USER');
+        $senha = get_env_var('MYSQL_PASSWORD');
         // --- INÍCIO DA ALTERAÇÃO ---
 
         // Credenciais do banco de dados local (padrão do XAMPP)
-        $host = 'localhost';       // Ou '127.0.0.1'
-        $port = '3306';            // Porta padrão do MySQL
-        $dbname = 'dbLuumina';     // O nome do seu banco de dados
-        $user = 'root';            // Usuário padrão do XAMPP
-        $senha = '';               // Senha padrão do XAMPP é vazia
+       // $host = 'localhost';       // Ou '127.0.0.1'
+       // $port = '3306';            // Porta padrão do MySQL
+        //$dbname = 'dbLuumina';     // O nome do seu banco de dados
+        //$user = 'root';            // Usuário padrão do XAMPP
+        //$senha = '';               // Senha padrão do XAMPP é vazia
 
-        // --- FIM DA ALTERAÇÃO ---
+        // --- FIM DA ALTERAÇÃO --- 
 
         try {         
             $dsn = "mysql:host=" . $host . ";port=" . $port . ";dbname=" . $dbname;
