@@ -7,7 +7,15 @@ class Conexao
 
     public function conectar()
     {
-        // --- INÍCIO DA ALTERAÇÃO ---
+
+       /*CONEXAO LOCAL
+        $host = 'localhost';       // Ou '127.0.0.1'
+        $port = '3306';            // Porta padrão do MySQL
+        $dbname = 'dbLuumina';     // O nome do seu banco de dados
+        $user = 'root';            // Usuário padrão do XAMPP
+        $senha = ''; */
+
+        // CONEXAO AWS
 
         $host = '127.0.0.1'; // <-- AQUI ESTÁ A MUDANÇA
         $port = '3306';
@@ -15,7 +23,6 @@ class Conexao
         $user = 'adm';
         $senha = 'Luumina2010@';
 
-        // --- FIM DA ALTERAÇÃO ---
 
         try {
             $dsn = "mysql:host=" . $host . ";port=" . $port . ";dbname=" . $dbname;
