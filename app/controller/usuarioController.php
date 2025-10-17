@@ -145,14 +145,23 @@ class UsuarioController
 
         require_once '../view/perfil.php';
     }
+    
     public function searchProfissionais()
     {
+        // VERIFICAÇÃO DE SEGURANÇA ADICIONADA AQUI
+        if (!isset($_SESSION['usuario_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode([]); // Retorna um array vazio se não estiver logado
+            exit();
+        }
+
         $term = $_GET['term'] ?? '';
         $resultados = $this->controle->searchProfissionais($term);
         header('Content-Type: application/json');
         echo json_encode($resultados);
         exit();
     }
+
     public function showAreaProfissional()
     {
         if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {

@@ -42,8 +42,13 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
                 <h1 class="display-5 fw-bold mb-4">O fotógrafo ideal para<br>eternizar seus momentos.</h1>
 
                 <div class="hero-search-container">
+                    <?php
+                    // Define o placeholder e o estado do campo de busca com base no login
+                    $searchPlaceholder = $isUserLoggedIn ? "Busque por nome do profissional..." : "Faça login para pesquisar";
+                    $searchDisabled = !$isUserLoggedIn ? "disabled" : "";
+                    ?>
                     <i class="bi bi-search search-icon"></i>
-                    <input type="search" class="form-control form-control-lg hero-search-input" id="searchInput" placeholder="Busque por nome do profissional..." autocomplete="off">
+                    <input type="search" class="form-control form-control-lg hero-search-input" id="searchInput" placeholder="<?= $searchPlaceholder ?>" autocomplete="off" <?= $searchDisabled ?>>
                     <div id="searchResults" class="search-results-container"></div>
                 </div>
             </div>
@@ -93,13 +98,9 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Converte a variável PHP para JavaScript
             const isUserLoggedIn = <?= json_encode($isUserLoggedIn) ?>;
-
-            // Função para criar o alerta
             const showAlert = (message, type) => {
                 const alertPlaceholder = document.getElementById('alert-placeholder');
-                // Limpa alertas anteriores para não acumular
                 alertPlaceholder.innerHTML = '';
                 const wrapper = document.createElement('div');
                 wrapper.innerHTML = [
@@ -109,33 +110,28 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
                     '</div>'
                 ].join('');
                 alertPlaceholder.append(wrapper);
-
-                // Remove o alerta após 5 segundos
                 setTimeout(() => {
                     wrapper.remove();
                 }, 5000);
-            }
+            };
 
-            // Adiciona o evento de clique a todos os cards de categoria
-            const categoryCards = document.querySelectorAll('.category-card');
-            categoryCards.forEach(card => {
+            // Adiciona listener para os cards de categoria
+            document.querySelectorAll('.category-card').forEach(card => {
                 card.addEventListener('click', function(event) {
                     if (!isUserLoggedIn) {
-                        // Previne a navegação se o usuário não estiver logado
                         event.preventDefault();
-                        // Mostra o alerta
                         showAlert('Você precisa estar logado para explorar as especialidades. <a href="login.php" class="alert-link">Fazer login</a>.', 'warning');
                     }
                 });
             });
 
-            // Adiciona evento de clique à barra de pesquisa
+            // Adiciona listener para a barra de pesquisa (caso esteja desabilitada)
             const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('click', function(event){
-                if (!isUserLoggedIn) {
+            if (searchInput.disabled) {
+                searchInput.addEventListener('click', function(event){
                     showAlert('Você precisa estar logado para pesquisar por profissionais. <a href="login.php" class="alert-link">Fazer login</a>.', 'warning');
-                }
-            });
+                });
+            }
         });
     </script>
 
