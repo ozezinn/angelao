@@ -125,10 +125,13 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
                 });
             });
 
-            // Adiciona listener para a barra de pesquisa (caso esteja desabilitada)
+            // Adiciona listener para a barra de pesquisa
             const searchInput = document.getElementById('searchInput');
-            if (searchInput.disabled) {
-                searchInput.addEventListener('click', function(event){
+            if (!isUserLoggedIn) {
+                // Previne o foco no campo de busca e exibe o alerta
+                searchInput.addEventListener('focus', function(event) {
+                    event.preventDefault();
+                    this.blur(); // Remove o foco imediatamente
                     showAlert('Você precisa estar logado para pesquisar por profissionais. <a href="login.php" class="alert-link">Fazer login</a>.', 'warning');
                 });
             }
