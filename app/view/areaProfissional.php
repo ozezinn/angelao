@@ -97,18 +97,5 @@ if (empty(trim($biografia)) || empty(trim($localizacao)) || $foto_perfil === 'vi
 
      <?php require_once __DIR__ . '/layout/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <?php if ($abrirModalPerfil): ?>
-    <script>
-        // Espera o documento estar totalmente carregado para garantir que o Bootstrap JS esteja pronto
-        document.addEventListener('DOMContentLoaded', function() {
-            // Cria uma instância do modal do Bootstrap a partir do seu ID
-            var editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-            
-            // Mostra o modal
-            editProfileModal.show();
-        });
-    </script>
-    <?php endif; ?>
     </body>
 </html>

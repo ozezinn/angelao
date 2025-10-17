@@ -24,7 +24,14 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
 
 <body>
 
-    <?php require_once __DIR__ . '/layout/header.php'; ?>
+    <?php
+    // Decide qual header carregar com base na sessão
+    if ($isUserLoggedIn) {
+        require_once __DIR__ . '/layout/headerLog.php';
+    } else {
+        require_once __DIR__ . '/layout/header.php';
+    }
+    ?>
 
     <main>
         <div id="alert-placeholder" class="container" style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1050; width: 80%;"></div>
@@ -92,6 +99,8 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
             // Função para criar o alerta
             const showAlert = (message, type) => {
                 const alertPlaceholder = document.getElementById('alert-placeholder');
+                // Limpa alertas anteriores para não acumular
+                alertPlaceholder.innerHTML = '';
                 const wrapper = document.createElement('div');
                 wrapper.innerHTML = [
                     `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
@@ -118,6 +127,14 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
                         showAlert('Você precisa estar logado para explorar as especialidades. <a href="login.php" class="alert-link">Fazer login</a>.', 'warning');
                     }
                 });
+            });
+
+            // Adiciona evento de clique à barra de pesquisa
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('click', function(event){
+                if (!isUserLoggedIn) {
+                    showAlert('Você precisa estar logado para pesquisar por profissionais. <a href="login.php" class="alert-link">Fazer login</a>.', 'warning');
+                }
             });
         });
     </script>

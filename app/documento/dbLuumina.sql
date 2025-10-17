@@ -85,7 +85,11 @@ CREATE TABLE solicitacoes_orcamento (
 
 -- 1. Adicionar especialidades ao catálogo
 INSERT INTO especialidades (nome_especialidade) VALUES
-('Casamentos'), ('Ensaios'), ('Eventos Corporativos'), ('Retratos'), ('Produtos'), ('Gastronomia');
+('Aniversários'), ('Arquitetura'), ('Boudoir'), ('Casamentos'), ('Chás de Bebê'),
+('Drone'), ('Ensaios'), ('Esportes'), ('Eventos Corporativos'), ('Eventos Religiosos'),
+('Formaturas'), ('Gastronomia'), ('Institucional'), ('Moda'), ('Pet'),
+('Produtos'), ('Shows'), ('Viagem');
+
 
 -- 2. Adicionar usuários de exemplo
 -- Senha para ambos é 'senha123' (hash gerado para exemplo)

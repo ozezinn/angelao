@@ -103,6 +103,13 @@ $nome = $_SESSION['usuario_nome'];
                     </div>
                 </div>
             </section>
+        <?php elseif (!empty($especialidade_buscada)): ?>
+            <section id="resultados-vazios" class="py-5 bg-light">
+                <div class="container text-center">
+                    <h2 class="section-title mb-4">Nenhum resultado para "<?= htmlspecialchars($especialidade_buscada) ?>"</h2>
+                    <p class="text-muted">Tente navegar por outra especialidade.</p>
+                </div>
+            </section>
         <?php endif; ?>
 
 
