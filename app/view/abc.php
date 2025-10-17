@@ -37,15 +37,21 @@ switch ($action) {
         break;
 
     case 'areaProfissional':
-    $controle->showAreaProfissional();
-    break;
-    
+        $controle->showAreaProfissional();
+        break;
+
     case 'verPerfil':
         $controle->showPublicProfile();
         break;
-        
+
     case 'areaCliente':
-        include '../view/areaCliente.php';
+        // Agora o controller vai cuidar da exibição da areaCliente
+        $controle->showAreaCliente();
+        break;
+
+    // NOVA ROTA ADICIONADA
+    case 'showProfissionaisPorEspecialidade':
+        $controle->showProfissionaisPorEspecialidade();
         break;
 
     case 'alterarSenha':
@@ -61,12 +67,10 @@ switch ($action) {
         break;
 
     case 'gerenciarClientes':
-    include '../view/gerenciarClientes.php';
-    break;
-    case 'editarUsuario':
+        include '../view/gerenciarClientes.php';
         break;
 
-        case 'searchProfissionais':
+    case 'searchProfissionais':
         $controle->searchProfissionais();
         break;
 
@@ -86,7 +90,6 @@ switch ($action) {
         $controle->excluirMinhaConta();
         break;
 
-
     case 'excluirProfissional':
         $id = $_GET['id'] ?? null;
         if ($id) {
@@ -97,23 +100,22 @@ switch ($action) {
         exit();
         break;
 
-   case 'excluirCliente':
-    $id = $_GET['id'] ?? null;
-    if ($id) {
-        require_once '../model/usuarioModel.php';
-        $model = new UsuarioModel();
-        $model->excluirUsuario($id);
-    }
-    header('Location: abc.php?action=gerenciarClientes');
-    exit();
-    break;
-
+    case 'excluirCliente':
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            require_once '../model/usuarioModel.php';
+            $model = new UsuarioModel();
+            $model->excluirUsuario($id);
+        }
+        header('Location: abc.php?action=gerenciarClientes');
+        exit();
+        break;
 
     case 'editarUsuario':
         $id = $_GET['id'] ?? null;
         if ($id) {
             $_SESSION['editar_id'] = $id;
-            header('Location: editarUsuario.php');
+            header('Location: editarUsuario.php'); // Presumo que este arquivo exista
             exit();
         }
         break;
