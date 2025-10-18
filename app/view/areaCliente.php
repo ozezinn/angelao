@@ -121,10 +121,10 @@ $nome = $_SESSION['usuario_nome'];
                 <div class="row g-4">
                     <?php
                     $categorias = [
-                        "Aniversário", "Arquitetura", "Boudoir", "Casamento", "Chá de Bebê",
-                        "Drone", "Ensaio", "Esporte", "Evento Corporativo", "Evento Religioso",
-                        "Formatura", "Gastronomia", "Institucional", "Moda", "Pet",
-                        "Produto", "Show", "Viagem"
+                        "Aniversários", "Arquitetura", "Boudoir", "Casamentos", "Chás de Bebê",
+                        "Drone", "Ensaios", "Esportes", "Eventos Corporativos", "Eventos Religiosos",
+                        "Formaturas", "Gastronomia", "Institucional", "Moda", "Pet",
+                        "Produtos", "Shows", "Viagem"
                     ];
                     $imagens = [
                         "aniversario.jpg", "arquitetura.jpg", "boudoir.jpg", "casamento.jpeg", "chas-de-bebe.jpg",
