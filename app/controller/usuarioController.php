@@ -321,65 +321,68 @@ class UsuarioController
     }
 
     public function updateProfile()
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
-        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {
-            header('Location: abc.php?action=logar');
-            exit();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: abc.php?action=areaProfissional&status=error');
-            exit();
-        }
-
-        $id_usuario = $_SESSION['usuario_id'];
-        $id_profissional = $_SESSION['profissional_id'];
-        $nome = $_POST['nome'];
-        
-        // --- INÍCIO DA CORREÇÃO 1 ---
-        $cidade = $_POST['cidade'] ?? '';
-        $estado = $_POST['estado'] ?? '';
-        $localizacao = '';
-        if ($cidade && $estado) {
-            $localizacao = $cidade . ', ' . $estado;
-        }
-        // --- FIM DA CORREÇÃO 1 ---
-
-        $biografia = $_POST['biografia'];
-        $especialidades = $_POST['especialidades'] ?? [];
-
-        $caminho_foto = null;
-        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
-            // --- INÍCIO DA CORREÇÃO 2 ---
-            $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
-            // --- FIM DA CORREÇÃO 2 ---
-            
-            if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0755, true);
-            }
-            $nome_arquivo = uniqid() . '-' . basename($_FILES['foto_perfil']['name']);
-            $caminho_completo = $upload_dir . $nome_arquivo;
-
-            if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_completo)) {
-                $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo;
-            }
-        }
-
-        $model = new UsuarioModel();
-        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
-
-        if ($sucesso) {
-            $_SESSION['usuario_nome'] = $nome;
-            header('Location: abc.php?action=areaProfissional&status=success');
-        } else {
-            header('Location: abc.php?action=areaProfissional&status=dberror');
-        }
+    if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {
+        header('Location: abc.php?action=logar');
         exit();
     }
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: abc.php?action=areaProfissional&status=error');
+        exit();
+    }
+
+    $id_usuario = $_SESSION['usuario_id'];
+    $id_profissional = $_SESSION['profissional_id'];
+    $nome = $_POST['nome'];
+    
+    // Combina cidade e estado para formar a localização
+    $cidade = $_POST['cidade'] ?? '';
+    $estado = $_POST['estado'] ?? '';
+    $localizacao = '';
+    if ($cidade && $estado) {
+        $localizacao = $cidade . ', ' . $estado;
+    }
+
+    $biografia = $_POST['biografia'];
+    $especialidades = $_POST['especialidades'] ?? [];
+
+    $caminho_foto = null;
+    if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+        
+        // --- CORREÇÃO DEFINITIVA DO CAMINHO DE UPLOAD ---
+        // Este caminho agora aponta corretamente para a pasta 'public' na raiz do projeto
+        $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
+        
+        if (!is_dir($upload_dir)) {
+            // O 'true' no final garante que a estrutura de diretórios seja criada se não existir
+            mkdir($upload_dir, 0775, true); 
+        }
+        
+        $nome_arquivo = uniqid() . '-' . basename($_FILES['foto_perfil']['name']);
+        $caminho_completo = $upload_dir . $nome_arquivo;
+
+        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_completo)) {
+            // O caminho salvo no banco deve ser relativo à raiz do projeto
+            $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo;
+        }
+    }
+
+    $model = new UsuarioModel();
+    $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
+
+    if ($sucesso) {
+        $_SESSION['usuario_nome'] = $nome;
+        header('Location: abc.php?action=areaProfissional&status=success');
+    } else {
+        header('Location: abc.php?action=areaProfissional&status=dberror');
+    }
+    exit();
+}
 
 
     public function uploadFotoPortfolio()

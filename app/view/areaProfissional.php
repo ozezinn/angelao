@@ -26,7 +26,7 @@ if (empty(trim($biografia)) || empty(trim($localizacao)) || $foto_perfil === 'vi
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-3 text-center">
-                            <img src="../<?= htmlspecialchars($foto_perfil) ?>" alt="Foto de Perfil de <?= htmlspecialchars($nome) ?>" class="profile-picture">
+                            <img src="../../<?= htmlspecialchars($foto_perfil) ?>" alt="Foto de Perfil de <?= htmlspecialchars($nome) ?>" class="profile-picture">
                         </div>
                         <div class="col-lg-9">
                             <div class="profile-info">
@@ -62,7 +62,7 @@ if (empty(trim($biografia)) || empty(trim($localizacao)) || $foto_perfil === 'vi
                             <div class="carousel-inner">
                                 <?php foreach ($portfolio_imagens as $index => $imagem) : ?>
                                     <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                        <img src="../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>" class="d-block w-100 portfolio-carousel-img" alt="<?= htmlspecialchars($imagem['titulo']) ?>">
+                                         <img src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>" class="d-block w-100 portfolio-carousel-img" alt="<?= htmlspecialchars($imagem['titulo']) ?>">
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -91,10 +91,7 @@ if (empty(trim($biografia)) || empty(trim($localizacao)) || $foto_perfil === 'vi
         <?php include __DIR__ . '/modals/managePortfolioModal.php'; ?>
         <?php include __DIR__ . '/modals/userActionsModal.php'; ?>
     </main>
-
     
-
-
      <?php require_once __DIR__ . '/layout/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
