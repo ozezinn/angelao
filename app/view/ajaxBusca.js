@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.href = `abc.php?action=verPerfil&id=${prof.id_usuario}`;
                     item.className = 'search-result-item';
                     
-                    const foto = prof.foto_perfil ? `../${prof.foto_perfil}` : '../view/img/profile-placeholder.jpg';
+                    const foto = prof.foto_perfil ? `../../${prof.foto_perfil}` : '../view/img/profile-placeholder.jpg';
                     const local = prof.localizacao ? prof.localizacao : 'Local não informado';
 
                     item.innerHTML = `

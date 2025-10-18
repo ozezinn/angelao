@@ -3,7 +3,8 @@
     --branco: #fff;
     --cinza-claro: #f8f9fa;
     --cinza-escuro: #343a40;
-    --cor-principal: #424242; /* Cor principal para botões */
+    --cor-principal: #424242;
+    /* Cor principal para botões */
 }
 
 body {
@@ -105,7 +106,7 @@ body {
     overflow: hidden;
     text-decoration: none;
     transition: transform 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .category-card:hover {
@@ -125,7 +126,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 20%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 20%, transparent 100%);
     display: flex;
     align-items: flex-end;
     padding: 1rem;
@@ -146,7 +147,7 @@ body {
 
 /* --- ESTILOS PARA PÁGINA "COMO FUNCIONA" --- */
 .page-content {
-    padding-top: 70px; 
+    padding-top: 70px;
 }
 
 .page-header {
@@ -164,7 +165,7 @@ body {
 
 .how-it-works .step-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .our-philosophy .philosophy-list {
@@ -189,7 +190,8 @@ body {
     font-size: 1.25rem;
 }
 
-.legal-page p, .legal-page li {
+.legal-page p,
+.legal-page li {
     line-height: 1.8;
     color: #555;
 }
@@ -214,28 +216,36 @@ body {
 .footer-links a:hover {
     color: var(--preto);
     text-decoration: underline;
-}/* --- ESTILOS PARA O NOVO DROPDOWN DE USUÁRIO --- */
+}
+
+/* --- ESTILOS PARA O NOVO DROPDOWN DE USUÁRIO --- */
 
 /* Ajusta o link principal do dropdown */
 .navbar .dropdown-toggle::after {
     /* Deixa a setinha do dropdown mais sutil */
     color: var(--branco);
-    margin-left: 0.5em; /* Adiciona um espaço antes da seta */
+    margin-left: 0.5em;
+    /* Adiciona um espaço antes da seta */
 }
 
 /* Customiza a aparência do menu suspenso */
 .dropdown-menu-dark-custom {
-    background-color: rgba(30, 30, 30, 0.75); /* Fundo escuro e translúcido */
-    backdrop-filter: blur(10px); /* O mesmo efeito de vidro da navbar */
+    background-color: rgba(30, 30, 30, 0.75);
+    /* Fundo escuro e translúcido */
+    backdrop-filter: blur(10px);
+    /* O mesmo efeito de vidro da navbar */
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem; /* Bordas arredondadas */
-    margin-top: 0.5rem !important; /* Pequeno espaço entre o menu e a navbar */
+    border-radius: 0.5rem;
+    /* Bordas arredondadas */
+    margin-top: 0.5rem !important;
+    /* Pequeno espaço entre o menu e a navbar */
 }
 
 /* Estiliza os links dentro do dropdown */
 .dropdown-menu-dark-custom .dropdown-item {
     color: var(--cinza-claro);
-    padding: 0.6rem 1.2rem; /* Mais espaçamento interno */
+    padding: 0.6rem 1.2rem;
+    /* Mais espaçamento interno */
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -249,16 +259,20 @@ body {
 .dropdown-menu-dark-custom .dropdown-divider {
     border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
+
+/* Em angelao/public/css/style.css */
+
 .search-results-container {
-    display: none; /* Começa escondido */
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
     background-color: white;
     border: 1px solid #ddd;
-    border-radius: 0 0 1rem 1rem;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     max-height: 300px;
     overflow-y: auto;
@@ -273,6 +287,7 @@ body {
     text-decoration: none;
     border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s ease;
+    padding: 0.75rem 1.5rem;
 }
 
 .search-result-item:hover {
