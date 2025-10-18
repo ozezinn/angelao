@@ -148,10 +148,9 @@ class UsuarioController
     
     public function searchProfissionais()
     {
-        // VERIFICAÇÃO DE SEGURANÇA ADICIONADA AQUI
         if (!isset($_SESSION['usuario_id'])) {
             header('Content-Type: application/json');
-            echo json_encode([]); // Retorna um array vazio se não estiver logado
+            echo json_encode([]); 
             exit();
         }
 
@@ -183,6 +182,15 @@ class UsuarioController
         $foto_perfil = $profissional_data['foto_perfil'] ?? 'view/img/profile-placeholder.jpg';
         $biografia = $profissional_data['biografia'] ?? '';
         $localizacao = $profissional_data['localizacao'] ?? '';
+        
+        // Adicionado para dividir a localização em cidade e estado para o modal
+        $cidade_usuario = '';
+        $estado_usuario = '';
+        if ($localizacao) {
+            $partes = explode(',', $localizacao);
+            $cidade_usuario = trim($partes[0]);
+            $estado_usuario = isset($partes[1]) ? trim($partes[1]) : '';
+        }
 
         $especialidades = $this->controle->getProfissionalEspecialidades($id_profissional);
         $portfolio_imagens = $this->controle->getPortfolioItems($id_profissional);
@@ -193,18 +201,13 @@ class UsuarioController
         require_once '../view/areaProfissional.php';
     }
 
-    // NOVA FUNÇÃO ADICIONADA
     public function showAreaCliente()
     {
         $profissionais = [];
         $especialidade_buscada = '';
-        // Se não houver busca, a página carrega normalmente.
-        // As variáveis acima ($profissionais, $especialidade_buscada) estarão disponíveis na view.
         require_once '../view/areaCliente.php';
     }
 
-
-    // NOVA FUNÇÃO ADICIONADA
     public function showProfissionaisPorEspecialidade()
     {
         $especialidade = $_GET['especialidade'] ?? null;
@@ -212,19 +215,16 @@ class UsuarioController
             header('Location: abc.php?action=areaCliente');
             exit();
         }
-        // Usa o novo método do model para buscar os profissionais
         $profissionais = $this->controle->buscarPorEspecialidade($especialidade);
-        $especialidade_buscada = $especialidade; // Para mostrar na view o que foi buscado
+        $especialidade_buscada = $especialidade; 
 
-        // Reutiliza a view da área do cliente, mas agora com os dados da busca
         require_once '../view/areaCliente.php';
     }
-
 
     public function autenticar()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $login = $_POST['nome'] ?? ''; // Pode ser nome ou email
+            $login = $_POST['nome'] ?? ''; 
             $senhaDigitada = $_POST['senha'];
 
             $usuario = $this->controle->validar($login, $senhaDigitada);
@@ -319,6 +319,7 @@ class UsuarioController
         $this->controle->excluirUsuario($idUsuario);
         header('Location: abc.php?action=areaAdmin');
     }
+
     public function updateProfile()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -326,25 +327,37 @@ class UsuarioController
         }
 
         if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {
-            header('Location: ' . BASE_URL . 'abc.php?action=logar');
+            header('Location: abc.php?action=logar');
             exit();
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=error');
+            header('Location: abc.php?action=areaProfissional&status=error');
             exit();
         }
 
         $id_usuario = $_SESSION['usuario_id'];
         $id_profissional = $_SESSION['profissional_id'];
         $nome = $_POST['nome'];
-        $localizacao = $_POST['localizacao'];
+        
+        // --- INÍCIO DA CORREÇÃO 1 ---
+        $cidade = $_POST['cidade'] ?? '';
+        $estado = $_POST['estado'] ?? '';
+        $localizacao = '';
+        if ($cidade && $estado) {
+            $localizacao = $cidade . ', ' . $estado;
+        }
+        // --- FIM DA CORREÇÃO 1 ---
+
         $biografia = $_POST['biografia'];
         $especialidades = $_POST['especialidades'] ?? [];
 
         $caminho_foto = null;
         if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
-            $upload_dir = __DIR__ . '/../public/uploads/profiles/';
+            // --- INÍCIO DA CORREÇÃO 2 ---
+            $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
+            // --- FIM DA CORREÇÃO 2 ---
+            
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0755, true);
             }
@@ -361,17 +374,18 @@ class UsuarioController
 
         if ($sucesso) {
             $_SESSION['usuario_nome'] = $nome;
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=success');
+            header('Location: abc.php?action=areaProfissional&status=success');
         } else {
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=dberror');
+            header('Location: abc.php?action=areaProfissional&status=dberror');
         }
         exit();
     }
 
+
     public function uploadFotoPortfolio()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['profissional_id'])) {
-            header('Location: ' . BASE_URL . 'abc.php?action=logar');
+            header('Location: abc.php?action=logar');
             exit();
         }
 
@@ -382,12 +396,12 @@ class UsuarioController
         $arquivo = $_FILES['arquivo_foto'];
 
         if (empty($titulo)) {
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=missing_title');
+            header('Location: abc.php?action=areaProfissional&status=missing_title');
             exit();
         }
 
         if (isset($arquivo) && $arquivo['error'] === UPLOAD_ERR_OK) {
-            $upload_dir = __DIR__ . '/../public/uploads/portfolio/';
+            $upload_dir = __DIR__ . '/../../public/uploads/portfolio/';
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0775, true);
             }
@@ -396,13 +410,13 @@ class UsuarioController
             $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
             if ($arquivo['size'] > $tamanho_maximo) {
-                header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=file_too_large');
+                header('Location: abc.php?action=areaProfissional&status=file_too_large');
                 exit();
             }
 
             $tipo_real = mime_content_type($arquivo['tmp_name']);
             if (!in_array($tipo_real, $tipos_permitidos)) {
-                header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=invalid_file_type');
+                header('Location: abc.php?action=areaProfissional&status=invalid_file_type');
                 exit();
             }
 
@@ -416,15 +430,15 @@ class UsuarioController
                 $sucesso = $this->controle->addPortfolioItem($id_profissional, $titulo, $descricao, $id_servico, $caminho_db, 'foto');
 
                 if ($sucesso) {
-                    header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=upload_success');
+                    header('Location: abc.php?action=areaProfissional&status=upload_success');
                 } else {
-                    header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=dberror');
+                    header('Location: abc.php?action=areaProfissional&status=dberror');
                 }
             } else {
-                header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=upload_fail');
+                header('Location: abc.php?action=areaProfissional&status=upload_fail');
             }
         } else {
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=file_error');
+            header('Location: abc.php?action=areaProfissional&status=file_error');
         }
         exit();
     }
@@ -459,7 +473,7 @@ class UsuarioController
         }
 
         if (!isset($_SESSION['profissional_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {
-            header('Location: ' . BASE_URL . 'abc.php?action=logar');
+            header('Location: abc.php?action=logar');
             exit();
         }
 
@@ -467,7 +481,7 @@ class UsuarioController
         $id_profissional = $_SESSION['profissional_id'];
 
         if (!$id_item) {
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=invalidid');
+            header('Location: abc.php?action=areaProfissional&status=invalidid');
             exit();
         }
 
@@ -479,9 +493,9 @@ class UsuarioController
             if (file_exists($caminho_completo)) {
                 unlink($caminho_completo);
             }
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=deleted');
+            header('Location: abc.php?action=areaProfissional&status=deleted');
         } else {
-            header('Location: ' . BASE_URL . 'abc.php?action=areaProfissional&status=notfound');
+            header('Location: abc.php?action=areaProfissional&status=notfound');
         }
         exit();
     }
