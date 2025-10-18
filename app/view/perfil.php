@@ -28,7 +28,7 @@
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-lg-3 text-center">
-                            <img src="../<?= htmlspecialchars($foto_perfil) ?>" alt="Foto de Perfil de <?= htmlspecialchars($nome) ?>" class="profile-picture">
+                            <img src="../../<?= htmlspecialchars($foto_perfil) ?>" alt="Foto de Perfil de <?= htmlspecialchars($nome) ?>" class="profile-picture">
                         </div>
                         <div class="col-lg-9">
                             <div class="profile-info">
