@@ -89,6 +89,13 @@ $isUserLoggedIn = isset($_SESSION['usuario_id']);
                 </div>
             </div>
         </section>
+        
+        <?php
+        // Inclui o modal de ações do usuário APENAS se ele estiver logado
+        if ($isUserLoggedIn) {
+            include __DIR__ . '/modals/userActionsModal.php';
+        }
+        ?>
     </main>
 
     <?php require_once __DIR__ . '/layout/footer.php'; ?>

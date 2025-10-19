@@ -15,7 +15,7 @@
     <?php 
     // Decide qual header carregar: o logado ou o deslogado
     if (isset($_SESSION['usuario_id'])) {
-        require_once __DIR__ . '/layout/header.php';
+        require_once __DIR__ . '/layout/headerLog.php';
     } else {
         require_once __DIR__ . '/layout/header.php';
     }
@@ -79,6 +79,13 @@
                  <p class="text-center text-muted">Funcionalidade de orçamento em desenvolvimento.</p>
                  </section>
         </div>
+        
+        <?php
+        // Inclui o modal de ações do usuário APENAS se ele estiver logado
+        if (isset($_SESSION['usuario_id'])) {
+            include __DIR__ . '/modals/userActionsModal.php';
+        }
+        ?>
     </main>
 
     <?php require_once __DIR__ . '/layout/footer.php'; ?>
