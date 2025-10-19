@@ -117,14 +117,14 @@ class UsuarioModel
     }
 
 
-    public function validar($nome, $senhaDigitada)
+    public function validar($email, $senhaDigitada)
     {
         $stmt = $this->pdo->prepare("
             SELECT id_usuario, nome, senha_hash, tipo_usuario
             FROM usuarios
-            WHERE nome = :nome OR email = :nome
+            WHERE email = :email
         ");
-        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':email', $email);
         $stmt->execute();
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 

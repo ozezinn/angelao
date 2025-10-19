@@ -88,8 +88,8 @@ class UsuarioController
             $usuarioExistente = $this->controle->buscarPorEmail($email);
 
             if ($usuarioExistente) {
-                echo "<script>alert('Este e-mail já está em uso. Por favor, utilize outro ou faça login.');
-                  window.history.back();</script>";
+                // ALTERADO: Redireciona com status de erro para a página de login
+                header('Location: ../view/login.php?status=email_exists');
                 exit();
             }
 
@@ -98,18 +98,19 @@ class UsuarioController
             } else if ($tipo === 'admin') {
                 $inserido = $this->controle->inserir($nome, $senha, $email, $tipo, null);
             } else {
-                echo "<script>alert('Tipo de usuário inválido!');
-                  window.location.href='abc.php?action=index';</script>";
+                // Redireciona com erro se o tipo for inválido
+                header('Location: abc.php?action=index&status=invalid_type');
                 exit();
             }
 
             if ($inserido) {
-                echo "<script>alert('Cadastro realizado com sucesso! Realize o login.');
-                  window.location.href='abc.php?action=logar';</script>";
+                // ALTERADO: Redireciona com status de sucesso para a página de login
+                header('Location: ../view/login.php?status=registered');
             } else {
-                echo "<script>alert('Erro ao cadastrar usuário. Verifique os dados e tente novamente.');
-                  window.location.href='abc.php?action=index';</script>";
+                // ALTERADO: Redireciona com status de erro genérico
+                header('Location: abc.php?action=index&status=dberror');
             }
+            exit();
         } else {
             header('Location: abc.php?action=index');
             exit();
@@ -183,7 +184,6 @@ class UsuarioController
         $biografia = $profissional_data['biografia'] ?? '';
         $localizacao = $profissional_data['localizacao'] ?? '';
         
-        // Adicionado para dividir a localização em cidade e estado para o modal
         $cidade_usuario = '';
         $estado_usuario = '';
         if ($localizacao) {
@@ -224,7 +224,8 @@ class UsuarioController
     public function autenticar()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $login = $_POST['nome'] ?? ''; 
+            // ALTERADO: Campo de login agora é o email
+            $login = $_POST['email'] ?? ''; 
             $senhaDigitada = $_POST['senha'];
 
             $usuario = $this->controle->validar($login, $senhaDigitada);
@@ -241,8 +242,7 @@ class UsuarioController
                         $_SESSION['profissional_id'] = $profissional['id_profissional'];
                     } else {
                         session_destroy();
-                        echo "<script>alert('Erro de configuração da conta profissional. Contate o suporte.');
-                          window.location.href='abc.php?action=logar';</script>";
+                        header('Location: ../view/login.php?status=config_error');
                         exit();
                     }
                 }
@@ -256,8 +256,8 @@ class UsuarioController
                 }
                 exit();
             } else {
-                echo "<script>alert('Login ou senha incorretos.');
-                  window.location.href='abc.php?action=logar';</script>";
+                // ALTERADO: Redireciona com status de erro para a página de login
+                header('Location: ../view/login.php?status=login_error');
                 exit();
             }
         } else {
@@ -321,68 +321,63 @@ class UsuarioController
     }
 
     public function updateProfile()
-{
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-    if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {
-        header('Location: abc.php?action=logar');
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'profissional') {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: abc.php?action=areaProfissional&status=error');
+            exit();
+        }
+
+        $id_usuario = $_SESSION['usuario_id'];
+        $id_profissional = $_SESSION['profissional_id'];
+        $nome = $_POST['nome'];
+        
+        $cidade = $_POST['cidade'] ?? '';
+        $estado = $_POST['estado'] ?? '';
+        $localizacao = '';
+        if ($cidade && $estado) {
+            $localizacao = $cidade . ', ' . $estado;
+        }
+
+        $biografia = $_POST['biografia'];
+        $especialidades = $_POST['especialidades'] ?? [];
+
+        $caminho_foto = null;
+        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+            
+            $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
+            
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0775, true); 
+            }
+            
+            $nome_arquivo = uniqid() . '-' . basename($_FILES['foto_perfil']['name']);
+            $caminho_completo = $upload_dir . $nome_arquivo;
+
+            if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_completo)) {
+                $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo;
+            }
+        }
+
+        $model = new UsuarioModel();
+        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
+
+        if ($sucesso) {
+            $_SESSION['usuario_nome'] = $nome;
+            header('Location: abc.php?action=areaProfissional&status=success');
+        } else {
+            header('Location: abc.php?action=areaProfissional&status=dberror');
+        }
         exit();
     }
-
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        header('Location: abc.php?action=areaProfissional&status=error');
-        exit();
-    }
-
-    $id_usuario = $_SESSION['usuario_id'];
-    $id_profissional = $_SESSION['profissional_id'];
-    $nome = $_POST['nome'];
-    
-    // Combina cidade e estado para formar a localização
-    $cidade = $_POST['cidade'] ?? '';
-    $estado = $_POST['estado'] ?? '';
-    $localizacao = '';
-    if ($cidade && $estado) {
-        $localizacao = $cidade . ', ' . $estado;
-    }
-
-    $biografia = $_POST['biografia'];
-    $especialidades = $_POST['especialidades'] ?? [];
-
-    $caminho_foto = null;
-    if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
-        
-        // --- CORREÇÃO DEFINITIVA DO CAMINHO DE UPLOAD ---
-        // Este caminho agora aponta corretamente para a pasta 'public' na raiz do projeto
-        $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
-        
-        if (!is_dir($upload_dir)) {
-            // O 'true' no final garante que a estrutura de diretórios seja criada se não existir
-            mkdir($upload_dir, 0775, true); 
-        }
-        
-        $nome_arquivo = uniqid() . '-' . basename($_FILES['foto_perfil']['name']);
-        $caminho_completo = $upload_dir . $nome_arquivo;
-
-        if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_completo)) {
-            // O caminho salvo no banco deve ser relativo à raiz do projeto
-            $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo;
-        }
-    }
-
-    $model = new UsuarioModel();
-    $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
-
-    if ($sucesso) {
-        $_SESSION['usuario_nome'] = $nome;
-        header('Location: abc.php?action=areaProfissional&status=success');
-    } else {
-        header('Location: abc.php?action=areaProfissional&status=dberror');
-    }
-    exit();
-}
 
 
     public function uploadFotoPortfolio()
