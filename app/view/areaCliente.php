@@ -3,8 +3,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['usuario_nome']) || $_SESSION['usuario_tipo'] !== 'cliente') {
-    echo "<script>alert('Acesso restrito à área do cliente.');
+if (!isset($_SESSION['usuario_id'])) { // Antigo: (!isset($_SESSION['usuario_nome']) || $_SESSION['usuario_tipo'] !== 'cliente')
+    echo "<script>alert('Você precisa estar logado para acessar esta área.');
     window.location.href='abc.php?action=logar';</script>";
     exit();
 }
