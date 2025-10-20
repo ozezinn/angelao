@@ -1,0 +1,125 @@
+
+body {
+    background-color: #f4f7f6;
+    font-family: 'Poppins', sans-serif;
+}
+
+.admin-container {
+    padding-top: 100px; 
+    padding-bottom: 3rem;
+    max-width: 1200px;
+}
+
+.admin-header {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+.admin-header h1 {
+    color: #212529;
+}
+
+/*
+ * Cartões de Estatística
+ */
+.stat-card {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card-body {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+}
+
+.stat-card-icon {
+    font-size: 3rem;
+    margin-right: 1.5rem;
+    opacity: 0.8;
+}
+
+.stat-card-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.stat-card-text {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/*
+ * Conteúdo Principal (Abas e Tabelas)
+ */
+.admin-content {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 0.75rem;
+}
+
+.nav-tabs {
+    border-bottom: none;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    background-color: #fcfcfc;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+.nav-tabs .nav-link {
+    font-weight: 600;
+    color: #6c757d;
+    border: none;
+    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 1rem 1.5rem;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #ffffff;
+    color: #0d6efd;
+    border: 1px solid #e9ecef;
+    border-bottom: 1px solid #ffffff;
+    position: relative;
+    top: 1px;
+}
+
+.tab-content .card {
+    border-radius: 0 0.75rem 0.75rem 0.75rem;
+    border: 1px solid #e9ecef;
+}
+
+.table thead th {
+    vertical-align: middle;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+/* Botões de ação com ícones */
+.btn-sm {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Botões redondos */
+    margin: 0 4px;
+}
+
+.btn-sm i {
+    font-size: 1rem;
+}

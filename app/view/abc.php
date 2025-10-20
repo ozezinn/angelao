@@ -45,11 +45,9 @@ switch ($action) {
         break;
 
     case 'areaCliente':
-        // Agora o controller vai cuidar da exibição da areaCliente
         $controle->showAreaCliente();
         break;
 
-    // NOVA ROTA ADICIONADA
     case 'showProfissionaisPorEspecialidade':
         $controle->showProfissionaisPorEspecialidade();
         break;
@@ -59,15 +57,15 @@ switch ($action) {
         break;
 
     case 'admin':
-        include '../view/admin.php';
+        include '../view/admin.php'; 
         break;
 
     case 'gerenciarProfissionais':
-        include '../view/gerenciarProfissionais.php';
+        include '../view/admin.php';
         break;
 
     case 'gerenciarClientes':
-        include '../view/gerenciarClientes.php';
+        include '../view/admin.php';
         break;
 
     case 'searchProfissionais':
