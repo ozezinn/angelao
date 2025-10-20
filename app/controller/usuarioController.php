@@ -19,7 +19,7 @@ class UsuarioController
     public function index()
     {
         if (isset($_SESSION['usuario_id'])) {
-            $tipo = $_SESSION['usuario_tipo'] ?? 'cliente'; 
+            $tipo = $_SESSION['usuario_tipo'] ?? 'cliente';
             switch ($tipo) {
                 case 'admin':
                     header('Location: abc.php?action=admin');
@@ -32,7 +32,7 @@ class UsuarioController
                     header('Location: abc.php?action=areaCliente');
                     break;
             }
-            exit(); 
+            exit();
         }
         include '../view/cadastrar.php';
         exit();
@@ -213,6 +213,7 @@ class UsuarioController
 
         $todas_especialidades = $this->controle->getAllEspecialidades();
         $todos_servicos = $this->controle->getAllServicos();
+        $solicitacoes = $this->controle->getSolicitacoesPorProfissional($id_profissional);
 
         require_once '../view/areaProfissional.php';
     }
@@ -512,6 +513,33 @@ class UsuarioController
             header('Location: abc.php?action=areaProfissional&status=notfound');
         }
         exit();
+    }
+
+    public function solicitarOrcamento()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id_profissional = $_POST['id_profissional'];
+            $nome_solicitante = $_POST['nome_solicitante'];
+            $email_solicitante = $_POST['email_solicitante'];
+            $telefone_solicitante = $_POST['telefone_solicitante'] ?? null;
+            $tipo_evento = $_POST['tipo_evento'] ?? null;
+            $data_evento = $_POST['data_evento'] ?? null;
+            $mensagem = $_POST['mensagem'];
+            $id_cliente = $_SESSION['usuario_id'] ?? null;
+            $id_usuario_redirect = $_POST['id_usuario'];
+
+            $inserido = $this->controle->inserirSolicitacaoOrcamento($id_profissional, $id_cliente, $nome_solicitante, $email_solicitante, $telefone_solicitante, $tipo_evento, $data_evento, $mensagem);
+
+            if ($inserido) {
+                header('Location: abc.php?action=verPerfil&id=' . $id_usuario_redirect . '&status=orcamento_success');
+            } else {
+                header('Location: abc.php?action=verPerfil&id=' . $id_usuario_redirect . '&status=orcamento_error');
+            }
+            exit();
+        } else {
+            header('Location: abc.php');
+            exit();
+        }
     }
 }
 ?>

@@ -68,6 +68,7 @@ CREATE TABLE portifolio (
 -- Tabela 07: Solicitações de Orçamento
 CREATE TABLE solicitacoes_orcamento (
     id_solicitacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_profissional INT, -- <-- CAMPO ADICIONADO
     id_cliente INT,
     nome_solicitante VARCHAR(255) NOT NULL,
     email_solicitante VARCHAR(255) NOT NULL,
@@ -76,6 +77,7 @@ CREATE TABLE solicitacoes_orcamento (
     data_evento DATE,
     mensagem TEXT,
     status_solicitacao ENUM('novo', 'em andamento', 'concluído') NOT NULL DEFAULT 'novo',
+    FOREIGN KEY (id_profissional) REFERENCES profissionais(id_profissional) ON DELETE CASCADE, -- <-- CHAVE ESTRANGEIRA ADICIONADA
     FOREIGN KEY (id_cliente) REFERENCES usuarios(id_usuario) ON DELETE SET NULL
 ) COMMENT 'Registros de pedidos de orçamento feitos por clientes';
 

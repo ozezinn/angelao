@@ -384,5 +384,32 @@ class UsuarioModel
 
         return false;
     }
+
+    public function getSolicitacoesPorProfissional($id_profissional)
+    {
+        $sql = "SELECT * FROM solicitacoes_orcamento WHERE id_profissional = ? ORDER BY data_evento DESC";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_profissional]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar solicitações: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function inserirSolicitacaoOrcamento($id_profissional, $id_cliente, $nome_solicitante, $email_solicitante, $telefone_solicitante, $tipo_evento, $data_evento, $mensagem)
+    {
+        $sql = "INSERT INTO solicitacoes_orcamento (id_profissional, id_cliente, nome_solicitante, email_solicitante, telefone_solicitante, tipo_evento, data_evento, mensagem) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_profissional, $id_cliente, $nome_solicitante, $email_solicitante, $telefone_solicitante, $tipo_evento, $data_evento, $mensagem]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erro ao inserir solicitação de orçamento: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?>

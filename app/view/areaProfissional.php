@@ -82,8 +82,44 @@ if (empty(trim($biografia)) || empty(trim($localizacao)) || $foto_perfil === 'vi
                 </div>
             </header>
             
-            <section id="painel-profissional" class="row g-4">
-                 </section>
+            <section id="solicitacoes-recebidas" class="mt-5">
+                <h2 class="mb-4">Solicitações de Orçamento Recebidas</h2>
+                <div class="row g-4">
+                    <?php if (!empty($solicitacoes)) : ?>
+                        <?php foreach ($solicitacoes as $solicitacao) : ?>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-header">
+                                        <strong>Evento:</strong> <?= htmlspecialchars($solicitacao['tipo_evento']) ?>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Solicitante:</strong> <?= htmlspecialchars($solicitacao['nome_solicitante']) ?></p>
+                                        <p><strong>Email:</strong> <a href="mailto:<?= htmlspecialchars($solicitacao['email_solicitante']) ?>"><?= htmlspecialchars($solicitacao['email_solicitante']) ?></a></p>
+                                        <?php if (!empty($solicitacao['telefone_solicitante'])) : ?>
+                                            <p><strong>Telefone:</strong> <?= htmlspecialchars($solicitacao['telefone_solicitante']) ?></p>
+                                        <?php endif; ?>
+                                        <?php if (!empty($solicitacao['data_evento'])) : ?>
+                                            <p><strong>Data do Evento:</strong> <?= date('d/m/Y', strtotime($solicitacao['data_evento'])) ?></p>
+                                        <?php endif; ?>
+                                        <hr>
+                                        <p class="card-text">
+                                            <?= nl2br(htmlspecialchars($solicitacao['mensagem'])) ?>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer text-muted text-end">
+                                        Solicitado em: <?= date('d/m/Y', strtotime($solicitacao['data_evento'])) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <div class="col">
+                            <p class="text-center text-muted">Você ainda não recebeu nenhuma solicitação de orçamento.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+
         </div>
 
         <?php include __DIR__ . '/modals/editProfileModal.php'; ?>

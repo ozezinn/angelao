@@ -88,6 +88,10 @@ switch ($action) {
         $controle->excluirMinhaConta();
         break;
 
+    case 'solicitarOrcamento':
+    $controle->solicitarOrcamento();
+    break;
+
     case 'excluirProfissional':
         $id = $_GET['id'] ?? null;
         if ($id) {
