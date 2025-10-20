@@ -1,6 +1,15 @@
-<?php 
-require_once __DIR__ . '/layout/header.php';
-?>
+<?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $isUserLoggedIn = isset($_SESSION['usuario_id']);
+
+    if ($isUserLoggedIn) {
+        require_once __DIR__ . '/layout/headerLog.php';
+    } else {
+        require_once __DIR__ . '/layout/header.php';
+    }
+    ?>
 <link rel="stylesheet" href="../../public/css/style.css">
     <main>
         <section id="hero" class="d-flex align-items-center justify-content-center text-center">
@@ -40,5 +49,5 @@ require_once __DIR__ . '/layout/header.php';
     <h2 class="noticia-titulo"><?php //echo htmlspecialchars($noticia['titulo']); ?></h2>
     <div class="noticia-paragrafo"><?php //echo  ($noticia['texto']); ?></div>
 </div>
-
+<?php include __DIR__ . '/modals/userActionsModal.php'; ?>
 <?php require_once __DIR__ . '/layout/footer.php';?>
