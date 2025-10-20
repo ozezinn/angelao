@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Validação de segurança: Garante que apenas administradores acessem
+// Validação de segurança
 if (!isset($_SESSION['usuario_nome']) || $_SESSION['usuario_tipo'] !== 'admin') {
     echo "<script>alert('Acesso restrito à área do administrador.');
     window.location.href='abc.php?action=logar';</script>";
@@ -15,7 +15,6 @@ $nome_admin = $_SESSION['usuario_nome'];
 require_once '../model/usuarioModel.php';
 $model = new UsuarioModel();
 
-// --- Lógica de Busca ---
 $pesquisa = $_GET['pesquisa'] ?? '';
 $aba_ativa = $_GET['aba'] ?? 'profissionais'; // 'profissionais' ou 'clientes'
 
@@ -51,9 +50,6 @@ $total_clientes = count($clientes);
 </head>
 <body>
 <?php 
-// ======================================================
-// CORREÇÃO PRINCIPAL: Incluindo o header de logado
-// ======================================================
 require_once __DIR__ . '/layout/headerLog.php'; 
 ?>
 
@@ -210,9 +206,7 @@ require_once __DIR__ . '/layout/headerLog.php';
 </main>
 
 <?php 
-// ============================================
-// ADIÇÃO DA LINHA FALTANTE
-// ============================================
+
 include __DIR__ . '/modals/userActionsModal.php'; 
 ?>
 
