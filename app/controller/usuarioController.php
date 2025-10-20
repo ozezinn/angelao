@@ -18,6 +18,22 @@ class UsuarioController
 
     public function index()
     {
+        if (isset($_SESSION['usuario_id'])) {
+            $tipo = $_SESSION['usuario_tipo'] ?? 'cliente'; 
+            switch ($tipo) {
+                case 'admin':
+                    header('Location: abc.php?action=admin');
+                    break;
+                case 'profissional':
+                    header('Location: abc.php?action=areaProfissional');
+                    break;
+                case 'cliente':
+                default:
+                    header('Location: abc.php?action=areaCliente');
+                    break;
+            }
+            exit(); 
+        }
         include '../view/cadastrar.php';
         exit();
     }
@@ -79,11 +95,11 @@ class UsuarioController
     public function cadastrar()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $nome  = $_POST['nome'];
+            $nome = $_POST['nome'];
             $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
             $email = $_POST['email'];
-            $tipo  = $_POST['tipo_usuario'];
-            $cpf   = isset($_POST['cpf']) ? preg_replace('/\D/', '', $_POST['cpf']) : null;
+            $tipo = $_POST['tipo_usuario'];
+            $cpf = isset($_POST['cpf']) ? preg_replace('/\D/', '', $_POST['cpf']) : null;
 
             $usuarioExistente = $this->controle->buscarPorEmail($email);
 
@@ -146,12 +162,12 @@ class UsuarioController
 
         require_once '../view/perfil.php';
     }
-    
+
     public function searchProfissionais()
     {
         if (!isset($_SESSION['usuario_id'])) {
             header('Content-Type: application/json');
-            echo json_encode([]); 
+            echo json_encode([]);
             exit();
         }
 
@@ -183,7 +199,7 @@ class UsuarioController
         $foto_perfil = $profissional_data['foto_perfil'] ?? 'view/img/profile-placeholder.jpg';
         $biografia = $profissional_data['biografia'] ?? '';
         $localizacao = $profissional_data['localizacao'] ?? '';
-        
+
         $cidade_usuario = '';
         $estado_usuario = '';
         if ($localizacao) {
@@ -216,7 +232,7 @@ class UsuarioController
             exit();
         }
         $profissionais = $this->controle->buscarPorEspecialidade($especialidade);
-        $especialidade_buscada = $especialidade; 
+        $especialidade_buscada = $especialidade;
 
         require_once '../view/areaCliente.php';
     }
@@ -225,7 +241,7 @@ class UsuarioController
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // ALTERADO: Campo de login agora é o email
-            $login = $_POST['email'] ?? ''; 
+            $login = $_POST['email'] ?? '';
             $senhaDigitada = $_POST['senha'];
 
             $usuario = $this->controle->validar($login, $senhaDigitada);
@@ -339,7 +355,7 @@ class UsuarioController
         $id_usuario = $_SESSION['usuario_id'];
         $id_profissional = $_SESSION['profissional_id'];
         $nome = $_POST['nome'];
-        
+
         $cidade = $_POST['cidade'] ?? '';
         $estado = $_POST['estado'] ?? '';
         $localizacao = '';
@@ -352,13 +368,13 @@ class UsuarioController
 
         $caminho_foto = null;
         if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
-            
+
             $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
-            
+
             if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0775, true); 
+                mkdir($upload_dir, 0775, true);
             }
-            
+
             $nome_arquivo = uniqid() . '-' . basename($_FILES['foto_perfil']['name']);
             $caminho_completo = $upload_dir . $nome_arquivo;
 
