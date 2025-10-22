@@ -84,6 +84,10 @@ switch ($action) {
         $controle->uploadFotoPortfolio();
         break;
 
+    case 'updatePortfolioItem':     // Novo case
+        $controle->updatePortfolioItem();
+        break;
+        
     case 'excluirConta':
         $controle->excluirMinhaConta();
         break;

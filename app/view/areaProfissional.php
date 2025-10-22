@@ -218,9 +218,84 @@ $total_solicitacoes = count($solicitacoes);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Função para criar e exibir o alerta na tela
+            const addPortfolioModalEl = document.getElementById('addPortfolioModal');
+            const portfolioForm = document.getElementById('portfolioForm');
+            const modalTitleEl = document.getElementById('addPortfolioModalLabel');
+            const itemIdInput = document.getElementById('portfolioItemId');
+            const titleInput = document.getElementById('tituloFoto');
+            const descriptionInput = document.getElementById('descricaoFoto');
+            const serviceSelect = document.getElementById('servicoRelacionado');
+            const fileInputContainer = document.getElementById('arquivoFotoContainer');
+            const fileInput = document.getElementById('arquivoFoto');
+            const submitButton = document.getElementById('portfolioSubmitButton');
+            const managePortfolioModalEl = document.getElementById('managePortfolioModal'); // Referência ao modal de gerenciamento
+
+            // --- Função para configurar o modal para ADICIONAR ---
+            const setupModalForAdd = () => {
+                portfolioForm.action = 'abc.php?action=uploadFotoPortfolio';
+                modalTitleEl.textContent = 'Adicionar Nova Foto ao Portfólio';
+                itemIdInput.value = ''; // Limpa ID do item
+                titleInput.value = '';
+                descriptionInput.value = '';
+                serviceSelect.selectedIndex = 0; // Volta para "Selecione..."
+                fileInputContainer.style.display = 'block'; // Mostra input de arquivo
+                fileInput.required = true; // Torna arquivo obrigatório
+                submitButton.textContent = 'Adicionar Foto';
+                submitButton.classList.remove('btn-success'); // Garante que não fique verde
+                submitButton.classList.add('btn-primary');
+            };
+
+            // --- Função para configurar o modal para EDITAR ---
+            const setupModalForEdit = (itemData) => {
+                portfolioForm.action = 'abc.php?action=updatePortfolioItem';
+                modalTitleEl.textContent = 'Editar Item do Portfólio';
+                itemIdInput.value = itemData.itemId; // Define o ID do item
+                titleInput.value = itemData.itemTitle;
+                descriptionInput.value = itemData.itemDescription;
+                serviceSelect.value = itemData.itemServiceId; // Seleciona a especialidade
+                fileInputContainer.style.display = 'none'; // Esconde input de arquivo
+                fileInput.required = false; // Arquivo não é obrigatório na edição
+                submitButton.textContent = 'Salvar Alterações';
+                submitButton.classList.remove('btn-primary');
+                submitButton.classList.add('btn-success'); // Botão verde para salvar
+            };
+
+            // --- Event Listener para ABRIR modal (seja Adicionar ou Editar) ---
+            addPortfolioModalEl.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; // Botão que acionou o modal
+
+                // Verifica se o botão tem a classe 'edit-portfolio-btn'
+                if (button && button.classList.contains('edit-portfolio-btn')) {
+                    // Modo EDITAR
+                    const itemData = {
+                        itemId: button.getAttribute('data-item-id'),
+                        itemTitle: button.getAttribute('data-item-title'),
+                        itemDescription: button.getAttribute('data-item-description'),
+                        itemServiceId: button.getAttribute('data-item-service-id')
+                    };
+                    setupModalForEdit(itemData);
+                    // Fecha o modal de gerenciamento se estiver aberto
+                    const manageModalInstance = bootstrap.Modal.getInstance(managePortfolioModalEl);
+                    if (manageModalInstance) {
+                        manageModalInstance.hide();
+                    }
+                } else {
+                    // Modo ADICIONAR (acionado pelo botão "Adicionar Foto")
+                    setupModalForAdd();
+                }
+            });
+
+
+            // --- Event Listener para LIMPAR o modal ao FECHAR (opcional, mas bom) ---
+            addPortfolioModalEl.addEventListener('hidden.bs.modal', function () {
+                setupModalForAdd(); // Reseta para o estado de adicionar ao fechar
+            });
+
+
+            // --- Lógica de Alertas (com novos status) ---
             const showAlert = (message, type = 'success') => {
                 const alertPlaceholder = document.getElementById('alert-placeholder');
+                // ... (código da função showAlert permanece o mesmo) ...
                 if (!alertPlaceholder) return;
                 alertPlaceholder.innerHTML = ''; // Limpa alertas anteriores
                 const wrapper = document.createElement('div');
@@ -238,83 +313,46 @@ $total_solicitacoes = count($solicitacoes);
                     '</div>'
                 ].join('');
                 alertPlaceholder.append(wrapper);
-                // Auto-fecha o alerta
                 setTimeout(() => {
                     const alertInstance = bootstrap.Alert.getOrCreateInstance(wrapper.querySelector('.alert'));
                     if (alertInstance) {
                         alertInstance.close();
                     }
-                }, 5000); // Fecha após 5 segundos
+                }, 5000);
             };
 
-            // Verifica os parâmetros da URL para decidir qual alerta mostrar
             const params = new URLSearchParams(window.location.search);
             const status = params.get('status');
-            const errorCode = params.get('code'); // Pega o código de erro, se houver
+            const errorCode = params.get('code');
 
             switch (status) {
                 // --- Alertas de Perfil ---
-                case 'success':
-                    showAlert('Perfil atualizado com sucesso!', 'success');
-                    break;
-                case 'dberror':
-                    showAlert('Ocorreu um erro ao salvar as informações no banco de dados. Tente novamente.', 'danger');
-                    break;
-                case 'profile_too_large':
-                    showAlert('Erro ao atualizar perfil: A foto de perfil excede o limite de 5MB.', 'danger');
-                    break;
-                case 'profile_invalid_type':
-                    showAlert('Erro ao atualizar perfil: Tipo de arquivo da foto é inválido (Permitidos: JPG, PNG, WEBP, GIF).', 'danger');
-                    break;
-                case 'profile_dir_error': // Novo
-                    showAlert('Erro no servidor: Não foi possível salvar a foto de perfil devido a um problema com o diretório de uploads.', 'danger');
-                    break;
-                case 'profile_upload_fail': // Erro genérico ao mover
-                    showAlert('Erro ao salvar a foto de perfil. Verifique o arquivo e tente novamente.', 'danger');
-                    break;
-                case 'profile_upload_error': // Erro específico do PHP
-                    showAlert(`Erro durante o upload da foto de perfil (Código: ${errorCode}). Tente novamente.`, 'danger');
-                    break;
+                case 'success': showAlert('Perfil atualizado com sucesso!', 'success'); break;
+                case 'profile_too_large': showAlert('Erro: A foto de perfil excede o limite de 5MB.', 'danger'); break;
+                case 'profile_invalid_type': showAlert('Erro: Tipo de arquivo da foto é inválido.', 'danger'); break;
+                case 'profile_dir_error': showAlert('Erro no servidor ao salvar foto de perfil (diretório).', 'danger'); break;
+                case 'profile_upload_fail': showAlert('Erro ao salvar a foto de perfil.', 'danger'); break;
+                case 'profile_upload_error': showAlert(`Erro no upload da foto de perfil (Código: ${errorCode}).`, 'danger'); break;
 
-                // --- Alertas de Portfólio ---
-                case 'upload_success':
-                    showAlert('Foto adicionada ao portfólio com sucesso!', 'success');
-                    break;
-                case 'deleted':
-                    showAlert('Foto do portfólio excluída com sucesso.', 'success');
-                    break;
-                case 'missing_title':
-                    showAlert('Erro: O título da foto do portfólio é obrigatório.', 'warning');
-                    break;
-                case 'missing_service': // Novo
-                    showAlert('Erro: Selecione a especialidade relacionada para a foto do portfólio.', 'warning');
-                    break;
-                case 'file_too_large':
-                    showAlert('Erro no upload do portfólio: O arquivo excede o limite de 5MB.', 'danger');
-                    break;
-                case 'invalid_file_type':
-                    showAlert('Erro no upload do portfólio: Tipo de arquivo inválido (Permitidos: JPG, PNG, WEBP, GIF).', 'danger');
-                    break;
-                case 'portfolio_dir_error': // Novo
-                    showAlert('Erro no servidor: Não foi possível salvar a foto do portfólio devido a um problema com o diretório de uploads.', 'danger');
-                    break;
-                case 'upload_fail': // Erro genérico ao mover
-                    showAlert('Ocorreu um erro ao salvar a imagem do portfólio. Tente novamente.', 'danger');
-                    break;
-                case 'file_error': // Erro específico do PHP
-                    showAlert(`Erro durante o upload da imagem do portfólio (Código: ${errorCode}). Verifique o arquivo e tente novamente.`, 'danger');
-                    break;
-                case 'notfound':
-                    showAlert('Erro: Item do portfólio não encontrado para exclusão.', 'danger');
-                    break;
-                case 'invalidid':
-                    showAlert('Erro: ID inválido para exclusão do item do portfólio.', 'danger');
-                    break;
+                // --- Alertas de Portfólio (Adicionar, Excluir, Editar) ---
+                case 'upload_success': showAlert('Foto adicionada ao portfólio!', 'success'); break;
+                case 'deleted': showAlert('Foto do portfólio excluída.', 'success'); break;
+                case 'update_success': showAlert('Item do portfólio atualizado com sucesso!', 'success'); break; // Novo status Edição OK
+                case 'update_error': showAlert('Erro ao atualizar item do portfólio.', 'danger'); break;      // Novo status Edição Erro
+                case 'missing_title': showAlert('Erro: Título da foto é obrigatório.', 'warning'); break;
+                case 'missing_service': showAlert('Erro: Selecione a especialidade relacionada.', 'warning'); break;
+                case 'file_too_large': showAlert('Erro: Arquivo do portfólio excede 5MB.', 'danger'); break;
+                case 'invalid_file_type': showAlert('Erro: Tipo de arquivo inválido para portfólio.', 'danger'); break;
+                case 'portfolio_dir_error': showAlert('Erro no servidor ao salvar foto do portfólio (diretório).', 'danger'); break;
+                case 'upload_fail': showAlert('Erro ao salvar imagem do portfólio.', 'danger'); break;
+                case 'file_error': showAlert(`Erro no upload do portfólio (Código: ${errorCode}).`, 'danger'); break;
+                case 'notfound': showAlert('Erro: Item do portfólio não encontrado.', 'danger'); break;
+                case 'invalidid': showAlert('Erro: ID inválido para item do portfólio.', 'danger'); break;
+                case 'dberror': showAlert('Ocorreu um erro no banco de dados. Tente novamente.', 'danger'); break; // Erro genérico DB
             }
 
-            // Lógica para abrir modal de perfil se estiver incompleto
+            // --- Lógica para abrir modal de perfil incompleto ---
             <?php if ($abrirModalPerfil): ?>
-                // Atraso pequeno para garantir que a página carregou
                 setTimeout(() => {
                     showAlert('Complete seu perfil para começar! Adicione uma foto, biografia e localização.', 'warning');
                     var editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));

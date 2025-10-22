@@ -395,7 +395,7 @@ class UsuarioController
             // 3. Verificar/Criar Diretório e Permissões
             if (!is_dir($upload_dir)) {
                 // Tenta criar o diretório recursivamente
-                if (!mkdir($upload_dir, 0775, true)) { 
+                if (!mkdir($upload_dir, 0775, true)) {
                     // Se falhar ao criar, erro de diretório
                     header('Location: abc.php?action=areaProfissional&status=profile_dir_error');
                     exit();
@@ -413,7 +413,7 @@ class UsuarioController
 
             if (move_uploaded_file($arquivo['tmp_name'], $caminho_completo)) {
                 // Sucesso! Define o caminho que será salvo no banco
-                $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo; 
+                $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo;
             } else {
                 // Falha ao mover o arquivo (pode ser permissão, disco cheio, etc.)
                 header('Location: abc.php?action=areaProfissional&status=profile_upload_fail');
@@ -429,7 +429,7 @@ class UsuarioController
         // Atualiza o banco de dados (somente se $caminho_foto for definido ou se não houve tentativa de upload)
         $model = new UsuarioModel();
         // A função updateProfissional precisa saber lidar com $caminho_foto sendo null (não atualizar o campo)
-        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades); 
+        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
 
         if ($sucesso) {
             $_SESSION['usuario_nome'] = $nome; // Atualiza o nome na sessão caso tenha mudado
@@ -465,10 +465,10 @@ class UsuarioController
             exit();
         }
         if (!isset($arquivo) || $arquivo['error'] !== UPLOAD_ERR_OK) {
-             // Adiciona tratamento para erros de upload mais genéricos
-             $errorCode = $arquivo['error'] ?? 'unknown';
-             header('Location: abc.php?action=areaProfissional&status=file_error&code=' . $errorCode);
-             exit();
+            // Adiciona tratamento para erros de upload mais genéricos
+            $errorCode = $arquivo['error'] ?? 'unknown';
+            header('Location: abc.php?action=areaProfissional&status=file_error&code=' . $errorCode);
+            exit();
         }
 
         // --- Processamento do Upload ---
@@ -516,7 +516,7 @@ class UsuarioController
             } else {
                 // Se falhou no banco, tenta remover o arquivo que foi salvo
                 if (file_exists($caminho_completo)) {
-                    unlink($caminho_completo); 
+                    unlink($caminho_completo);
                 }
                 header('Location: abc.php?action=areaProfissional&status=dberror');
             }
@@ -576,15 +576,52 @@ class UsuarioController
 
         if ($caminho_arquivo) {
             // Importante: Construir o caminho absoluto corretamente a partir da raiz do projeto
-            $caminho_completo = realpath(__DIR__ . '/../../' . $caminho_arquivo); 
-            
+            $caminho_completo = realpath(__DIR__ . '/../../' . $caminho_arquivo);
+
             if ($caminho_completo && file_exists($caminho_completo)) {
                 unlink($caminho_completo); // Tenta deletar o arquivo físico
             }
             header('Location: abc.php?action=areaProfissional&status=deleted');
         } else {
-             // Pode ser que o item não exista ou não pertença ao profissional
+            // Pode ser que o item não exista ou não pertença ao profissional
             header('Location: abc.php?action=areaProfissional&status=notfound');
+        }
+        exit();
+    }
+
+    public function updatePortfolioItem()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Verifica se é profissional e se o método é POST
+        if (!isset($_SESSION['profissional_id']) || $_SESSION['usuario_tipo'] !== 'profissional' || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+
+        // Pega os dados do formulário
+        $id_item = filter_input(INPUT_POST, 'id_item', FILTER_VALIDATE_INT);
+        $id_profissional = $_SESSION['profissional_id']; // Pega da sessão por segurança
+        $titulo = trim(filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS));
+        $descricao = trim(filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_SPECIAL_CHARS)) ?? '';
+        $id_servico = filter_input(INPUT_POST, 'id_servico', FILTER_VALIDATE_INT);
+
+        // Validação básica
+        if (!$id_item || !$titulo || !$id_servico) {
+            header('Location: abc.php?action=areaProfissional&status=update_error'); // Erro genérico
+            exit();
+        }
+
+        // Chama o Model para atualizar
+        $model = new UsuarioModel();
+        $sucesso = $model->updatePortfolioItem($id_item, $id_profissional, $titulo, $descricao, $id_servico);
+
+        if ($sucesso) {
+            header('Location: abc.php?action=areaProfissional&status=update_success');
+        } else {
+            header('Location: abc.php?action=areaProfissional&status=update_error');
         }
         exit();
     }
@@ -612,25 +649,25 @@ class UsuarioController
 
             // Validar data se foi fornecida
             if ($data_evento) {
-                 $dataObj = DateTime::createFromFormat('Y-m-d', $data_evento);
-                 if (!$dataObj || $dataObj->format('Y-m-d') !== $data_evento || $dataObj < new DateTime('today')) {
+                $dataObj = DateTime::createFromFormat('Y-m-d', $data_evento);
+                if (!$dataObj || $dataObj->format('Y-m-d') !== $data_evento || $dataObj < new DateTime('today')) {
                     // Data inválida ou no passado
                     header('Location: abc.php?action=verPerfil&id=' . $id_usuario_redirect . '&status=orcamento_invalid_date');
                     exit();
-                 }
+                }
             } else {
                 $data_evento = null; // Garante que seja null se não for fornecida ou inválida
             }
 
 
             $inserido = $this->controle->inserirSolicitacaoOrcamento(
-                $id_profissional, 
-                $id_cliente, 
-                $nome_solicitante, 
-                $email_solicitante, 
-                $telefone_solicitante, 
-                $tipo_evento, 
-                $data_evento, 
+                $id_profissional,
+                $id_cliente,
+                $nome_solicitante,
+                $email_solicitante,
+                $telefone_solicitante,
+                $tipo_evento,
+                $data_evento,
                 $mensagem
             );
 
@@ -642,7 +679,7 @@ class UsuarioController
             exit();
         } else {
             // Se não for POST, redireciona para a página inicial ou outra apropriada
-            header('Location: abc.php'); 
+            header('Location: abc.php');
             exit();
         }
     }

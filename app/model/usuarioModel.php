@@ -116,6 +116,22 @@ class UsuarioModel
         }
     }
 
+    public function updatePortfolioItem($id_item, $id_profissional, $titulo, $descricao, $id_servico)
+    {
+        $sql = "UPDATE portifolio 
+                SET titulo = ?, descricao = ?, id_servico = ? 
+                WHERE id_item = ? AND id_profissional = ?"; // Garante que só edite itens do próprio profissional
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            // Executa a query com os parâmetros na ordem correta
+            $stmt->execute([$titulo, $descricao, $id_servico, $id_item, $id_profissional]);
+            // Verifica se alguma linha foi afetada (indica sucesso)
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Erro ao atualizar item do portfólio: " . $e->getMessage());
+            return false;
+        }
+    }
 
    public function validar($email, $senhaDigitada)
     {
