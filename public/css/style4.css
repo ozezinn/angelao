@@ -309,6 +309,14 @@ body {
     line-height: 1.6;
 }
 
+/* NOVO: Estilo para a bio completa no card "Sobre Mim" */
+.profile-bio-full {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.7;
+}
+
+
 .profile-specialties .badge {
     font-size: 0.8rem;
     padding: 0.4em 0.8em;
@@ -424,10 +432,21 @@ body {
 
 /* ========================================= */
 /* ESTILOS PARA O GRID DE PORTFÓLIO          */
-/* (Já existia, apenas confirmando)          */
+/* (ATUALIZADO para Lightbox)                */
 /* ========================================= */
+
+/* NOVO: Remove o sublinhado do link que envolve o card */
+.portfolio-card-link {
+    text-decoration: none;
+    display: block; /* Garante que o link preencha o espaço */
+}
+
 .portfolio-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Garante que a imagem não saia do card */
+    position: relative; /* Necessário para o overlay */
+    border: none; /* Remove a borda padrão do card */
+    border-radius: 0.5rem;
 }
 
 .portfolio-card:hover {
@@ -438,7 +457,43 @@ body {
 .portfolio-card .card-img-top {
     height: 250px;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
+
+.portfolio-card:hover .card-img-top {
+    transform: scale(1.05); /* Efeito de zoom sutil na imagem */
+}
+
+/* NOVO: Overlay para o título, similar ao da home */
+.portfolio-card .card-body-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 20%, transparent 100%);
+    padding: 1.5rem 1rem 0.5rem 1rem;
+    transition: var(--transicao-padrao);
+}
+
+.portfolio-card .card-title-overlay {
+    color: var(--cor-branco);
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+    /* Oculta o título e mostra no hover (opcional) */
+    /* opacity: 0; */ 
+    transform: translateY(10px);
+    transition: var(--transicao-padrao);
+}
+
+.portfolio-card:hover .card-title-overlay {
+    /* opacity: 1; */
+    transform: translateY(0);
+}
+
+/* REMOVIDO: O .card-body antigo não é mais necessário */
+/* .portfolio-card .card-body { ... } */
+
 
 /* ========================================= */
 /* NOVO: ESTILOS PARA CARDS DE SOLICITAÇÃO   */
