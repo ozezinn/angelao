@@ -16,6 +16,7 @@ class UsuarioController
         }
     }
 
+    // ... (outras funções como index, logar, logout, etc. permanecem iguais) ...
     public function index()
     {
         if (isset($_SESSION['usuario_id'])) {
@@ -368,58 +369,77 @@ class UsuarioController
         $biografia = $_POST['biografia'];
         $especialidades = $_POST['especialidades'] ?? [];
 
-        $caminho_foto = null;
-        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
-            
-            // --- INÍCIO DA VALIDAÇÃO ---
-            $arquivo = $_FILES['foto_perfil'];
-            $tamanho_maximo = 5 * 1024 * 1024; // 5MB
-            $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $caminho_foto = null; // Assume que não haverá nova foto por padrão
 
+        // Verifica se um arquivo foi enviado E se não houve erro no upload
+        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+
+            $arquivo = $_FILES['foto_perfil'];
+            $tamanho_maximo = 5 * 1024 * 1024; // 5MB em bytes
+            $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $upload_dir = __DIR__ . '/../../public/uploads/profiles/'; // Diretório de destino
+
+            // 1. Validação de Tamanho
             if ($arquivo['size'] > $tamanho_maximo) {
                 header('Location: abc.php?action=areaProfissional&status=profile_too_large');
                 exit();
             }
 
+            // 2. Validação de Tipo (MIME Type)
             $tipo_real = mime_content_type($arquivo['tmp_name']);
             if (!in_array($tipo_real, $tipos_permitidos)) {
                 header('Location: abc.php?action=areaProfissional&status=profile_invalid_type');
                 exit();
             }
-            // --- FIM DA VALIDAÇÃO ---
 
-            $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
-
+            // 3. Verificar/Criar Diretório e Permissões
             if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0775, true);
+                // Tenta criar o diretório recursivamente
+                if (!mkdir($upload_dir, 0775, true)) { 
+                    // Se falhar ao criar, erro de diretório
+                    header('Location: abc.php?action=areaProfissional&status=profile_dir_error');
+                    exit();
+                }
+            } elseif (!is_writable($upload_dir)) {
+                // Se o diretório existe mas não temos permissão de escrita
+                header('Location: abc.php?action=areaProfissional&status=profile_dir_error');
+                exit();
             }
 
-            // Usar $arquivo (que é $_FILES['foto_perfil'])
+            // 4. Mover o Arquivo
             $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
-            $nome_arquivo = uniqid('profile_', true) . '.' . $extensao; 
+            $nome_arquivo = uniqid('profile_', true) . '.' . $extensao; // Nome único
             $caminho_completo = $upload_dir . $nome_arquivo;
 
             if (move_uploaded_file($arquivo['tmp_name'], $caminho_completo)) {
-                $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo;
+                // Sucesso! Define o caminho que será salvo no banco
+                $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo; 
             } else {
-                // Adiciona um fallback caso o move_uploaded_file falhe
+                // Falha ao mover o arquivo (pode ser permissão, disco cheio, etc.)
                 header('Location: abc.php?action=areaProfissional&status=profile_upload_fail');
                 exit();
             }
+        } elseif (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] !== UPLOAD_ERR_NO_FILE) {
+            // Se um arquivo foi enviado mas teve algum erro (diferente de "nenhum arquivo")
+            header('Location: abc.php?action=areaProfissional&status=profile_upload_error&code=' . $_FILES['foto_perfil']['error']);
+            exit();
         }
+        // Se nenhum arquivo foi enviado (UPLOAD_ERR_NO_FILE), $caminho_foto continua null e o processo segue
 
-
+        // Atualiza o banco de dados (somente se $caminho_foto for definido ou se não houve tentativa de upload)
         $model = new UsuarioModel();
-        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
+        // A função updateProfissional precisa saber lidar com $caminho_foto sendo null (não atualizar o campo)
+        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades); 
 
         if ($sucesso) {
-            $_SESSION['usuario_nome'] = $nome;
+            $_SESSION['usuario_nome'] = $nome; // Atualiza o nome na sessão caso tenha mudado
             header('Location: abc.php?action=areaProfissional&status=success');
         } else {
             header('Location: abc.php?action=areaProfissional&status=dberror');
         }
         exit();
     }
+
 
 
     public function uploadFotoPortfolio()
@@ -432,56 +452,81 @@ class UsuarioController
         $id_profissional = $_SESSION['profissional_id'];
         $titulo = trim($_POST['titulo']);
         $descricao = trim($_POST['descricao']) ?? '';
-        $id_servico = $_POST['id_servico'] ?? null;
+        $id_servico = $_POST['id_servico'] ?? null; // Verifique se selecionou especialidade
         $arquivo = $_FILES['arquivo_foto'];
 
+        // Validação básica dos campos
         if (empty($titulo)) {
             header('Location: abc.php?action=areaProfissional&status=missing_title');
             exit();
         }
+        if (empty($id_servico)) {
+            header('Location: abc.php?action=areaProfissional&status=missing_service'); // Novo status
+            exit();
+        }
+        if (!isset($arquivo) || $arquivo['error'] !== UPLOAD_ERR_OK) {
+             // Adiciona tratamento para erros de upload mais genéricos
+             $errorCode = $arquivo['error'] ?? 'unknown';
+             header('Location: abc.php?action=areaProfissional&status=file_error&code=' . $errorCode);
+             exit();
+        }
 
-        if (isset($arquivo) && $arquivo['error'] === UPLOAD_ERR_OK) {
-            $upload_dir = __DIR__ . '/../../public/uploads/portfolio/';
-            if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0775, true);
-            }
+        // --- Processamento do Upload ---
+        $upload_dir = __DIR__ . '/../../public/uploads/portfolio/';
+        $tamanho_maximo = 5 * 1024 * 1024; // 5MB
+        $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
-            $tamanho_maximo = 5 * 1024 * 1024;
-            $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        // 1. Validação de Tamanho
+        if ($arquivo['size'] > $tamanho_maximo) {
+            header('Location: abc.php?action=areaProfissional&status=file_too_large');
+            exit();
+        }
 
-            if ($arquivo['size'] > $tamanho_maximo) {
-                header('Location: abc.php?action=areaProfissional&status=file_too_large');
+        // 2. Validação de Tipo
+        $tipo_real = mime_content_type($arquivo['tmp_name']);
+        if (!in_array($tipo_real, $tipos_permitidos)) {
+            header('Location: abc.php?action=areaProfissional&status=invalid_file_type');
+            exit();
+        }
+
+        // 3. Verificar/Criar Diretório e Permissões
+        if (!is_dir($upload_dir)) {
+            if (!mkdir($upload_dir, 0775, true)) {
+                header('Location: abc.php?action=areaProfissional&status=portfolio_dir_error'); // Novo status
                 exit();
             }
+        } elseif (!is_writable($upload_dir)) {
+            header('Location: abc.php?action=areaProfissional&status=portfolio_dir_error'); // Novo status
+            exit();
+        }
 
-            $tipo_real = mime_content_type($arquivo['tmp_name']);
-            if (!in_array($tipo_real, $tipos_permitidos)) {
-                header('Location: abc.php?action=areaProfissional&status=invalid_file_type');
-                exit();
-            }
+        // 4. Mover o Arquivo
+        $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
+        $nome_arquivo_novo = uniqid('portfolio_', true) . '.' . $extensao;
+        $caminho_completo = $upload_dir . $nome_arquivo_novo;
 
-            $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
-            $nome_arquivo_novo = uniqid('portfolio_', true) . '.' . $extensao;
-            $caminho_completo = $upload_dir . $nome_arquivo_novo;
+        if (move_uploaded_file($arquivo['tmp_name'], $caminho_completo)) {
+            $caminho_db = 'public/uploads/portfolio/' . $nome_arquivo_novo;
 
-            if (move_uploaded_file($arquivo['tmp_name'], $caminho_completo)) {
-                $caminho_db = 'public/uploads/portfolio/' . $nome_arquivo_novo;
+            // Inserir no banco de dados
+            $sucesso = $this->controle->addPortfolioItem($id_profissional, $titulo, $descricao, $id_servico, $caminho_db, 'foto');
 
-                $sucesso = $this->controle->addPortfolioItem($id_profissional, $titulo, $descricao, $id_servico, $caminho_db, 'foto');
-
-                if ($sucesso) {
-                    header('Location: abc.php?action=areaProfissional&status=upload_success');
-                } else {
-                    header('Location: abc.php?action=areaProfissional&status=dberror');
-                }
+            if ($sucesso) {
+                header('Location: abc.php?action=areaProfissional&status=upload_success');
             } else {
-                header('Location: abc.php?action=areaProfissional&status=upload_fail');
+                // Se falhou no banco, tenta remover o arquivo que foi salvo
+                if (file_exists($caminho_completo)) {
+                    unlink($caminho_completo); 
+                }
+                header('Location: abc.php?action=areaProfissional&status=dberror');
             }
         } else {
-            header('Location: abc.php?action=areaProfissional&status=file_error');
+            header('Location: abc.php?action=areaProfissional&status=upload_fail');
         }
         exit();
     }
+
+
     public function excluirMinhaConta()
     {
         if (!isset($_SESSION['usuario_id'])) {
@@ -520,40 +565,74 @@ class UsuarioController
         $id_item = $_GET['id'] ?? null;
         $id_profissional = $_SESSION['profissional_id'];
 
-        if (!$id_item) {
+        if (!$id_item || !filter_var($id_item, FILTER_VALIDATE_INT)) { // Adicionado validação
             header('Location: abc.php?action=areaProfissional&status=invalidid');
             exit();
         }
+
 
         $model = new UsuarioModel();
         $caminho_arquivo = $model->deletePortfolioItem($id_item, $id_profissional);
 
         if ($caminho_arquivo) {
-            $caminho_completo = __DIR__ . '/../' . $caminho_arquivo;
-            if (file_exists($caminho_completo)) {
-                unlink($caminho_completo);
+            // Importante: Construir o caminho absoluto corretamente a partir da raiz do projeto
+            $caminho_completo = realpath(__DIR__ . '/../../' . $caminho_arquivo); 
+            
+            if ($caminho_completo && file_exists($caminho_completo)) {
+                unlink($caminho_completo); // Tenta deletar o arquivo físico
             }
             header('Location: abc.php?action=areaProfissional&status=deleted');
         } else {
+             // Pode ser que o item não exista ou não pertença ao profissional
             header('Location: abc.php?action=areaProfissional&status=notfound');
         }
         exit();
     }
 
+
     public function solicitarOrcamento()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $id_profissional = $_POST['id_profissional'];
-            $nome_solicitante = $_POST['nome_solicitante'];
-            $email_solicitante = $_POST['email_solicitante'];
-            $telefone_solicitante = $_POST['telefone_solicitante'] ?? null;
-            $tipo_evento = $_POST['tipo_evento'] ?? null;
-            $data_evento = $_POST['data_evento'] ?? null;
-            $mensagem = $_POST['mensagem'];
-            $id_cliente = $_SESSION['usuario_id'] ?? null;
-            $id_usuario_redirect = $_POST['id_usuario'];
+            $id_profissional = filter_input(INPUT_POST, 'id_profissional', FILTER_VALIDATE_INT);
+            $nome_solicitante = filter_input(INPUT_POST, 'nome_solicitante', FILTER_SANITIZE_SPECIAL_CHARS);
+            $email_solicitante = filter_input(INPUT_POST, 'email_solicitante', FILTER_VALIDATE_EMAIL);
+            $telefone_solicitante = filter_input(INPUT_POST, 'telefone_solicitante', FILTER_SANITIZE_SPECIAL_CHARS); // Ajustar validação se necessário
+            $tipo_evento = filter_input(INPUT_POST, 'tipo_evento', FILTER_SANITIZE_SPECIAL_CHARS);
+            $data_evento = filter_input(INPUT_POST, 'data_evento'); // Validar formato de data se necessário
+            $mensagem = filter_input(INPUT_POST, 'mensagem', FILTER_SANITIZE_SPECIAL_CHARS);
+            $id_cliente = $_SESSION['usuario_id'] ?? null; // Já é um INT da sessão ou null
+            $id_usuario_redirect = filter_input(INPUT_POST, 'id_usuario', FILTER_VALIDATE_INT); // ID do perfil visitado
 
-            $inserido = $this->controle->inserirSolicitacaoOrcamento($id_profissional, $id_cliente, $nome_solicitante, $email_solicitante, $telefone_solicitante, $tipo_evento, $data_evento, $mensagem);
+            // Verificações básicas
+            if (!$id_profissional || !$nome_solicitante || !$email_solicitante || !$mensagem || !$id_usuario_redirect || !$tipo_evento) {
+                // Redireciona de volta para o perfil com um erro genérico de dados faltando
+                header('Location: abc.php?action=verPerfil&id=' . ($id_usuario_redirect ?? '') . '&status=orcamento_missing_data');
+                exit();
+            }
+
+            // Validar data se foi fornecida
+            if ($data_evento) {
+                 $dataObj = DateTime::createFromFormat('Y-m-d', $data_evento);
+                 if (!$dataObj || $dataObj->format('Y-m-d') !== $data_evento || $dataObj < new DateTime('today')) {
+                    // Data inválida ou no passado
+                    header('Location: abc.php?action=verPerfil&id=' . $id_usuario_redirect . '&status=orcamento_invalid_date');
+                    exit();
+                 }
+            } else {
+                $data_evento = null; // Garante que seja null se não for fornecida ou inválida
+            }
+
+
+            $inserido = $this->controle->inserirSolicitacaoOrcamento(
+                $id_profissional, 
+                $id_cliente, 
+                $nome_solicitante, 
+                $email_solicitante, 
+                $telefone_solicitante, 
+                $tipo_evento, 
+                $data_evento, 
+                $mensagem
+            );
 
             if ($inserido) {
                 header('Location: abc.php?action=verPerfil&id=' . $id_usuario_redirect . '&status=orcamento_success');
@@ -562,9 +641,11 @@ class UsuarioController
             }
             exit();
         } else {
-            header('Location: abc.php');
+            // Se não for POST, redireciona para a página inicial ou outra apropriada
+            header('Location: abc.php'); 
             exit();
         }
     }
+
 }
 ?>
