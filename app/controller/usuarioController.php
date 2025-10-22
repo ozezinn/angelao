@@ -241,7 +241,7 @@ class UsuarioController
     public function autenticar()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // ALTERADO: Campo de login agora é o email
+            // ... (código existente)
             $login = $_POST['email'] ?? '';
             $senhaDigitada = $_POST['senha'];
 
@@ -251,6 +251,7 @@ class UsuarioController
                 $_SESSION['usuario_id'] = $usuario['id_usuario'];
                 $_SESSION['usuario_nome'] = $usuario['nome'];
                 $_SESSION['usuario_tipo'] = $usuario['tipo_usuario'];
+                $_SESSION['usuario_email'] = $usuario['email']; // <-- Adicione esta linha
 
                 if ($usuario['tipo_usuario'] === 'profissional') {
                     $profissional = $this->controle->buscarProfissionalPorUsuarioId($usuario['id_usuario']);

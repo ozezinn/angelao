@@ -11,7 +11,7 @@
                         <?php foreach ($portfolio_imagens as $imagem) : ?>
                             <div class="col-md-3 col-6">
                                 <div class="portfolio-thumb-wrapper">
-                                    <img src="../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($imagem['titulo']) ?>">
+                                    <img src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($imagem['titulo']) ?>">
                                     <div class="portfolio-thumb-overlay">
                                         <p class="portfolio-thumb-title"><?= htmlspecialchars($imagem['titulo']) ?></p>
                                         <a href="abc.php?action=deleteFoto&id=<?= $imagem['id_item'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta foto?');">

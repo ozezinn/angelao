@@ -44,7 +44,8 @@
 body {
   font-family: var(--fonte-corpo);
   color: var(--cor-cinza-escuro);
-  background-color: var(--cor-cinza-medio);
+  /* ATUALIZADO: Cor de fundo estilo admin */
+  background-color: #f4f7f6; 
   line-height: 1.6;
   letter-spacing: 0.2px;
 }
@@ -261,10 +262,14 @@ body {
 /* ESTILOS PARA O NOVO CABEÇALHO DE PERFIL */
 /* ========================================= */
 
+/* ATUALIZADO: Estilo mesclado com o admin-header */
 .profile-header {
-    border: none; /* Remove a borda padrão do card */
-    border-radius: 12px; /* Bordas mais arredondadas */
-    background-color: #f8f9fa; /* Um fundo cinza claro sutil */
+    background-color: #ffffff;
+    border-radius: 0.75rem; /* 12px */
+    padding: 2rem; /* Mais padding */
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
 }
 
 .profile-picture {
@@ -456,4 +461,39 @@ body {
     border: 1px solid #f0f0f0;
     padding: 10px;
     border-radius: 5px;
+}
+
+/* ========================================= */
+/* ADICIONADO: CLASSES DE LAYOUT DO ADMIN    */
+/* ========================================= */
+
+.admin-container {
+    padding-top: 100px; 
+    padding-bottom: 3rem;
+    max-width: 1200px;
+    margin-left: auto; /* Garante centralização */
+    margin-right: auto; /* Garante centralização */
+}
+
+.content-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+/* Ajuste para o formulário de contato dentro do content-card */
+.content-card .form-control,
+.content-card .form-select {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+}
+
+.content-card .form-control:focus,
+.content-card .form-select:focus {
+    background-color: #fff;
+    border-color: #aaa;
+    box-shadow: none;
 }

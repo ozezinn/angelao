@@ -117,10 +117,10 @@ class UsuarioModel
     }
 
 
-    public function validar($email, $senhaDigitada)
+   public function validar($email, $senhaDigitada)
     {
         $stmt = $this->pdo->prepare("
-            SELECT id_usuario, nome, senha_hash, tipo_usuario
+            SELECT id_usuario, nome, senha_hash, tipo_usuario, email
             FROM usuarios
             WHERE email = :email
         ");
@@ -132,7 +132,8 @@ class UsuarioModel
             return [
                 'id_usuario' => $usuario['id_usuario'],
                 'nome' => $usuario['nome'],
-                'tipo_usuario' => $usuario['tipo_usuario']
+                'tipo_usuario' => $usuario['tipo_usuario'],
+                'email' => $usuario['email'] // <-- Adicione esta linha
             ];
         }
         return false;
