@@ -10,6 +10,15 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
+try {
+    // Aponta para o diretório raiz (onde está o composer.json)
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+    $dotenv->load();
+} catch (Exception $e) {
+    // Isso acontece se o .env não existir
+    error_log("Aviso: Nao foi possivel carregar o arquivo .env: " . $e->getMessage());
+}
+
 class UsuarioController
 {
     private $controle;
@@ -699,7 +708,7 @@ class UsuarioController
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                     $mail->Port = $_ENV['SMTP_PORT'];
                     $mail->CharSet = 'UTF-8';
-        
+
                     $mail->setFrom($_ENV['SMTP_FROM_EMAIL'], $_ENV['SMTP_FROM_NAME']);
 
                     $mail->addAddress($email);
@@ -715,9 +724,10 @@ class UsuarioController
                     $mail->send();
 
                 } catch (Exception $e) {
-                    // Logar o erro, mas não informar o usuário
                     error_log("Erro ao ENVIAR email (PHPMailer): " . $mail->ErrorInfo);
-                    // Não quebre a aplicação, continue para a página de sucesso
+
+                    // PARE A EXECUÇÃO E MOSTRE O ERRO
+                    die("FALHA AO ENVIAR EMAIL: " . $mail->ErrorInfo);
                 }
 
             } catch (Exception $e) {
