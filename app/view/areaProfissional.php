@@ -27,6 +27,8 @@ $total_solicitacoes = count($solicitacoes);
     <br><br><br><br>
 
     <main class="pt-5 mt-4">
+        <div id="alert-placeholder" class="container" style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1050; width: auto; max-width: 80%;"></div>
+
         <div class="container">
 
             <header class="profile-header card shadow-sm mb-5">
@@ -201,6 +203,77 @@ $total_solicitacoes = count($solicitacoes);
     </main>
     
      <?php require_once __DIR__ . '/layout/footer.php'; ?>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Função para criar e exibir o alerta na tela
+        const showAlert = (message, type = 'success') => {
+            const alertPlaceholder = document.getElementById('alert-placeholder');
+            if (!alertPlaceholder) return;
+            alertPlaceholder.innerHTML = '';
+            const wrapper = document.createElement('div');
+            let iconClass = 'bi-check-circle-fill'; 
+            if (type === 'danger') {
+                iconClass = 'bi-exclamation-triangle-fill';
+            } else if (type === 'warning') {
+                iconClass = 'bi-exclamation-triangle-fill';
+            }
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible fade show d-flex align-items-center" role="alert">`,
+                `   <i class="bi ${iconClass} me-2"></i>`,
+                `   <div>${message}</div>`,
+                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('');
+            alertPlaceholder.append(wrapper);
+            // Auto-fecha o alerta
+            setTimeout(() => {
+                const alertInstance = bootstrap.Alert.getOrCreateInstance(wrapper.querySelector('.alert'));
+                if (alertInstance) {
+                    alertInstance.close();
+                }
+            }, 5000);
+        };
+
+        // Verifica os parâmetros da URL para decidir qual alerta mostrar
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get('status');
+
+        // Alertas de atualização de perfil
+        if (status === 'success') {
+            showAlert('Perfil atualizado com sucesso!', 'success');
+        } else if (status === 'dberror') {
+            showAlert('Ocorreu um erro ao atualizar o perfil. Tente novamente.', 'danger');
+        
+        // --- NOVOS ALERTAS PARA FOTO DE PERFIL ---
+        } else if (status === 'profile_too_large') {
+            showAlert('Erro ao atualizar perfil: A foto de perfil é muito grande (limite: 5MB).', 'danger');
+        } else if (status === 'profile_invalid_type') {
+            showAlert('Erro ao atualizar perfil: Tipo de arquivo da foto é inválido (Permitidos: jpg, png, webp, gif).', 'danger');
+        } else if (status === 'profile_upload_fail') {
+            showAlert('Erro ao salvar a foto de perfil. Tente novamente.', 'danger');
+        
+        // Alertas de upload de portfólio
+        } else if (status === 'upload_success') {
+            showAlert('Foto do portfólio enviada com sucesso!', 'success');
+        } else if (status === 'deleted') {
+            showAlert('Foto do portfólio excluída com sucesso.', 'success');
+        } else if (status === 'file_too_large') {
+            showAlert('Erro no upload do portfólio: O arquivo é muito grande (limite: 5MB).', 'danger');
+        } else if (status === 'invalid_file_type') {
+            showAlert('Erro no upload do portfólio: Tipo de arquivo inválido. (Permitidos: jpg, png, webp, gif)', 'danger');
+        } else if (status === 'upload_fail' || status === 'file_error') {
+            showAlert('Ocorreu um erro durante o upload da imagem do portfólio. Tente novamente.', 'danger');
+        }
+
+        // Lógica para abrir modal de perfil se estiver incompleto (PHP injeta a variável)
+        <?php if ($abrirModalPerfil): ?>
+            showAlert('Complete seu perfil para começar! Adicione uma foto, biografia e localização.', 'warning');
+            var editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+            editProfileModal.show();
+        <?php endif; ?>
+    });
+    </script>
     </body>
 </html>

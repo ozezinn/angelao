@@ -370,6 +370,23 @@ class UsuarioController
 
         $caminho_foto = null;
         if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+            
+            // --- INÍCIO DA VALIDAÇÃO ---
+            $arquivo = $_FILES['foto_perfil'];
+            $tamanho_maximo = 5 * 1024 * 1024; // 5MB
+            $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+            if ($arquivo['size'] > $tamanho_maximo) {
+                header('Location: abc.php?action=areaProfissional&status=profile_too_large');
+                exit();
+            }
+
+            $tipo_real = mime_content_type($arquivo['tmp_name']);
+            if (!in_array($tipo_real, $tipos_permitidos)) {
+                header('Location: abc.php?action=areaProfissional&status=profile_invalid_type');
+                exit();
+            }
+            // --- FIM DA VALIDAÇÃO ---
 
             $upload_dir = __DIR__ . '/../../public/uploads/profiles/';
 
@@ -377,13 +394,20 @@ class UsuarioController
                 mkdir($upload_dir, 0775, true);
             }
 
-            $nome_arquivo = uniqid() . '-' . basename($_FILES['foto_perfil']['name']);
+            // Usar $arquivo (que é $_FILES['foto_perfil'])
+            $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
+            $nome_arquivo = uniqid('profile_', true) . '.' . $extensao; 
             $caminho_completo = $upload_dir . $nome_arquivo;
 
-            if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminho_completo)) {
+            if (move_uploaded_file($arquivo['tmp_name'], $caminho_completo)) {
                 $caminho_foto = 'public/uploads/profiles/' . $nome_arquivo;
+            } else {
+                // Adiciona um fallback caso o move_uploaded_file falhe
+                header('Location: abc.php?action=areaProfissional&status=profile_upload_fail');
+                exit();
             }
         }
+
 
         $model = new UsuarioModel();
         $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
