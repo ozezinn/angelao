@@ -1,4 +1,5 @@
-<div class="modal fade" id="addPortfolioModal" tabindex="-1" aria-labelledby="addPortfolioModalLabel" aria-hidden="true">
+<div class="modal fade" id="addPortfolioModal" tabindex="-1" aria-labelledby="addPortfolioModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form action="abc.php?action=uploadFotoPortfolio" method="POST" enctype="multipart/form-data">
@@ -18,19 +19,23 @@
 
                     <div class="mb-3">
                         <label for="servicoRelacionado" class="form-label">Especialidade Relacionada</label>
-                        <select class="form-select" id="servicoRelacionado" name="id_servico">
+                        <select class="form-select" id="servicoRelacionado" name="id_servico" required>
                             <option selected disabled value="">Selecione uma especialidade</option>
-                            <option value="1">Casamentos</option>
-                            <option value="2">Ensaios</option>
-                            <option value="3">Eventos Corporativos</option>
-                            <option value="4">Retratos</option>
-                            <option value="5">Produtos</option>
-                            <option value="6">Gastronomia</option>
-                            </select>
+                            <?php
+                            if (isset($todos_servicos) && !empty($todos_servicos)) {
+                                foreach ($todos_servicos as $servico) {
+                                    echo '<option value="' . htmlspecialchars($servico['id_servico']) . '">'
+                                        . htmlspecialchars($servico['nome_servico'])
+                                        . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="arquivoFoto" class="form-label">Selecione a Imagem</label>
-                        <input class="form-control" type="file" id="arquivoFoto" name="arquivo_foto" accept="image/*" required>
+                        <input class="form-control" type="file" id="arquivoFoto" name="arquivo_foto" accept="image/*"
+                            required>
                     </div>
                 </div>
                 <div class="modal-footer">
