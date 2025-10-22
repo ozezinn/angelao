@@ -1,5 +1,6 @@
 {
     "require": {
-        "ext-pdo_mysql": "*"
+        "ext-pdo_mysql": "*",
+        "vlucas/phpdotenv": "^5.6"
     }
 }

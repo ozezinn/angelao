@@ -14,7 +14,8 @@ class UsuarioModel
     public function inserir($nome, $senha, $email, $tipo, $cpf = null)
     {
         $idUsuario = $this->inserirUsuario($nome, $email, $senha, $tipo);
-        if (!$idUsuario) return false;
+        if (!$idUsuario)
+            return false;
 
         if ($tipo === 'profissional') {
             if (!$this->inserirProfissional($idUsuario, $cpf)) {
@@ -25,6 +26,61 @@ class UsuarioModel
         return true;
     }
 
+    public function createPasswordResetToken($email, $token_hash, $expires_at)
+    {
+        try {
+            $this->pdo->beginTransaction();
+            // 1. Deleta qualquer token antigo para este email
+            $stmt = $this->pdo->prepare("DELETE FROM password_resets WHERE email = ?");
+            $stmt->execute([$email]);
+
+            // 2. Insere o novo token
+            $stmt = $this->pdo->prepare("
+                INSERT INTO password_resets (email, token_hash, expires_at)
+                VALUES (?, ?, ?)
+            ");
+            $stmt->execute([$email, $token_hash, $expires_at]);
+            $this->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            error_log("Erro ao criar token de reset: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Busca os dados de um token se ele for válido e não tiver expirado.
+     */
+    public function getResetTokenData($token_hash)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT email, expires_at FROM password_resets
+            WHERE token_hash = ? AND expires_at > NOW()
+        ");
+        $stmt->execute([$token_hash]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Deleta um token de reset (usado após a senha ser redefinida).
+     */
+    public function deleteResetToken($email)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM password_resets WHERE email = ?");
+        return $stmt->execute([$email]);
+    }
+
+    /**
+     * Atualiza a senha do usuário com base no email.
+     */
+    public function updatePasswordByEmail($email, $novaSenhaHash)
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE usuarios SET senha_hash = ? WHERE email = ?
+        ");
+        return $stmt->execute([$novaSenhaHash, $email]);
+    }
     private function inserirUsuario($nome, $email, $senha, $tipo)
     {
         $stmt = $this->pdo->prepare("
@@ -35,7 +91,8 @@ class UsuarioModel
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':senha', $senha);
         $stmt->bindParam(':tipo', $tipo);
-        if ($stmt->execute()) return $this->pdo->lastInsertId();
+        if ($stmt->execute())
+            return $this->pdo->lastInsertId();
         return false;
     }
     public function buscarPorEmail($email)
@@ -133,7 +190,7 @@ class UsuarioModel
         }
     }
 
-   public function validar($email, $senhaDigitada)
+    public function validar($email, $senhaDigitada)
     {
         $stmt = $this->pdo->prepare("
             SELECT id_usuario, nome, senha_hash, tipo_usuario, email

@@ -5,6 +5,11 @@ error_reporting(E_ALL);
 
 require_once '../model/usuarioModel.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . '/../../vendor/autoload.php';
 class UsuarioController
 {
     private $controle;
@@ -626,7 +631,233 @@ class UsuarioController
         exit();
     }
 
+    public function showRecuperarSenha()
+    {
+        include '../view/recuperarSenha.php';
+        exit();
+    }
 
+    /**
+     * Processa o pedido de recuperação de senha.
+     * Gera o token e envia o email COM PHPMailer (usando Brevo/SMTP).
+     */
+    public function handleRecuperarSenha()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['email'])) {
+            header('Location: abc.php?action=recuperarSenha');
+            exit();
+        }
+
+        $email = $_POST['email'];
+        $usuario = $this->controle->buscarPorEmail($email);
+
+        // Mesmo se o email não existir, damos uma resposta genérica
+        // para não vazar informação de quais emails estão cadastrados.
+        if ($usuario) {
+            try {
+                // 1. Gerar token seguro
+                $token = bin2hex(random_bytes(32)); // Token que vai na URL
+                $token_hash = hash('sha256', $token); // Token que vai no BD
+                $expires_at = date('Y-m-d H:i:s', time() + 3600); // 1 hora de validade
+
+                // 2. Salvar no banco
+                $this->controle->createPasswordResetToken($email, $token_hash, $expires_at);
+
+                $reset_link = "https://www.luumina.online/app/view/abc.php?action=definirNovaSenha&token=" . $token;
+                // 4. Montar o corpo do email (HTML)
+                $assunto = "Luumina - Redefinicao de Senha";
+                $mensagem = "
+                    <div style='font-family: Arial, sans-serif; line-height: 1.6;'>
+                        <p>Ola,</p>
+                        <p>Recebemos uma solicitacao para redefinir sua senha na plataforma Luumina.</p>
+                        <p>Clique no botao abaixo para criar uma nova senha. Este link expira em 1 hora:</p>
+                        <p style='margin: 25px 0;'>
+                            <a href='$reset_link' style='padding: 12px 20px; background-color: #424242; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                                Redefinir Senha
+                            </a>
+                        </p>
+                        <p>Se o botao nao funcionar, copie e cole este link no seu navegador:</p>
+                        <p style='word-break: break-all;'>$reset_link</p>
+                        <hr>
+                        <p style='font-size: 0.9em; color: #777;'>Se voce nao solicitou isso, pode ignorar este email com seguranca.</p>
+                    </div>
+                ";
+
+                // Texto alternativo para clientes de email que não leem HTML
+                $mensagem_alt = "Para redefinir sua senha, copie e cole este link no seu navegador: $reset_link";
+
+
+                // 5. Configurar e enviar o email com PHPMailer
+                $mail = new PHPMailer(true);
+
+                try {
+                    $mail->isSMTP();
+                    $mail->Host = $_ENV['SMTP_HOST'];
+                    $mail->SMTPAuth = true;
+                    $mail->Username = $_ENV['SMTP_USER'];
+                    $mail->Password = $_ENV['SMTP_PASS'];
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = $_ENV['SMTP_PORT'];
+                    $mail->CharSet = 'UTF-8';
+        
+                    $mail->setFrom($_ENV['SMTP_FROM_EMAIL'], $_ENV['SMTP_FROM_NAME']);
+
+                    $mail->addAddress($email);
+
+                    $mail->addReplyTo('nao-responda@luumina.com', 'Luumina');
+
+                    // Conteúdo do Email
+                    $mail->isHTML(true);
+                    $mail->Subject = $assunto;
+                    $mail->Body = $mensagem;
+                    $mail->AltBody = $mensagem_alt;
+
+                    $mail->send();
+
+                } catch (Exception $e) {
+                    // Logar o erro, mas não informar o usuário
+                    error_log("Erro ao ENVIAR email (PHPMailer): " . $mail->ErrorInfo);
+                    // Não quebre a aplicação, continue para a página de sucesso
+                }
+
+            } catch (Exception $e) {
+                // Logar o erro de geração de token
+                error_log("Erro ao GERAR token de reset: " . $e->getMessage());
+            }
+        }
+
+        // Redireciona para o login com status de sucesso (resposta genérica)
+        header('Location: ../view/login.php?status=reset_sent');
+        exit();
+    }
+    public function handleRecuperarSenha()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['email'])) {
+            header('Location: abc.php?action=recuperarSenha');
+            exit();
+        }
+
+        $email = $_POST['email'];
+        $usuario = $this->controle->buscarPorEmail($email);
+
+        // Mesmo que o email não exista, damos uma resposta genérica
+        // para não vazar informação de quais emails estão cadastrados.
+        if ($usuario) {
+            try {
+                // 1. Gerar token seguro
+                $token = bin2hex(random_bytes(32)); // Token que vai na URL
+                $token_hash = hash('sha256', $token); // Token que vai no BD
+                $expires_at = date('Y-m-d H:i:s', time() + 3600); // 1 hora de validade
+
+                // 2. Salvar no banco
+                $this->controle->createPasswordResetToken($email, $token_hash, $expires_at);
+
+                // 3. Montar o link
+                // !! IMPORTANTE: Altere 'localhost/angelao' para o seu domínio real
+                $reset_link = "http://localhost/angelao/app/view/abc.php?action=definirNovaSenha&token=" . $token;
+
+                // 4. Enviar o email (Método básico)
+                $assunto = "Luumina - Redefinicao de Senha";
+                $mensagem = "
+                    <p>Ola,</p>
+                    <p>Recebemos uma solicitacao para redefinir sua senha na plataforma Luumina.</p>
+                    <p>Clique no link abaixo para criar uma nova senha. Este link expira em 1 hora:</p>
+                    <p><a href='$reset_link'>$reset_link</a></p>
+                    <p>Se voce nao solicitou isso, pode ignorar este email.</p>
+                ";
+                $headers = "MIME-Version: 1.0" . "\r\n";
+                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                $headers .= 'From: <nao-responda@luumina.com>' . "\r\n";
+
+                // *** ATENÇÃO ***
+                // A função mail() do PHP é muito básica e pode não funcionar
+                // em 'localhost' ou pode cair no SPAM. Para produção,
+                // é ALTAMENTE recomendado usar uma biblioteca como PHPMailer.
+                mail($email, $assunto, $mensagem, $headers);
+
+            } catch (Exception $e) {
+                // Logar o erro, mas não informar o usuário
+                error_log("Erro ao gerar token: " . $e->getMessage());
+            }
+        }
+
+        // Redireciona para o login com status de sucesso (mesmo se o email não existir)
+        header('Location: ../view/login.php?status=reset_sent');
+        exit();
+    }
+
+
+    public function showDefinirNovaSenha()
+    {
+        $token = $_GET['token'] ?? null;
+        if (!$token) {
+            header('Location: ../view/login.php?status=token_invalid');
+            exit();
+        }
+
+        $token_hash = hash('sha256', $token);
+        $token_data = $this->controle->getResetTokenData($token_hash);
+
+        // Se o token não existe ou expirou
+        if (!$token_data) {
+            header('Location: ../view/login.php?status=token_invalid');
+            exit();
+        }
+
+        // Passa o token para a view (que o colocará no form oculto)
+        include '../view/definirNovaSenha.php';
+        exit();
+    }
+
+    /**
+     * Processa a definição da nova senha.
+     */
+    public function handleDefinirNovaSenha()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+
+        $token = $_POST['token'] ?? null;
+        $novaSenha = $_POST['nova_senha'];
+        $confirmaSenha = $_POST['confirma_senha'];
+
+        // 1. Validar token
+        if (!$token) {
+            header('Location: ../view/login.php?status=token_invalid');
+            exit();
+        }
+
+        $token_hash = hash('sha256', $token);
+        $token_data = $this->controle->getResetTokenData($token_hash);
+
+        if (!$token_data) {
+            header('Location: ../view/login.php?status=token_invalid');
+            exit();
+        }
+
+        // 2. Validar senhas
+        if ($novaSenha !== $confirmaSenha || empty($novaSenha)) {
+            // Redireciona de volta com erro
+            header('Location: abc.php?action=definirNovaSenha&token=' . $token . '&status=password_mismatch');
+            exit(); // Idealmente, a view 'definirNovaSenha' deveria tratar esse status
+        }
+
+        // 3. Tudo OK: Atualizar o banco
+        $email = $token_data['email'];
+        $novaSenhaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
+
+        if ($this->controle->updatePasswordByEmail($email, $novaSenhaHash)) {
+            // 4. Sucesso: Deletar o token e redirecionar
+            $this->controle->deleteResetToken($email);
+            header('Location: ../view/login.php?status=password_updated');
+        } else {
+            // 5. Erro de banco
+            header('Location: ../view/login.php?status=dberror');
+        }
+        exit();
+    }
     public function solicitarOrcamento()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {

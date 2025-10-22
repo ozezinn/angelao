@@ -55,6 +55,22 @@ switch ($action) {
     case 'alterarSenha':
         $controle->alterarSenha();
         break;
+        
+    case 'recuperarSenha':
+        $controle->showRecuperarSenha();
+        break;
+
+    case 'handleRecuperarSenha':
+        $controle->handleRecuperarSenha();
+        break;
+
+    case 'definirNovaSenha':
+        $controle->showDefinirNovaSenha();
+        break;
+    
+    case 'handleDefinirNovaSenha':
+        $controle->handleDefinirNovaSenha();
+        break;
 
     case 'admin':
         include '../view/admin.php'; 
@@ -84,7 +100,7 @@ switch ($action) {
         $controle->uploadFotoPortfolio();
         break;
 
-    case 'updatePortfolioItem':     // Novo case
+    case 'updatePortfolioItem':  
         $controle->updatePortfolioItem();
         break;
         
