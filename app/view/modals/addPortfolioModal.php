@@ -20,14 +20,33 @@
                     <div class="mb-3">
                         <label for="servicoRelacionado" class="form-label">Especialidade Relacionada</label>
                         <select class="form-select" id="servicoRelacionado" name="id_servico" required>
-                            <option selected disabled value="">Selecione uma especialidade</option>
                             <?php
-                            if (isset($todos_servicos) && !empty($todos_servicos)) {
-                                foreach ($todos_servicos as $servico) {
-                                    echo '<option value="' . htmlspecialchars($servico['id_servico']) . '">'
-                                        . htmlspecialchars($servico['nome_servico'])
-                                        . '</option>';
+                            // As variáveis $todos_servicos (com ID/Nome) e $especialidades (só Nomes do perfil)
+                            // são carregadas pelo 'areaProfissional.php'.
+                            
+                            // Verifica se o profissional tem especialidades cadastradas
+                            if (isset($especialidades) && !empty($especialidades)) {
+
+                                echo '<option selected disabled value="">Selecione uma de suas especialidades</option>';
+
+                                // Garante que a lista de todos os serviços também foi carregada
+                                if (isset($todos_servicos)) {
+                                    // Itera sobre TODOS os serviços do banco
+                                    foreach ($todos_servicos as $servico) {
+
+                                        // Exibe a opção APENAS SE o nome do serviço (ex: "Casamentos")
+                                        // estiver no array de especialidades do profissional (ex: ["Casamentos", "Ensaios"])
+                                        if (in_array($servico['nome_servico'], $especialidades)) {
+                                            echo '<option value="' . htmlspecialchars($servico['id_servico']) . '">'
+                                                . htmlspecialchars($servico['nome_servico'])
+                                                . '</option>';
+                                        }
+                                    }
                                 }
+
+                            } else {
+                                // Mensagem de fallback se o profissional não tiver cadastrado nenhuma especialidade no perfil
+                                echo '<option selected disabled value="">Vá em "Editar Perfil" e cadastre suas especialidades primeiro</option>';
                             }
                             ?>
                         </select>
