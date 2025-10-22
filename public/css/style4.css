@@ -552,3 +552,10 @@ body {
     border-color: #aaa;
     box-shadow: none;
 }
+
+@media (max-width: 991.98px) {
+  .sticky-top-column {
+    position: static; 
+    top: auto;     
+  }
+}
