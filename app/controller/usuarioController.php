@@ -730,63 +730,6 @@ class UsuarioController
         header('Location: ../view/login.php?status=reset_sent');
         exit();
     }
-    public function handleRecuperarSenha()
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['email'])) {
-            header('Location: abc.php?action=recuperarSenha');
-            exit();
-        }
-
-        $email = $_POST['email'];
-        $usuario = $this->controle->buscarPorEmail($email);
-
-        // Mesmo que o email não exista, damos uma resposta genérica
-        // para não vazar informação de quais emails estão cadastrados.
-        if ($usuario) {
-            try {
-                // 1. Gerar token seguro
-                $token = bin2hex(random_bytes(32)); // Token que vai na URL
-                $token_hash = hash('sha256', $token); // Token que vai no BD
-                $expires_at = date('Y-m-d H:i:s', time() + 3600); // 1 hora de validade
-
-                // 2. Salvar no banco
-                $this->controle->createPasswordResetToken($email, $token_hash, $expires_at);
-
-                // 3. Montar o link
-                // !! IMPORTANTE: Altere 'localhost/angelao' para o seu domínio real
-                $reset_link = "http://localhost/angelao/app/view/abc.php?action=definirNovaSenha&token=" . $token;
-
-                // 4. Enviar o email (Método básico)
-                $assunto = "Luumina - Redefinicao de Senha";
-                $mensagem = "
-                    <p>Ola,</p>
-                    <p>Recebemos uma solicitacao para redefinir sua senha na plataforma Luumina.</p>
-                    <p>Clique no link abaixo para criar uma nova senha. Este link expira em 1 hora:</p>
-                    <p><a href='$reset_link'>$reset_link</a></p>
-                    <p>Se voce nao solicitou isso, pode ignorar este email.</p>
-                ";
-                $headers = "MIME-Version: 1.0" . "\r\n";
-                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                $headers .= 'From: <nao-responda@luumina.com>' . "\r\n";
-
-                // *** ATENÇÃO ***
-                // A função mail() do PHP é muito básica e pode não funcionar
-                // em 'localhost' ou pode cair no SPAM. Para produção,
-                // é ALTAMENTE recomendado usar uma biblioteca como PHPMailer.
-                mail($email, $assunto, $mensagem, $headers);
-
-            } catch (Exception $e) {
-                // Logar o erro, mas não informar o usuário
-                error_log("Erro ao gerar token: " . $e->getMessage());
-            }
-        }
-
-        // Redireciona para o login com status de sucesso (mesmo se o email não existir)
-        header('Location: ../view/login.php?status=reset_sent');
-        exit();
-    }
-
-
     public function showDefinirNovaSenha()
     {
         $token = $_GET['token'] ?? null;
