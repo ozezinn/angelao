@@ -68,7 +68,7 @@
                         <?php foreach ($portfolio_imagens as $imagem): ?>
                             <div class="col-md-4 col-sm-6">
                                 <div class="card portfolio-card">
-                                    <img src="../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>" class="card-img-top"
+                                    <img src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>" class="card-img-top"
                                         alt="<?= htmlspecialchars($imagem['titulo']) ?>">
                                     <div class="card-body">
                                         <h5 class="card-title"><?= htmlspecialchars($imagem['titulo']) ?></h5>
