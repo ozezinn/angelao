@@ -111,10 +111,37 @@ class UsuarioController
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $nome = $_POST['nome'];
-            $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+            $senha_raw = $_POST['senha']; // <-- Pegar a senha crua
             $email = $_POST['email'];
             $tipo = $_POST['tipo_usuario'];
             $cpf = isset($_POST['cpf']) ? preg_replace('/\D/', '', $_POST['cpf']) : null;
+
+            // --- INÍCIO DA VALIDAÇÃO DE SENHA ---
+            $erros_senha = [];
+            if (strlen($senha_raw) < 8) {
+                $erros_senha[] = "pelo menos 8 caracteres";
+            }
+            if (!preg_match('/[A-Z]/', $senha_raw)) {
+                $erros_senha[] = "pelo menos uma letra maiúscula";
+            }
+            if (!preg_match('/[a-z]/', $senha_raw)) {
+                $erros_senha[] = "pelo menos uma letra minúscula";
+            }
+            if (!preg_match('/[0-9]/', $senha_raw)) {
+                $erros_senha[] = "pelo menos um número";
+            }
+
+            if (!empty($erros_senha)) {
+                // A senha é fraca. Rejeita o cadastro e volta para a view.
+                $tipo_param = !empty($tipo) ? '&tipo=' . urlencode($tipo) : '';
+                // Redireciona de volta para a PÁGINA de cadastro com um status de erro
+                header('Location: ../view/cadastrar.php?status=weak_password' . $tipo_param);
+                exit();
+            }
+            // --- FIM DA VALIDAÇÃO DE SENHA ---
+
+            // Se a senha for forte, CRIE O HASH
+            $senha = password_hash($senha_raw, PASSWORD_DEFAULT); // <-- Hash criado aqui
 
             $usuarioExistente = $this->controle->buscarPorEmail($email);
 
@@ -125,9 +152,9 @@ class UsuarioController
             }
 
             if ($tipo === 'cliente' || $tipo === 'profissional') {
-                $inserido = $this->controle->inserir($nome, $senha, $email, $tipo, $cpf);
+                $inserido = $this->controle->inserir($nome, $senha, $email, $tipo, $cpf); // Usa $senha (hash)
             } else if ($tipo === 'admin') {
-                $inserido = $this->controle->inserir($nome, $senha, $email, $tipo, null);
+                $inserido = $this->controle->inserir($nome, $senha, $email, $tipo, null); // Usa $senha (hash)
             } else {
                 // Redireciona com erro se o tipo for inválido
                 header('Location: abc.php?action=index&status=invalid_type');

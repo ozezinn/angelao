@@ -15,6 +15,9 @@
 </head>
 
 <body>
+    <div id="alert-placeholder" class="container"
+        style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1050; width: auto; max-width: 80%;">
+    </div>
     <?php require_once __DIR__ . '/layout/header.php'; ?>
 
     <main>
@@ -50,6 +53,18 @@
                         <div class="input-group">
                             <label for="senha">Senha</label>
                             <input name="senha" id="senha" type="password" required />
+
+                            <div id="senha-requisitos"
+                                style="font-size: 0.85rem; margin-top: 10px; color: var(--cor-cinza-escuro);">
+                                <strong style="font-family: 'Poppins', sans-serif;">A senha deve conter:</strong>
+                                <ul
+                                    style="padding-left: 20px; margin-bottom: 0; margin-top: 5px; list-style-type: '» ';">
+                                    <li id="req-length">Pelo menos 8 caracteres</li>
+                                    <li id="req-lowercase">Pelo menos 1 letra minúscula (a-z)</li>
+                                    <li id="req-uppercase">Pelo menos 1 letra maiúscula (A-Z)</li>
+                                    <li id="req-number">Pelo menos 1 número (0-9)</li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div id="campos-profissional" style="display:none;">
@@ -81,7 +96,16 @@
             const cpfInput = document.getElementById('cpf');
             const cpfErro = document.getElementById('cpf-erro');
 
-            // --- LÓGICA DE VISIBILIDADE DO FORMULÁRIO ---
+            // --- NOVOS ELEMENTOS PARA SENHA ---
+            const senhaInput = document.getElementById('senha');
+            // (Certifique-se de ter adicionado o HTML para 'senha-requisitos' no seu formulário)
+            const reqContainer = document.getElementById('senha-requisitos');
+            const reqLength = document.getElementById('req-length');
+            const reqLowercase = document.getElementById('req-lowercase');
+            const reqUppercase = document.getElementById('req-uppercase');
+            const reqNumber = document.getElementById('req-number');
+
+            // --- LÓGICA DE VISIBILIDADE DO FORMULÁRIO (existente) ---
             function atualizarVisibilidadeCampos() {
                 const ehProfissional = tipoUsuarioSelect.value === 'profissional';
                 camposProfissional.style.display = ehProfissional ? 'block' : 'none';
@@ -92,17 +116,134 @@
             tipoUsuarioSelect.addEventListener('change', atualizarVisibilidadeCampos);
             atualizarVisibilidadeCampos(); // Executa na inicialização
 
-            // --- VALIDAÇÃO DO FORMULÁRIO ANTES DO ENVIO ---
+            // --- NOVA FUNÇÃO DE ALERTA ---
+            const showAlert = (message, type = 'danger') => {
+                const alertPlaceholder = document.getElementById('alert-placeholder');
+                if (!alertPlaceholder) return;
+                alertPlaceholder.innerHTML = ''; // Limpa alertas anteriores
+
+                const wrapper = document.createElement('div');
+                let iconClass = 'bi-exclamation-triangle-fill'; // Ícone padrão
+                if (type === 'success') {
+                    iconClass = 'bi-check-circle-fill';
+                }
+
+                // (Assumindo que os ícones do Bootstrap estão carregados)
+                wrapper.innerHTML = [
+                    `<div class="alert alert-${type} alert-dismissible fade show d-flex align-items-center" role="alert">`,
+                    `   <i class="bi ${iconClass} me-2"></i>`,
+                    `   <div>${message}</div>`,
+                    '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                    '</div>'
+                ].join('');
+
+                alertPlaceholder.append(wrapper);
+
+                // Auto-dispensar o alerta
+                setTimeout(() => {
+                    const alertInstance = bootstrap.Alert.getOrCreateInstance(wrapper.querySelector('.alert'));
+                    if (alertInstance) {
+                        alertInstance.close();
+                    }
+                }, 5000); // 5 segundos
+            };
+
+            // --- NOVA LÓGICA DE STATUS DA URL ---
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+
+            if (status === 'weak_password') {
+                showAlert('A senha é muito fraca. Por favor, cumpra todos os requisitos.', 'danger');
+            }
+
+            // --- NOVA FUNÇÃO DE VALIDAÇÃO DE SENHA (AO DIGITAR) ---
+            function validarSenhaAoDigitar() {
+                const senha = senhaInput.value;
+                let formValido = true;
+
+                // 1. Validar Comprimento
+                if (reqLength) {
+                    if (senha.length >= 8) {
+                        reqLength.style.color = 'green';
+                        reqLength.style.textDecoration = 'line-through';
+                    } else {
+                        reqLength.style.color = '#424242';
+                        reqLength.style.textDecoration = 'none';
+                        formValido = false;
+                    }
+                }
+
+                // 2. Validar Minúscula
+                if (reqLowercase) {
+                    if (/[a-z]/.test(senha)) {
+                        reqLowercase.style.color = 'green';
+                        reqLowercase.style.textDecoration = 'line-through';
+                    } else {
+                        reqLowercase.style.color = '#424242';
+                        reqLowercase.style.textDecoration = 'none';
+                        formValido = false;
+                    }
+                }
+
+                // 3. Validar Maiúscula
+                if (reqUppercase) {
+                    if (/[A-Z]/.test(senha)) {
+                        reqUppercase.style.color = 'green';
+                        reqUppercase.style.textDecoration = 'line-through';
+                    } else {
+                        reqUppercase.style.color = '#424242';
+                        reqUppercase.style.textDecoration = 'none';
+                        formValido = false;
+                    }
+                }
+
+                // 4. Validar Número
+                if (reqNumber) {
+                    if (/[0-9]/.test(senha)) {
+                        reqNumber.style.color = 'green';
+                        reqNumber.style.textDecoration = 'line-through';
+                    } else {
+                        reqNumber.style.color = '#424242';
+                        reqNumber.style.textDecoration = 'none';
+                        formValido = false;
+                    }
+                }
+
+                return formValido; // Retorna se a senha é válida
+            }
+
+            // Adiciona o listener de 'keyup' ao campo de senha
+            if (senhaInput) {
+                senhaInput.addEventListener('keyup', validarSenhaAoDigitar);
+            }
+
+            // --- VALIDAÇÃO DO FORMULÁRIO ANTES DO ENVIO (Modificado) ---
             form.addEventListener('submit', function (event) {
                 const ehProfissional = tipoUsuarioSelect.value === 'profissional';
-                 // Se for profissional, o CPF tiver algum valor e este for inválido, impede o envio.
+                const senhaValida = validarSenhaAoDigitar(); // Chama a validação da senha
+                let cpfValido = true;
+
+                // Validação do CPF (existente)
                 if (ehProfissional && cpfInput.value && !validarCPF(cpfInput.value)) {
                     cpfErro.style.display = 'block';
+                    cpfValido = false;
+                }
+
+                // Impede o envio se o CPF ou a Senha forem inválidos
+                if (!cpfValido || !senhaValida) {
                     event.preventDefault(); // Impede o envio do formulário
+
+                    if (!senhaValida && reqContainer) {
+                        // Feedback visual extra
+                        reqContainer.style.border = '1px solid red';
+                        reqContainer.style.padding = '5px';
+                        reqContainer.style.borderRadius = '5px';
+                        showAlert('A senha não cumpre todos os requisitos.', 'danger');
+                    }
                 }
             });
 
-            // --- MÁSCARA E VALIDAÇÃO DE CPF (CÓDIGO COMPLETO) ---
+            // --- MÁSCARA E VALIDAÇÃO DE CPF (CÓDIGO COMPLETO - existente) ---
             function validarCPF(cpf) {
                 cpf = cpf.replace(/\D/g, '');
                 if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
