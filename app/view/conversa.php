@@ -34,7 +34,7 @@ if (!isset($_SESSION['usuario_id']) || !isset($solicitacao)) {
     <br><br><br><br>
 
     <main class="container admin-container">
-        
+
         <header class="admin-header d-flex justify-content-between align-items-center">
             <div>
                 <h1 class="display-6 fw-bold">Conversa</h1>
@@ -47,14 +47,15 @@ if (!isset($_SESSION['usuario_id']) || !isset($solicitacao)) {
 
         <section class="chat-container card">
             <div class="card-body">
-                
+
                 <div class="chat-message received">
                     <div class="message-bubble">
                         <div class="message-sender"><?= htmlspecialchars($solicitacao['nome_solicitante']) ?></div>
                         <p class="message-content">
                             <strong>Tipo de Evento:</strong> <?= htmlspecialchars($solicitacao['tipo_evento']) ?><br>
                             <?php if (!empty($solicitacao['data_evento'])): ?>
-                                <strong>Data do Evento:</strong> <?= date('d/m/Y', strtotime($solicitacao['data_evento'])) ?><br>
+                                <strong>Data do Evento:</strong>
+                                <?= date('d/m/Y', strtotime($solicitacao['data_evento'])) ?><br>
                             <?php endif; ?>
                             <?php if (!empty($solicitacao['telefone_solicitante'])): ?>
                                 <strong>Telefone:</strong> <?= htmlspecialchars($solicitacao['telefone_solicitante']) ?><br>
@@ -64,14 +65,16 @@ if (!isset($_SESSION['usuario_id']) || !isset($solicitacao)) {
                         <hr class="my-2">
                         <p class="message-content"><?= nl2br(htmlspecialchars($solicitacao['mensagem'])) ?></p>
                     </div>
-                    <div class="message-time"><?= date('d/m/Y H:i', strtotime($solicitacao['data_solicitacao'])) ?></div>
+                    <div class="message-time">
+                        <?= !empty($solicitacao['data_solicitacao']) ? date('d/m/Y H:i', strtotime($solicitacao['data_solicitacao'])) : 'Data indisponível' ?>
+                    </div>
                 </div>
 
                 <?php foreach ($mensagens as $msg): ?>
-                    <?php 
-                        $isSent = $msg['id_remetente'] == $id_usuario_logado;
-                        $messageClass = $isSent ? 'sent' : 'received';
-                        $senderName = $isSent ? 'Você' : htmlspecialchars($msg['nome_remetente']);
+                    <?php
+                    $isSent = $msg['id_remetente'] == $id_usuario_logado;
+                    $messageClass = $isSent ? 'sent' : 'received';
+                    $senderName = $isSent ? 'Você' : htmlspecialchars($msg['nome_remetente']);
                     ?>
                     <div class="chat-message <?= $messageClass ?>">
                         <div class="message-bubble">
@@ -83,14 +86,16 @@ if (!isset($_SESSION['usuario_id']) || !isset($solicitacao)) {
                 <?php endforeach; ?>
 
             </div>
-            
+
             <div class="card-footer chat-reply-form">
                 <form action="abc.php?action=enviarMensagem" method="POST">
-                    <input type="hidden" name="id_solicitacao" value="<?= htmlspecialchars($solicitacao['id_solicitacao']) ?>">
+                    <input type="hidden" name="id_solicitacao"
+                        value="<?= htmlspecialchars($solicitacao['id_solicitacao']) ?>">
                     <input type="hidden" name="id_destinatario" value="<?= htmlspecialchars($id_outra_pessoa) ?>">
-                    
+
                     <div class="input-group">
-                        <textarea name="mensagem" class="form-control" placeholder="Digite sua resposta..." rows="3" required></textarea>
+                        <textarea name="mensagem" class="form-control" placeholder="Digite sua resposta..." rows="3"
+                            required></textarea>
                         <button class="btn btn-primary" type="submit" id="button-addon2">
                             Enviar <i class="bi bi-send-fill ms-1"></i>
                         </button>
@@ -106,4 +111,5 @@ if (!isset($_SESSION['usuario_id']) || !isset($solicitacao)) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

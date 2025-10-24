@@ -915,37 +915,60 @@ class UsuarioController
 
     public function showConversa()
     {
-        if (!isset($_SESSION['usuario_id'])) { /*...*/
-            exit();
-        } // Segurança
-        $id_usuario_logado = $_SESSION['usuario_id']; // <--- Adicione
-        $id_solicitacao = $_GET['id'] ?? 0;
-
-        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
-        if (!$solicitacao) { /* Tratar erro */
-            exit();
-        } // Verifique se a solicitação existe
-
-        // --- INÍCIO DA CORREÇÃO ---
-        // Verifica se o usuário logado é o profissional ou o cliente da solicitação
-        $id_profissional_da_solicitacao = $this->controle->getSolicitacoesPorProfissional($id_solicitacao); // Você precisará criar esta função no model
-        $id_cliente_da_solicitacao = $solicitacao['id_cliente'];
-
-        $id_outra_pessoa = null;
-        if ($id_usuario_logado == $id_profissional_da_solicitacao && $id_cliente_da_solicitacao) {
-            $id_outra_pessoa = $id_cliente_da_solicitacao;
-        } elseif ($id_usuario_logado == $id_cliente_da_solicitacao) {
-            // Precisa buscar o id_usuario do profissional a partir do id_profissional
-            $id_outra_pessoa = $this->controle->getUsuarioIdPorProfissionalId($solicitacao['id_profissional']); // Você precisará criar esta função no model
-        } else {
-            // Usuário não pertence a esta conversa - Adicionar tratamento de erro/redirecionamento
-            echo "<script>alert('Acesso negado a esta conversa.'); window.location.href='abc.php?action=minhaCaixaDeEntrada';</script>";
+        if (!isset($_SESSION['usuario_id'])) {
+            // Redirecionamento seguro se não estiver logado
+            header('Location: abc.php?action=logar');
             exit();
         }
-        // --- FIM DA CORREÇÃO ---
+        $id_usuario_logado = $_SESSION['usuario_id'];
+        $id_solicitacao = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); // Validar entrada
+
+        if (!$id_solicitacao) {
+            // ID inválido ou ausente
+            header('Location: abc.php?action=minhaCaixaDeEntrada&status=invalid_id');
+            exit();
+        }
+
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
+
+        if (!$solicitacao) {
+            // Solicitação não encontrada
+            header('Location: abc.php?action=minhaCaixaDeEntrada&status=not_found');
+            exit();
+        }
+
+        // --- INÍCIO DA CORREÇÃO LÓGICA ---
+        $id_profissional_solicitacao = $solicitacao['id_profissional']; // ID do profissional na tabela solicitacoes_orcamento
+        $id_cliente_solicitacao = $solicitacao['id_cliente'];
+
+        // Busca o ID de usuário correspondente ao profissional da solicitação
+        $id_usuario_profissional = $this->controle->getUsuarioIdPorProfissionalId($id_profissional_solicitacao);
+
+        $id_outra_pessoa = null;
+        $usuario_pertence_conversa = false;
+
+        // Verifica se o logado é o profissional E se existe um cliente associado
+        if ($id_usuario_logado == $id_usuario_profissional && $id_cliente_solicitacao) {
+            $id_outra_pessoa = $id_cliente_solicitacao;
+            $usuario_pertence_conversa = true;
+        }
+        // Verifica se o logado é o cliente E se existe um profissional associado
+        elseif ($id_usuario_logado == $id_cliente_solicitacao && $id_usuario_profissional) {
+            $id_outra_pessoa = $id_usuario_profissional;
+            $usuario_pertence_conversa = true;
+        }
+
+        // Se o usuário logado não for nem o cliente nem o profissional da conversa
+        if (!$usuario_pertence_conversa) {
+            // Usa header() para redirecionamento limpo
+            header('Location: abc.php?action=minhaCaixaDeEntrada&status=access_denied');
+            exit();
+        }
+        // --- FIM DA CORREÇÃO LÓGICA ---
 
         $mensagens = $this->controle->buscarMensagensPorSolicitacao($id_solicitacao);
 
+        // Passa as variáveis para a view
         include '../view/conversa.php';
         exit();
     }

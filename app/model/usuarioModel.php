@@ -457,6 +457,19 @@ class UsuarioModel
         return false;
     }
 
+    public function getUsuarioIdPorProfissionalId($id_profissional)
+    {
+        $sql = "SELECT id_usuario FROM profissionais WHERE id_profissional = ?";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_profissional]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['id_usuario'] : null; // Retorna o ID ou null se não encontrar
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar id_usuario por id_profissional: " . $e->getMessage());
+            return null;
+        }
+    }
     public function getSolicitacoesPorProfissional($id_profissional)
     {
         $sql = "SELECT * FROM solicitacoes_orcamento WHERE id_profissional = ? ORDER BY data_evento DESC";
