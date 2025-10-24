@@ -55,7 +55,7 @@ switch ($action) {
     case 'alterarSenha':
         $controle->alterarSenha();
         break;
-        
+
     case 'recuperarSenha':
         $controle->showRecuperarSenha();
         break;
@@ -67,13 +67,13 @@ switch ($action) {
     case 'definirNovaSenha':
         $controle->showDefinirNovaSenha();
         break;
-    
+
     case 'handleDefinirNovaSenha':
         $controle->handleDefinirNovaSenha();
         break;
 
     case 'admin':
-        include '../view/admin.php'; 
+        include '../view/admin.php';
         break;
 
     case 'gerenciarProfissionais':
@@ -100,17 +100,29 @@ switch ($action) {
         $controle->uploadFotoPortfolio();
         break;
 
-    case 'updatePortfolioItem':  
+    case 'updatePortfolioItem':
         $controle->updatePortfolioItem();
         break;
-        
+
     case 'excluirConta':
         $controle->excluirMinhaConta();
         break;
 
     case 'solicitarOrcamento':
-    $controle->solicitarOrcamento();
-    break;
+        $controle->solicitarOrcamento();
+        break;
+
+    case 'minhaCaixaDeEntrada':
+        $controle->showCaixaDeEntrada();
+        break;
+
+    case 'verConversa':
+        $controle->showConversa();
+        break;
+
+    case 'enviarMensagem':
+        $controle->enviarMensagem();
+        break;
 
     case 'excluirProfissional':
         $id = $_GET['id'] ?? null;

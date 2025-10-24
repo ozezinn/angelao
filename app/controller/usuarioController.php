@@ -673,10 +673,6 @@ class UsuarioController
         exit();
     }
 
-    /**
-     * Processa o pedido de recuperação de senha.
-     * Gera o token e envia o email COM PHPMailer (usando Brevo/SMTP).
-     */
     public function handleRecuperarSenha()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['email'])) {
@@ -789,9 +785,6 @@ class UsuarioController
         exit();
     }
 
-    /**
-     * Processa a definição da nova senha.
-     */
     public function handleDefinirNovaSenha()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -891,6 +884,68 @@ class UsuarioController
         } else {
             // Se não for POST, redireciona para a página inicial ou outra apropriada
             header('Location: abc.php');
+            exit();
+        }
+    }
+
+    public function showCaixaDeEntrada()
+    {
+        if (!isset($_SESSION['usuario_id'])) {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+
+        $id_usuario = $_SESSION['usuario_id'];
+        $tipo_usuario = $_SESSION['usuario_tipo'];
+        $conversas = [];
+
+        if ($tipo_usuario === 'profissional') {
+            $id_profissional = $_SESSION['profissional_id'];
+            $conversas = $this->controle->getSolicitacoesPorProfissional($id_profissional);
+        } elseif ($tipo_usuario === 'cliente') {
+            $conversas = $this->controle->getSolicitacoesPorCliente($id_usuario);
+        }
+
+        // Crie esta nova view
+        include '../view/caixaDeEntrada.php';
+        exit();
+    }
+
+    public function showConversa()
+    {
+        // ... (Verificações de segurança para ver se o usuário logado pertence a esta conversa)
+        $id_solicitacao = $_GET['id'] ?? 0;
+
+        // Busca a solicitação original E as mensagens da conversa
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao); // (Precisa criar essa função no model)
+        $mensagens = $this->controle->buscarMensagensPorSolicitacao($id_solicitacao);
+
+        // ... (Marcar mensagens como 'lida')
+
+        // Crie esta nova view
+        include '../view/conversa.php';
+        exit();
+    }
+
+    public function enviarMensagem()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['usuario_id'])) {
+            $id_solicitacao = $_POST['id_solicitacao'];
+            $id_remetente = $_SESSION['usuario_id'];
+            $id_destinatario = $_POST['id_destinatario']; // O formulário na view 'conversa.php' deve incluir isso
+            $mensagem = $_POST['mensagem'];
+
+            $this->controle->inserirMensagem($id_solicitacao, $id_remetente, $id_destinatario, $mensagem);
+
+            // Atualiza o status
+            if ($_SESSION['usuario_tipo'] === 'profissional') {
+                $this->controle->atualizarStatusSolicitacao($id_solicitacao, 'respondido');
+            } else {
+                $this->controle->atualizarStatusSolicitacao($id_solicitacao, 'em_negociacao');
+            }
+
+            // Redireciona de volta para a conversa
+            header('Location: abc.php?action=verConversa&id=' . $id_solicitacao);
             exit();
         }
     }

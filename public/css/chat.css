@@ -1,0 +1,106 @@
+/* ========================================= */
+/* ESTILOS PARA CAIXA DE ENTRADA E CHAT      */
+/* ========================================= */
+
+/* --- Caixa de Entrada --- */
+.inbox-container .list-group-item {
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.inbox-container .list-group-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.inbox-container .list-group-item small {
+    font-weight: 500;
+}
+
+/* --- Container do Chat --- */
+.chat-container .card-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background-color: #f4f7f6;
+}
+
+/* --- Mensagens --- */
+.chat-message {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    max-width: 75%;
+}
+
+.message-bubble {
+    padding: 0.75rem 1.25rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+}
+
+.message-sender {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.message-content {
+    margin: 0;
+    word-wrap: break-word;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Mensagem Recebida (Esquerda) */
+.chat-message.received {
+    align-self: flex-start;
+}
+.chat-message.received .message-bubble {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-top-left-radius: 0.25rem;
+}
+.chat-message.received .message-time {
+    text-align: left;
+    margin-left: 0.25rem;
+}
+
+/* Mensagem Enviada (Direita) */
+.chat-message.sent {
+    align-self: flex-end;
+}
+.chat-message.sent .message-bubble {
+    background-color: #0d6efd; /* Cor primária do Bootstrap */
+    color: white;
+    border: 1px solid #0a58ca;
+    border-top-right-radius: 0.25rem;
+}
+.chat-message.sent .message-sender {
+    color: #e0e0e0;
+}
+.chat-message.sent .message-time {
+    text-align: right;
+    margin-right: 0.25rem;
+}
+
+/* --- Formulário de Resposta --- */
+.chat-reply-form .form-control {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    resize: none;
+}
+.chat-reply-form .btn {
+    border-radius: 0;
+}

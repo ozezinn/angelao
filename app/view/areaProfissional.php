@@ -150,6 +150,18 @@ $total_solicitacoes = count($solicitacoes);
                 <div class="row g-4">
                     <?php if (!empty($solicitacoes)): ?>
                         <?php foreach ($solicitacoes as $solicitacao): ?>
+                            <?php
+                            // Define um ícone e cor para o status
+                            $status_info = [
+                                'novo' => ['icon' => 'bi-envelope-fill', 'color' => 'primary', 'text' => 'Nova Solicitação'],
+                                'respondido' => ['icon' => 'bi-arrow-down-left-circle-fill', 'color' => 'success', 'text' => 'Respondido'],
+                                'em_negociacao' => ['icon' => 'bi-chat-dots-fill', 'color' => 'info', 'text' => 'Em Negociação'],
+                                'finalizado' => ['icon' => 'bi-check-circle-fill', 'color' => 'secondary', 'text' => 'Finalizado'],
+                                'arquivado' => ['icon' => 'bi-archive-fill', 'color' => 'secondary', 'text' => 'Arquivado'],
+                            ];
+                            $status_atual = $solicitacao['status_solicitacao'] ?? 'novo';
+                            $status = $status_info[$status_atual];
+                            ?>
                             <div class="col-md-6 col-lg-4">
                                 <div class="card h-100 shadow-sm solicitation-card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -157,23 +169,15 @@ $total_solicitacoes = count($solicitacoes);
                                             <i class="bi bi-briefcase-fill me-2"></i>
                                             <strong><?= htmlspecialchars($solicitacao['tipo_evento']) ?></strong>
                                         </h6>
-                                        <span class="badge bg-primary">Novo</span>
+                                        <span class="badge bg-<?= $status['color'] ?>">
+                                            <i class="bi <?= $status['icon'] ?> me-1"></i>
+                                            <?= $status['text'] ?>
+                                        </span>
                                     </div>
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title"><?= htmlspecialchars($solicitacao['nome_solicitante']) ?></h5>
 
                                         <ul class="list-unstyled text-muted small mb-3">
-                                            <li class="mb-1">
-                                                <i class="bi bi-envelope-fill me-2 text-primary"></i>
-                                                <a
-                                                    href="mailto:<?= htmlspecialchars($solicitacao['email_solicitante']) ?>"><?= htmlspecialchars($solicitacao['email_solicitante']) ?></a>
-                                            </li>
-                                            <?php if (!empty($solicitacao['telefone_solicitante'])): ?>
-                                                <li class="mb-1">
-                                                    <i class="bi bi-telephone-fill me-2 text-success"></i>
-                                                    <?= htmlspecialchars($solicitacao['telefone_solicitante']) ?>
-                                                </li>
-                                            <?php endif; ?>
                                             <?php if (!empty($solicitacao['data_evento'])): ?>
                                                 <li class="mb-2">
                                                     <i class="bi bi-calendar-event-fill me-2 text-dark"></i>
@@ -188,9 +192,14 @@ $total_solicitacoes = count($solicitacoes);
                                         <p class="card-text small solicitation-message flex-grow-1">
                                             <?= nl2br(htmlspecialchars($solicitacao['mensagem'])) ?>
                                         </p>
+
+                                        <a href="abc.php?action=verConversa&id=<?= $solicitacao['id_solicitacao'] ?>"
+                                            class="btn btn-primary mt-3">
+                                            <i class="bi bi-chat-fill me-1"></i> Ver Conversa
+                                        </a>
                                     </div>
                                     <div class="card-footer text-muted text-end small">
-                                        Recebido em: <?= date('d/m/Y', strtotime($solicitacao['data_evento'])) ?>
+                                       Recebido em: <?= !empty($solicitacao['data_solicitacao']) ? date('d/m/Y', strtotime($solicitacao['data_solicitacao'])) : 'Data não disponível' ?>
                                     </div>
                                 </div>
                             </div>

@@ -485,5 +485,83 @@ class UsuarioModel
             return false;
         }
     }
+
+    public function buscarSolicitacaoPorId($id_solicitacao) {
+        // A lógica do banco de dados para buscar a solicitação vem aqui.
+        // Isto é apenas um exemplo:
+        try {
+            $sql = "SELECT * FROM solicitacoes_orcamento WHERE id_solicitacao = :id";
+            $stmt = $this->db->prepare($sql); // Assumindo que você tem a conexão $this->db
+            $stmt->bindParam(':id', $id_solicitacao, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            // Lidar com o erro
+            error_log("Erro ao buscar solicitação: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Insere uma nova mensagem na conversa
+    public function inserirMensagem($id_solicitacao, $id_remetente, $id_destinatario, $mensagem)
+    {
+        $sql = "INSERT INTO mensagens_conversa (id_solicitacao, id_remetente, id_destinatario, mensagem) 
+            VALUES (?, ?, ?, ?)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_solicitacao, $id_remetente, $id_destinatario, $mensagem]);
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erro ao inserir mensagem: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Busca todas as mensagens de uma solicitação específica
+    public function buscarMensagensPorSolicitacao($id_solicitacao)
+    {
+        // Usamos JOIN para pegar o nome do remetente
+        $sql = "SELECT m.*, u.nome as nome_remetente 
+            FROM mensagens_conversa m
+            JOIN usuarios u ON m.id_remetente = u.id_usuario
+            WHERE m.id_solicitacao = ? 
+            ORDER BY m.data_envio ASC";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_solicitacao]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar mensagens: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    // Atualiza o status da solicitação (Ex: para 'respondido')
+    public function atualizarStatusSolicitacao($id_solicitacao, $novo_status)
+    {
+        $sql = "UPDATE solicitacoes_orcamento SET status_solicitacao = ? WHERE id_solicitacao = ?";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$novo_status, $id_solicitacao]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Erro ao atualizar status: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // (Você também precisará de uma função para o CLIENTE ver as solicitações DELE)
+    public function getSolicitacoesPorCliente($id_cliente)
+    {
+        $sql = "SELECT s.*, p.id_usuario as id_usuario_profissional, u.nome as nome_profissional
+            FROM solicitacoes_orcamento s
+            JOIN profissionais p ON s.id_profissional = p.id_profissional
+            JOIN usuarios u ON p.id_usuario = u.id_usuario
+            WHERE s.id_cliente = ? 
+            ORDER BY s.id_solicitacao DESC";
+        // ... (implementar try/catch similar)
+    }
+
 }
 ?>

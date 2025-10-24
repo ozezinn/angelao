@@ -15,6 +15,11 @@ $nomeUsuario = $_SESSION['usuario_nome'] ?? 'Usuário';
                 <p class="text-center mb-4">Olá, <strong><?= htmlspecialchars($nomeUsuario) ?></strong>! O que você gostaria de fazer?</p>
                 
                 <div class="list-group">
+                    
+                    <a href="abc.php?action=minhaCaixaDeEntrada" class="list-group-item list-group-item-action d-flex align-items-center">
+                        <i class="bi bi-inbox-fill me-3"></i>
+                        Caixa de Entrada
+                    </a>
                     <?php if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'profissional'): ?>
                     <button type="button" class="list-group-item list-group-item-action d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         <i class="bi bi-pencil-square me-3"></i>
@@ -32,7 +37,7 @@ $nomeUsuario = $_SESSION['usuario_nome'] ?? 'Usuário';
                         Sair (Logout)
                     </a>
 
-                    <a href="abc.php?action=excluirConta" class="list-group-item list-group-item-action list-group-item-danger d-flex align-items-center mt-3">
+                    <a href="abc.php?action=excluirConta" class="list-group-item list-group-item-action list-group-item-danger d-flex align-items-center mt-3" onclick="return confirm('Tem certeza que deseja excluir sua conta? Esta ação é irreversível.');">
                         <i class="bi bi-exclamation-triangle-fill me-3"></i>
                         Excluir Minha Conta
                     </a>
