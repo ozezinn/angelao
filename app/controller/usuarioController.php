@@ -22,14 +22,14 @@ try {
 class UsuarioController
 {
     private $controle;
-    private $db;
+    private $db; 
 
     // Modifique o construtor para receber o PDO
-    public function __construct($pdo)
+    public function __construct($pdo) 
     {
         $this->db = $pdo; // Guarde a conexão
         // Passe a conexão ao criar o model
-        $this->controle = new UsuarioModel($this->db);
+        $this->controle = new UsuarioModel($this->db); 
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -473,10 +473,10 @@ class UsuarioController
         // Se nenhum arquivo foi enviado (UPLOAD_ERR_NO_FILE), $caminho_foto continua null e o processo segue
 
         // Atualiza o banco de dados (somente se $caminho_foto for definido ou se não houve tentativa de upload)
+        $model = new UsuarioModel();
         // A função updateProfissional precisa saber lidar com $caminho_foto sendo null (não atualizar o campo)
-        // Use a propriedade '$this->controle' que já contém o model conectado
-        $sucesso = $this->controle->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
-        
+        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
+
         if ($sucesso) {
             $_SESSION['usuario_nome'] = $nome; // Atualiza o nome na sessão caso tenha mudado
             header('Location: abc.php?action=areaProfissional&status=success');
@@ -485,7 +485,6 @@ class UsuarioController
         }
         exit();
     }
-
     public function uploadFotoPortfolio()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['profissional_id'])) {
@@ -569,7 +568,6 @@ class UsuarioController
         }
         exit();
     }
-
     public function excluirMinhaConta()
     {
         if (!isset($_SESSION['usuario_id'])) {
@@ -614,7 +612,7 @@ class UsuarioController
         }
 
 
-        $model = new UsuarioModel();
+        $model = $this->controle;
         $caminho_arquivo = $model->deletePortfolioItem($id_item, $id_profissional);
 
         if ($caminho_arquivo) {
@@ -658,7 +656,7 @@ class UsuarioController
         }
 
         // Chama o Model para atualizar
-        $model = new UsuarioModel();
+        $model = $this->controle;
         $sucesso = $model->updatePortfolioItem($id_item, $id_profissional, $titulo, $descricao, $id_servico);
 
         if ($sucesso) {
@@ -915,60 +913,16 @@ class UsuarioController
 
     public function showConversa()
     {
-        if (!isset($_SESSION['usuario_id'])) {
-            // Redirecionamento seguro se não estiver logado
-            header('Location: abc.php?action=logar');
-            exit();
-        }
-        $id_usuario_logado = $_SESSION['usuario_id'];
-        $id_solicitacao = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); // Validar entrada
+        // ... (Verificações de segurança para ver se o usuário logado pertence a esta conversa)
+        $id_solicitacao = $_GET['id'] ?? 0;
 
-        if (!$id_solicitacao) {
-            // ID inválido ou ausente
-            header('Location: abc.php?action=minhaCaixaDeEntrada&status=invalid_id');
-            exit();
-        }
-
-        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
-
-        if (!$solicitacao) {
-            // Solicitação não encontrada
-            header('Location: abc.php?action=minhaCaixaDeEntrada&status=not_found');
-            exit();
-        }
-
-        // --- INÍCIO DA CORREÇÃO LÓGICA ---
-        $id_profissional_solicitacao = $solicitacao['id_profissional']; // ID do profissional na tabela solicitacoes_orcamento
-        $id_cliente_solicitacao = $solicitacao['id_cliente'];
-
-        // Busca o ID de usuário correspondente ao profissional da solicitação
-        $id_usuario_profissional = $this->controle->getUsuarioIdPorProfissionalId($id_profissional_solicitacao);
-
-        $id_outra_pessoa = null;
-        $usuario_pertence_conversa = false;
-
-        // Verifica se o logado é o profissional E se existe um cliente associado
-        if ($id_usuario_logado == $id_usuario_profissional && $id_cliente_solicitacao) {
-            $id_outra_pessoa = $id_cliente_solicitacao;
-            $usuario_pertence_conversa = true;
-        }
-        // Verifica se o logado é o cliente E se existe um profissional associado
-        elseif ($id_usuario_logado == $id_cliente_solicitacao && $id_usuario_profissional) {
-            $id_outra_pessoa = $id_usuario_profissional;
-            $usuario_pertence_conversa = true;
-        }
-
-        // Se o usuário logado não for nem o cliente nem o profissional da conversa
-        if (!$usuario_pertence_conversa) {
-            // Usa header() para redirecionamento limpo
-            header('Location: abc.php?action=minhaCaixaDeEntrada&status=access_denied');
-            exit();
-        }
-        // --- FIM DA CORREÇÃO LÓGICA ---
-
+        // Busca a solicitação original E as mensagens da conversa
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao); // (Precisa criar essa função no model)
         $mensagens = $this->controle->buscarMensagensPorSolicitacao($id_solicitacao);
 
-        // Passa as variáveis para a view
+        // ... (Marcar mensagens como 'lida')
+
+        // Crie esta nova view
         include '../view/conversa.php';
         exit();
     }

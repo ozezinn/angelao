@@ -81,7 +81,7 @@ $nome = $_SESSION['usuario_nome'];
                         <?php foreach ($profissionais as $prof) : ?>
                             <div class="col-md-4 col-lg-3">
                                 <div class="card professional-result-card h-100">
-                                    <img src="../../<?= htmlspecialchars($prof['foto_perfil'] ?? 'view/img/profile-placeholder.jpg') ?>" alt="Foto de <?= htmlspecialchars($prof['nome']) ?>">
+                                    <img src="<?= !empty($prof['foto_perfil']) ? '../../' . htmlspecialchars($prof['foto_perfil']) : '../view/img/profile-placeholder.jpg' ?>"
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title"><?= htmlspecialchars($prof['nome']) ?></h5>
                                         <p class="card-text text-muted small mb-2"><i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($prof['localizacao'] ?? 'Não informado') ?></p>

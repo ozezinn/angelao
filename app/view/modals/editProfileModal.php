@@ -29,7 +29,7 @@ $todas_especialidades = [
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 text-center">
-                            <img src="../<?= htmlspecialchars($foto_perfil ?? 'caminho/para/imagem/padrao.jpg') ?>" class="img-fluid rounded-circle mb-3" alt="Foto atual">
+                            <img src="<?= strpos($foto_perfil, 'public/') === 0 ? '../../' . htmlspecialchars($foto_perfil) : '../' . htmlspecialchars($foto_perfil) ?>"
                             <label for="foto_perfil" class="form-label">Alterar foto de perfil</label>
                             <input class="form-control form-control-sm" type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
                         </div>

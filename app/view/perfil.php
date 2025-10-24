@@ -25,7 +25,8 @@ $total_especialidades = count($especialidades);
         .sticky-top-column {
             position: -webkit-sticky;
             position: sticky;
-            top: 100px; /* 80px (navbar) + 20px (espaçamento) */
+            top: 100px;
+            /* 80px (navbar) + 20px (espaçamento) */
             z-index: 1000;
         }
     </style>
@@ -44,13 +45,13 @@ $total_especialidades = count($especialidades);
         require_once __DIR__ . '/layout/header.php';
     }
     ?>
-    
+
     <main class="admin-container">
-        
+
         <header class="profile-header mb-4">
             <div class="row align-items-center">
                 <div class="col-lg-3 text-center">
-                    <img src="../../<?= htmlspecialchars($foto_perfil) ?>"
+                    <img src="<?= strpos($foto_perfil, 'public/') === 0 ? '../../' . htmlspecialchars($foto_perfil) : '../' . htmlspecialchars($foto_perfil) ?>"
                         alt="Foto de Perfil de <?= htmlspecialchars($nome) ?>" class="profile-picture">
                 </div>
                 <div class="col-lg-9">
@@ -115,15 +116,14 @@ $total_especialidades = count($especialidades);
                         <div class="row g-3">
                             <?php foreach ($portfolio_imagens as $imagem): ?>
                                 <div class="col-md-6 col-lg-4">
-                                    <a href="#" class="portfolio-card-link" 
-                                       data-bs-toggle="modal" 
-                                       data-bs-target="#portfolioModal" 
-                                       data-bs-img-src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>"
-                                       data-bs-img-title="<?= htmlspecialchars($imagem['titulo']) ?>">
-                                        
+                                    <a href="#" class="portfolio-card-link" data-bs-toggle="modal"
+                                        data-bs-target="#portfolioModal"
+                                        data-bs-img-src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>"
+                                        data-bs-img-title="<?= htmlspecialchars($imagem['titulo']) ?>">
+
                                         <div class="card portfolio-card">
-                                            <img src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>" class="card-img-top"
-                                                alt="<?= htmlspecialchars($imagem['titulo']) ?>">
+                                            <img src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>"
+                                                class="card-img-top" alt="<?= htmlspecialchars($imagem['titulo']) ?>">
                                             <div class="card-body-overlay">
                                                 <h5 class="card-title-overlay"><?= htmlspecialchars($imagem['titulo']) ?></h5>
                                             </div>
@@ -143,32 +143,40 @@ $total_especialidades = count($especialidades);
                     <section id="solicitar-orcamento" class="content-card">
                         <h2 class="text-center mb-4">Entre em Contato</h2>
                         <div class="row justify-content-center">
-                            <div class="col-lg-12"> <form action="abc.php?action=solicitarOrcamento" method="POST">
+                            <div class="col-lg-12">
+                                <form action="abc.php?action=solicitarOrcamento" method="POST">
 
                                     <input type="hidden" name="id_usuario" value="<?= htmlspecialchars($id_usuario) ?>">
-                                    <input type="hidden" name="id_profissional" value="<?= htmlspecialchars($id_profissional) ?>">
+                                    <input type="hidden" name="id_profissional"
+                                        value="<?= htmlspecialchars($id_profissional) ?>">
 
                                     <div class="mb-3">
                                         <label for="nome_solicitante" class="form-label">Seu Nome</label>
-                                        <input type="text" class="form-control" id="nome_solicitante" name="nome_solicitante" required>
+                                        <input type="text" class="form-control" id="nome_solicitante"
+                                            name="nome_solicitante" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="email_solicitante" class="form-label">Seu Email</label>
                                         <?php if ($isUserLoggedIn && !empty($email_solicitante_logado)): ?>
                                             <input type="email" class="form-control-plaintext" id="email_solicitante"
-                                                   name="email_solicitante" value="<?= htmlspecialchars($email_solicitante_logado) ?>" readonly required>
+                                                name="email_solicitante"
+                                                value="<?= htmlspecialchars($email_solicitante_logado) ?>" readonly
+                                                required>
                                         <?php else: ?>
                                             <input type="email" class="form-control" id="email_solicitante"
-                                                   name="email_solicitante" value="" placeholder="seu@email.com" required>
+                                                name="email_solicitante" value="" placeholder="seu@email.com" required>
                                         <?php endif; ?>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="telefone_solicitante" class="form-label">Seu Telefone (Opcional)</label>
-                                        <input type="tel" class="form-control" id="telefone_solicitante" name="telefone_solicitante" placeholder="(XX) XXXXX-XXXX">
+                                        <label for="telefone_solicitante" class="form-label">Seu Telefone
+                                            (Opcional)</label>
+                                        <input type="tel" class="form-control" id="telefone_solicitante"
+                                            name="telefone_solicitante" placeholder="(XX) XXXXX-XXXX">
                                     </div>
                                     <div class="mb-3">
                                         <label for="data_evento" class="form-label">Data do Evento (Opcional)</label>
-                                        <input type="date" class="form-control" id="data_evento" name="data_evento" min="<?= date('Y-m-d') ?>">
+                                        <input type="date" class="form-control" id="data_evento" name="data_evento"
+                                            min="<?= date('Y-m-d') ?>">
                                     </div>
                                     <div class="mb-3">
                                         <label for="tipo_evento" class="form-label">Tipo de Evento/Serviço</label>
@@ -184,8 +192,7 @@ $total_especialidades = count($especialidades);
                                     <div class="mb-3">
                                         <label for="mensagem" class="form-label">Mensagem</label>
                                         <textarea class="form-control" id="mensagem" name="mensagem" rows="4"
-                                            placeholder="Descreva o que você precisa..."
-                                            required></textarea>
+                                            placeholder="Descreva o que você precisa..." required></textarea>
                                     </div>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary w-100">Enviar Solicitação</button>
@@ -203,22 +210,25 @@ $total_especialidades = count($especialidades);
         }
         ?>
 
-        <div class="modal fade" id="portfolioModal" tabindex="-1" aria-labelledby="portfolioModalLabel" aria-hidden="true">
+        <div class="modal fade" id="portfolioModal" tabindex="-1" aria-labelledby="portfolioModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content" style="background-color: transparent; border: none;">
                     <div class="modal-header" style="border-bottom: none;">
-                         <h5 class="modal-title" id="portfolioModalLabel" style="color: white; font-weight: 600;"></h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="portfolioModalLabel" style="color: white; font-weight: 600;"></h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <img src="" class="img-fluid rounded modal-portfolio-img" alt="Foto do Portfólio" style="max-height: 80vh;">
+                        <img src="" class="img-fluid rounded modal-portfolio-img" alt="Foto do Portfólio"
+                            style="max-height: 80vh;">
                     </div>
                 </div>
             </div>
         </div>
 
-    </main> 
-    
+    </main>
+
     <?php require_once __DIR__ . '/layout/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -231,7 +241,7 @@ $total_especialidades = count($especialidades);
                 if (!alertPlaceholder) return;
                 alertPlaceholder.innerHTML = '';
                 const wrapper = document.createElement('div');
-                let iconClass = 'bi-check-circle-fill'; 
+                let iconClass = 'bi-check-circle-fill';
                 if (type === 'danger') {
                     iconClass = 'bi-exclamation-triangle-fill';
                 }
@@ -264,15 +274,15 @@ $total_especialidades = count($especialidades);
                 portfolioModal.addEventListener('show.bs.modal', function (event) {
                     // Botão que acionou o modal
                     const link = event.relatedTarget;
-                    
+
                     // Extrai informações dos atributos data-bs-*
                     const imgSrc = link.getAttribute('data-bs-img-src');
                     const imgTitle = link.getAttribute('data-bs-img-title');
-                    
+
                     // Atualiza o conteúdo do modal
                     const modalTitle = portfolioModal.querySelector('.modal-title');
                     const modalImage = portfolioModal.querySelector('.modal-portfolio-img');
-                    
+
                     modalTitle.textContent = imgTitle;
                     modalImage.src = imgSrc;
                     modalImage.alt = imgTitle;
@@ -282,4 +292,5 @@ $total_especialidades = count($especialidades);
     </script>
 
 </body>
+
 </html>
