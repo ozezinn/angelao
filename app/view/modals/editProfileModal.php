@@ -29,10 +29,13 @@ $todas_especialidades = [
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 text-center">
-                            <img src="<?= strpos($foto_perfil, 'public/') === 0 ? '../../' . htmlspecialchars($foto_perfil) : '../' . htmlspecialchars($foto_perfil) ?>"
-                            <label for="foto_perfil" class="form-label">Alterar foto de perfil</label>
-                            <input class="form-control form-control-sm" type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
-                        </div>
+    
+    <img src="<?= strpos($foto_perfil, 'public/') === 0 ? '../../' . htmlspecialchars($foto_perfil) : '../' . htmlspecialchars($foto_perfil) ?>"
+         alt="Foto de Perfil Atual" class="profile-picture mb-3">
+
+    <label for="foto_perfil" class="form-label">Alterar foto de perfil</label>
+    <input class="form-control form-control-sm" type="file" id="foto_perfil" name="foto_perfil" accept="image/*">
+</div>
                         <div class="col-md-8">
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome Completo</label>
