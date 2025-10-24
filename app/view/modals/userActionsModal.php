@@ -37,7 +37,11 @@ $nomeUsuario = $_SESSION['usuario_nome'] ?? 'Usuário';
                         Sair (Logout)
                     </a>
 
-                    <a href="abc.php?action=excluirConta" class="list-group-item list-group-item-action list-group-item-danger d-flex align-items-center mt-3" onclick="return confirm('Tem certeza que deseja excluir sua conta? Esta ação é irreversível.');">
+                    <a href="#" class="list-group-item list-group-item-action list-group-item-danger d-flex align-items-center mt-3" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#confirmDeleteModal" 
+                        data-href="abc.php?action=excluirConta" 
+                        data-message="Tem certeza que deseja excluir sua conta? Esta ação é irreversível.">
                         <i class="bi bi-exclamation-triangle-fill me-3"></i>
                         Excluir Minha Conta
                     </a>

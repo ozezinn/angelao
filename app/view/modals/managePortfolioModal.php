@@ -26,9 +26,13 @@
                                                 data-item-service-id="<?= htmlspecialchars($imagem['id_servico'] ?? '') ?>">
                                                 <i class="bi bi-pencil-square"></i> Editar
                                             </button>
-                                            <a href="abc.php?action=deleteFoto&id=<?= $imagem['id_item'] ?>"
+                                            
+                                            <a href="#"
                                                 class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Tem certeza que deseja excluir esta foto?');">
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#confirmDeleteModal"
+                                                data-href="abc.php?action=deleteFoto&id=<?= $imagem['id_item'] ?>"
+                                                data-message="Tem certeza que deseja excluir esta foto?">
                                                 <i class="bi bi-trash-fill"></i> Excluir
                                             </a>
                                         </div>

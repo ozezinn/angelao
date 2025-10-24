@@ -1,3 +1,4 @@
+[File: ozezinn/angelao/angelao-0ce7c72fda66249d4d8f62d0788b945d586dce88/app/view/cadastrar.php]
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -76,6 +77,15 @@
                             </div>
                         </div>
 
+                        <div class="input-group" style="margin-top: 1.5rem; display: flex; align-items: center; flex-direction: row; gap: 10px;">
+                            <input type="checkbox" name="termos" id="termos" style="width: auto; height: auto;">
+                            <label for="termos" style="margin-bottom: 0; font-size: 0.85rem; font-weight: normal; line-height: 1.4;">
+                                Eu li e concordo com os 
+                                <a href="termos.php" target="_blank" style="color: var(--cor-preto); font-weight: 600;">Termos de Uso</a> e 
+                                <a href="politica.php" target="_blank" style="color: var(--cor-preto); font-weight: 600;">Política de Privacidade</a>.
+                            </label>
+                        </div>
+
                         <button style="margin-top:2rem;" class="sign" type="submit">Cadastrar-se</button>
                     </form>
                     <p class="signup-link">Já tem uma conta? <a href="login.php">Faça login</a></p>
@@ -95,6 +105,7 @@
             const camposProfissional = document.getElementById('campos-profissional');
             const cpfInput = document.getElementById('cpf');
             const cpfErro = document.getElementById('cpf-erro');
+            const termosCheckbox = document.getElementById('termos'); // <-- NOVO CHECKBOX
 
             // --- NOVOS ELEMENTOS PARA SENHA ---
             const senhaInput = document.getElementById('senha');
@@ -154,6 +165,9 @@
 
             if (status === 'weak_password') {
                 showAlert('A senha é muito fraca. Por favor, cumpra todos os requisitos.', 'danger');
+            }
+            if (status === 'terms_required') { // <-- NOVO STATUS DE ERRO
+                showAlert('Você deve aceitar os Termos de Uso para se cadastrar.', 'danger');
             }
 
             // --- NOVA FUNÇÃO DE VALIDAÇÃO DE SENHA (AO DIGITAR) ---
@@ -221,6 +235,7 @@
             form.addEventListener('submit', function (event) {
                 const ehProfissional = tipoUsuarioSelect.value === 'profissional';
                 const senhaValida = validarSenhaAoDigitar(); // Chama a validação da senha
+                const termosValido = termosCheckbox.checked; // <-- VALIDA O CHECKBOX
                 let cpfValido = true;
 
                 // Validação do CPF (existente)
@@ -229,8 +244,8 @@
                     cpfValido = false;
                 }
 
-                // Impede o envio se o CPF ou a Senha forem inválidos
-                if (!cpfValido || !senhaValida) {
+                // Impede o envio se o CPF, a Senha ou os Termos forem inválidos
+                if (!cpfValido || !senhaValida || !termosValido) {
                     event.preventDefault(); // Impede o envio do formulário
 
                     if (!senhaValida && reqContainer) {
@@ -239,6 +254,10 @@
                         reqContainer.style.padding = '5px';
                         reqContainer.style.borderRadius = '5px';
                         showAlert('A senha não cumpre todos os requisitos.', 'danger');
+                    }
+                    
+                    if (!termosValido) { // <-- MOSTRA O ALERTA DOS TERMOS
+                        showAlert('Você deve aceitar os Termos de Uso e a Política de Privacidade.', 'danger');
                     }
                 }
             });

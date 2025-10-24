@@ -1,3 +1,4 @@
+[File: ozezinn/angelao/angelao-0ce7c72fda66249d4d8f62d0788b945d586dce88/app/controller/usuarioController.php]
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -144,6 +145,15 @@ class UsuarioController
                 exit();
             }
             // --- FIM DA VALIDAÇÃO DE SENHA ---
+
+            // --- INÍCIO DA VALIDAÇÃO DE TERMOS ---
+            if (!isset($_POST['termos'])) {
+                $tipo_param = !empty($tipo) ? '&tipo=' . urlencode($tipo) : '';
+                // Redireciona de volta com um erro específico de termos
+                header('Location: ../view/cadastrar.php?status=terms_required' . $tipo_param);
+                exit();
+            }
+            // --- FIM DA VALIDAÇÃO DE TERMOS ---
 
             // Se a senha for forte, CRIE O HASH
             $senha = password_hash($senha_raw, PASSWORD_DEFAULT); // <-- Hash criado aqui
@@ -918,12 +928,12 @@ class UsuarioController
             header('Location: abc.php?action=logar');
             exit();
         }
-        
+
         $id_solicitacao = $_GET['id'] ?? 0;
         // FIX 1: Definir o ID do usuário logado para a view
-        $id_usuario_logado = $_SESSION['usuario_id']; 
+        $id_usuario_logado = $_SESSION['usuario_id'];
 
-        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao); 
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
 
         if (!$solicitacao) {
             // Se a solicitação não for encontrada
@@ -932,10 +942,10 @@ class UsuarioController
         }
 
         // 2. Lógica de Segurança: O usuário logado pertence a esta conversa?
-        
+
         // ID do cliente que abriu a solicitação
-        $id_cliente_solicitacao = $solicitacao['id_cliente']; 
-        
+        $id_cliente_solicitacao = $solicitacao['id_cliente'];
+
         // ID do profissional que recebeu a solicitação (buscando o id_usuario dele)
         $id_usuario_profissional = $this->controle->getUsuarioIdPorProfissionalId($solicitacao['id_profissional']);
 
@@ -949,10 +959,10 @@ class UsuarioController
         $id_outra_pessoa = 0;
         if ($_SESSION['usuario_tipo'] === 'profissional') {
             // Se o logado é profissional, a outra pessoa é o cliente
-            $id_outra_pessoa = $id_cliente_solicitacao; 
+            $id_outra_pessoa = $id_cliente_solicitacao;
         } else {
             // Se o logado é cliente, a outra pessoa é o profissional
-            $id_outra_pessoa = $id_usuario_profissional; 
+            $id_outra_pessoa = $id_usuario_profissional;
         }
 
         // 3. Buscar as mensagens (isto já estava correto)

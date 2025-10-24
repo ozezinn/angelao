@@ -138,7 +138,11 @@ require_once __DIR__ . '/layout/headerLog.php';
                                             <a href="abc.php?action=editarUsuario&id=<?= $p['id_usuario'] ?>" class="btn btn-sm btn-outline-primary" title="Editar">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
-                                            <a href="abc.php?action=excluirProfissional&id=<?= $p['id_usuario'] ?>" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este profissional?');">
+                                            <a href="#" class="btn btn-sm btn-outline-danger" title="Excluir" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#confirmDeleteModal" 
+                                                data-href="abc.php?action=excluirProfissional&id=<?= $p['id_usuario'] ?>" 
+                                                data-message="Tem certeza que deseja excluir este profissional?">
                                                 <i class="bi bi-trash-fill"></i>
                                             </a>
                                         </td>
@@ -186,7 +190,11 @@ require_once __DIR__ . '/layout/headerLog.php';
                                             <a href="abc.php?action=editarUsuario&id=<?= $c['id_usuario'] ?>" class="btn btn-sm btn-outline-primary" title="Editar">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
-                                            <a href="abc.php?action=excluirCliente&id=<?= $c['id_usuario'] ?>" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este cliente?');">
+                                            <a href="#" class="btn btn-sm btn-outline-danger" title="Excluir" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#confirmDeleteModal" 
+                                                data-href="abc.php?action=excluirCliente&id=<?= $c['id_usuario'] ?>" 
+                                                data-message="Tem certeza que deseja excluir este cliente?">
                                                 <i class="bi bi-trash-fill"></i>
                                             </a>
                                         </td>
