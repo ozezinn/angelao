@@ -22,14 +22,14 @@ try {
 class UsuarioController
 {
     private $controle;
-    private $db; 
+    private $db;
 
     // Modifique o construtor para receber o PDO
-    public function __construct($pdo) 
+    public function __construct($pdo)
     {
         $this->db = $pdo; // Guarde a conexão
         // Passe a conexão ao criar o model
-        $this->controle = new UsuarioModel($this->db); 
+        $this->controle = new UsuarioModel($this->db);
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -473,9 +473,9 @@ class UsuarioController
         // Se nenhum arquivo foi enviado (UPLOAD_ERR_NO_FILE), $caminho_foto continua null e o processo segue
 
         // Atualiza o banco de dados (somente se $caminho_foto for definido ou se não houve tentativa de upload)
-        $model = new UsuarioModel();
+        // $model = new UsuarioModel(); // <-- COMENTE OU APAGUE ESTA LINHA
         // A função updateProfissional precisa saber lidar com $caminho_foto sendo null (não atualizar o campo)
-        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
+        $sucesso = $this->controle->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
 
         if ($sucesso) {
             $_SESSION['usuario_nome'] = $nome; // Atualiza o nome na sessão caso tenha mudado
