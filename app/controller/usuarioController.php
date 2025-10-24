@@ -473,10 +473,10 @@ class UsuarioController
         // Se nenhum arquivo foi enviado (UPLOAD_ERR_NO_FILE), $caminho_foto continua null e o processo segue
 
         // Atualiza o banco de dados (somente se $caminho_foto for definido ou se não houve tentativa de upload)
-        $model = new UsuarioModel();
         // A função updateProfissional precisa saber lidar com $caminho_foto sendo null (não atualizar o campo)
-        $sucesso = $model->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
-
+        // Use a propriedade '$this->controle' que já contém o model conectado
+        $sucesso = $this->controle->updateProfissional($id_usuario, $id_profissional, $nome, $localizacao, $biografia, $caminho_foto, $especialidades);
+        
         if ($sucesso) {
             $_SESSION['usuario_nome'] = $nome; // Atualiza o nome na sessão caso tenha mudado
             header('Location: abc.php?action=areaProfissional&status=success');
