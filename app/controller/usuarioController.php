@@ -913,16 +913,54 @@ class UsuarioController
 
     public function showConversa()
     {
-        // ... (Verificações de segurança para ver se o usuário logado pertence a esta conversa)
+        // 1. Verificação de segurança: O usuário está logado?
+        if (!isset($_SESSION['usuario_id'])) {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+        
         $id_solicitacao = $_GET['id'] ?? 0;
+        // FIX 1: Definir o ID do usuário logado para a view
+        $id_usuario_logado = $_SESSION['usuario_id']; 
 
-        // Busca a solicitação original E as mensagens da conversa
-        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao); // (Precisa criar essa função no model)
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao); 
+
+        if (!$solicitacao) {
+            // Se a solicitação não for encontrada
+            echo "<script>alert('Conversa não encontrada.'); window.location.href='abc.php?action=minhaCaixaDeEntrada';</script>";
+            exit();
+        }
+
+        // 2. Lógica de Segurança: O usuário logado pertence a esta conversa?
+        
+        // ID do cliente que abriu a solicitação
+        $id_cliente_solicitacao = $solicitacao['id_cliente']; 
+        
+        // ID do profissional que recebeu a solicitação (buscando o id_usuario dele)
+        $id_usuario_profissional = $this->controle->getUsuarioIdPorProfissionalId($solicitacao['id_profissional']);
+
+        if ($id_usuario_logado != $id_cliente_solicitacao && $id_usuario_logado != $id_usuario_profissional) {
+            // Se o usuário logado NÃO é o cliente E NÃO é o profissional, nega o acesso.
+            echo "<script>alert('Acesso negado a esta conversa.'); window.location.href='abc.php?action=minhaCaixaDeEntrada';</script>";
+            exit();
+        }
+
+        // FIX 2: Definir quem é o destinatário da resposta ($id_outra_pessoa) para a view
+        $id_outra_pessoa = 0;
+        if ($_SESSION['usuario_tipo'] === 'profissional') {
+            // Se o logado é profissional, a outra pessoa é o cliente
+            $id_outra_pessoa = $id_cliente_solicitacao; 
+        } else {
+            // Se o logado é cliente, a outra pessoa é o profissional
+            $id_outra_pessoa = $id_usuario_profissional; 
+        }
+
+        // 3. Buscar as mensagens (isto já estava correto)
         $mensagens = $this->controle->buscarMensagensPorSolicitacao($id_solicitacao);
 
-        // ... (Marcar mensagens como 'lida')
+        // ... (Futuramente, aqui pode entrar a lógica para marcar mensagens como 'lida')
 
-        // Crie esta nova view
+        // 4. Incluir a view (agora com $id_usuario_logado e $id_outra_pessoa definidos)
         include '../view/conversa.php';
         exit();
     }
