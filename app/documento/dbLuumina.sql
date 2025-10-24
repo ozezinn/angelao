@@ -107,3 +107,56 @@ INSERT INTO profissionais (id_usuario, cpf, biografia, localizacao, foto_perfil)
 -- 4. Vincular o profissional às suas especialidades
 -- Carlos
 select * from usuarios
+
+
+
+
+INSERT INTO servicos (id_servico, nome_servico) VALUES
+(1, 'Aniversários'),
+(2, 'Arquitetura'),
+(3, 'Boudoir'),
+(4, 'Casamentos'),
+(5, 'Chás de Bebê'),
+(6, 'Drone'),
+(7, 'Ensaios'),
+(8, 'Esportes'),
+(9, 'Eventos Corporativos'),
+(10, 'Eventos Religiosos'),
+(11, 'Formaturas'),
+(12, 'Gastronomia'),
+(13, 'Institucional'),
+(14, 'Moda'),
+(15, 'Pet'),
+(16, 'Produtos'),
+(17, 'Shows'),
+(18, 'Viagem');
+
+CREATE TABLE password_resets (
+    email VARCHAR(255) NOT NULL PRIMARY KEY,
+    token_hash VARCHAR(64) NOT NULL UNIQUE COMMENT 'Hash SHA-256 do token',
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (email) REFERENCES usuarios(email) ON DELETE CASCADE
+) COMMENT 'Armazena tokens para recuperação de senha';
+
+-- Adicionar ao seu arquivo dbLuumina.sql
+CREATE TABLE mensagens_conversa (
+    id_mensagem INT AUTO_INCREMENT PRIMARY KEY,
+    id_solicitacao INT NOT NULL,
+    id_remetente INT NOT NULL COMMENT 'ID do usuário que enviou (da tabela usuarios)',
+    id_destinatario INT NOT NULL COMMENT 'ID do usuário que recebeu (da tabela usuarios)',
+    mensagem TEXT NOT NULL,
+    data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    lida BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_solicitacao) REFERENCES solicitacoes_orcamento(id_solicitacao) ON DELETE CASCADE,
+    FOREIGN KEY (id_remetente) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    FOREIGN KEY (id_destinatario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+) COMMENT 'Armazena as mensagens trocadas dentro de uma solicitação';
+
+-- Exemplo de como alterar a coluna existente
+ALTER TABLE solicitacoes_orcamento
+MODIFY COLUMN status_solicitacao 
+ENUM('novo', 'respondido', 'em_negociacao', 'finalizado', 'arquivado') 
+NOT NULL DEFAULT 'novo';
+
+ALTER TABLE solicitacoes_orcamento
+ADD COLUMN data_solicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
