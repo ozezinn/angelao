@@ -10,8 +10,15 @@ if (session_status() === PHP_SESSION_NONE) {
 define('BASE_URL', 'http://localhost/angelao/app/view/');
 
 require_once '../controller/usuarioController.php';
+require_once '../model/conexao.php';
 
-$controle = new UsuarioController();
+// Crie a conexão ANTES de criar o controller
+$conexao = new Conexao();
+$pdo = $conexao->conectar();
+
+// Passe a conexão para o controller
+$controle = new UsuarioController($pdo);
+
 $action = $_GET['action'] ?? 'index';
 
 switch ($action) {
@@ -127,7 +134,8 @@ switch ($action) {
     case 'excluirProfissional':
         $id = $_GET['id'] ?? null;
         if ($id) {
-            $model = new UsuarioModel();
+            // Crie o model passando a conexão
+            $model = new UsuarioModel($pdo); // <--- CORREÇÃO
             $model->excluirUsuario($id);
         }
         header('Location: abc.php?action=gerenciarProfissionais');
@@ -138,7 +146,8 @@ switch ($action) {
         $id = $_GET['id'] ?? null;
         if ($id) {
             require_once '../model/usuarioModel.php';
-            $model = new UsuarioModel();
+            // Crie o model passando a conexão
+            $model = new UsuarioModel($pdo); // <--- CORREÇÃO
             $model->excluirUsuario($id);
         }
         header('Location: abc.php?action=gerenciarClientes');

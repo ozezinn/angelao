@@ -4,11 +4,9 @@ require_once '../model/conexao.php';
 class UsuarioModel
 {
     private $pdo;
-
-    public function __construct()
+    public function __construct($databaseConnection)
     {
-        $conexao = new Conexao();
-        $this->pdo = $conexao->conectar();
+        $this->pdo = $databaseConnection;
     }
 
     public function inserir($nome, $senha, $email, $tipo, $cpf = null)
@@ -486,18 +484,17 @@ class UsuarioModel
         }
     }
 
-    public function buscarSolicitacaoPorId($id_solicitacao) {
-        // A lógica do banco de dados para buscar a solicitação vem aqui.
-        // Isto é apenas um exemplo:
+    public function buscarSolicitacaoPorId($id_solicitacao)
+    {
         try {
             $sql = "SELECT * FROM solicitacoes_orcamento WHERE id_solicitacao = :id";
-            $stmt = $this->db->prepare($sql); // Assumindo que você tem a conexão $this->db
+            // Use a variável correta: $this->pdo
+            $stmt = $this->pdo->prepare($sql); // <--- CORREÇÃO
             $stmt->bindParam(':id', $id_solicitacao, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
-            // Lidar com o erro
             error_log("Erro ao buscar solicitação: " . $e->getMessage());
             return false;
         }
@@ -560,7 +557,14 @@ class UsuarioModel
             JOIN usuarios u ON p.id_usuario = u.id_usuario
             WHERE s.id_cliente = ? 
             ORDER BY s.id_solicitacao DESC";
-        // ... (implementar try/catch similar)
+        try { // <--- INÍCIO DA CORREÇÃO
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_cliente]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar solicitações do cliente: " . $e->getMessage());
+            return [];
+        }
     }
 
 }

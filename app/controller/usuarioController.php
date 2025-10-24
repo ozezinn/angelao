@@ -22,9 +22,14 @@ try {
 class UsuarioController
 {
     private $controle;
-    public function __construct()
+    private $db;
+
+    // Modifique o construtor para receber o PDO
+    public function __construct($pdo)
     {
-        $this->controle = new UsuarioModel();
+        $this->db = $pdo; // Guarde a conexão
+        // Passe a conexão ao criar o model
+        $this->controle = new UsuarioModel($this->db);
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -481,8 +486,6 @@ class UsuarioController
         exit();
     }
 
-
-
     public function uploadFotoPortfolio()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['profissional_id'])) {
@@ -566,7 +569,6 @@ class UsuarioController
         }
         exit();
     }
-
 
     public function excluirMinhaConta()
     {
@@ -913,16 +915,37 @@ class UsuarioController
 
     public function showConversa()
     {
-        // ... (Verificações de segurança para ver se o usuário logado pertence a esta conversa)
+        if (!isset($_SESSION['usuario_id'])) { /*...*/
+            exit();
+        } // Segurança
+        $id_usuario_logado = $_SESSION['usuario_id']; // <--- Adicione
         $id_solicitacao = $_GET['id'] ?? 0;
 
-        // Busca a solicitação original E as mensagens da conversa
-        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao); // (Precisa criar essa função no model)
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
+        if (!$solicitacao) { /* Tratar erro */
+            exit();
+        } // Verifique se a solicitação existe
+
+        // --- INÍCIO DA CORREÇÃO ---
+        // Verifica se o usuário logado é o profissional ou o cliente da solicitação
+        $id_profissional_da_solicitacao = $this->controle->getSolicitacoesPorProfissional($id_solicitacao); // Você precisará criar esta função no model
+        $id_cliente_da_solicitacao = $solicitacao['id_cliente'];
+
+        $id_outra_pessoa = null;
+        if ($id_usuario_logado == $id_profissional_da_solicitacao && $id_cliente_da_solicitacao) {
+            $id_outra_pessoa = $id_cliente_da_solicitacao;
+        } elseif ($id_usuario_logado == $id_cliente_da_solicitacao) {
+            // Precisa buscar o id_usuario do profissional a partir do id_profissional
+            $id_outra_pessoa = $this->controle->getUsuarioIdPorProfissionalId($solicitacao['id_profissional']); // Você precisará criar esta função no model
+        } else {
+            // Usuário não pertence a esta conversa - Adicionar tratamento de erro/redirecionamento
+            echo "<script>alert('Acesso negado a esta conversa.'); window.location.href='abc.php?action=minhaCaixaDeEntrada';</script>";
+            exit();
+        }
+        // --- FIM DA CORREÇÃO ---
+
         $mensagens = $this->controle->buscarMensagensPorSolicitacao($id_solicitacao);
 
-        // ... (Marcar mensagens como 'lida')
-
-        // Crie esta nova view
         include '../view/conversa.php';
         exit();
     }
