@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario_tipo']) || $_SESSION['usuario_tipo'] !== 'admin') 
 
 require_once '../model/usuarioModel.php';
 
-$model = new UsuarioModel();
+$model = new UsuarioModel($pdo); // <-- CORREÇÃO: Usar $pdo
 $idUsuario = $_SESSION['editar_id'] ?? null;
 
 // Se não houver um ID de usuário na sessão, redireciona de volta para o painel principal

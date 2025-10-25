@@ -1,4 +1,3 @@
-[File: ozezinn/angelao/angelao-0ce7c72fda66249d4d8f62d0788b945d586dce88/app/view/cadastrar.php]
 <!DOCTYPE html>
 <html lang="pt-BR">
 

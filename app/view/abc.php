@@ -158,7 +158,8 @@ switch ($action) {
         $id = $_GET['id'] ?? null;
         if ($id) {
             $_SESSION['editar_id'] = $id;
-            header('Location: editarUsuario.php'); // Presumo que este arquivo exista
+            // header('Location: editarUsuario.php'); // <-- MUDAR DISSO
+            include '../view/editarUsuario.php'; // <-- PARA ISSO
             exit();
         }
         break;

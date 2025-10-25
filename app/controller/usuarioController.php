@@ -1,4 +1,3 @@
-[File: ozezinn/angelao/angelao-0ce7c72fda66249d4d8f62d0788b945d586dce88/app/controller/usuarioController.php]
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
