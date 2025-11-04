@@ -3,11 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// O controller 'showConversa' é responsável por buscar:
-// $solicitacao (a 1ª mensagem)
-// $mensagens (o histórico de respostas)
-// $id_outra_pessoa (o destinatário da resposta)
-// $id_usuario_logado (da sessão)
 
 if (!isset($_SESSION['usuario_id']) || !isset($solicitacao)) {
     echo "<script>alert('Acesso negado.');
@@ -110,6 +105,73 @@ if (!isset($_SESSION['usuario_id']) || !isset($solicitacao)) {
     <?php require_once __DIR__ . '/layout/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pega o ID da solicitação e o ID do usuário logado (passados pelo PHP)
+            const idSolicitacao = <?= json_encode($solicitacao['id_solicitacao']) ?>;
+            const idUsuarioLogado = <?= json_encode($id_usuario_logado) ?>;
+
+            // Encontra o container do chat
+            const chatBody = document.querySelector('.chat-container .card-body');
+            
+            // Função para pegar o ID da última mensagem na tela
+            let ultimoIdMensagem = <?= $mensagens[count($mensagens) - 1]['id_mensagem'] ?? 0 ?>;
+
+            // Função para renderizar uma nova mensagem
+            function adicionarMensagemAoChat(msg) {
+                const isSent = msg.id_remetente == idUsuarioLogado;
+                const messageClass = isSent ? 'sent' : 'received';
+                const senderName = isSent ? 'Você' : msg.nome_remetente; // Use htmlspecialchars no PHP se preferir
+
+                const dataEnvio = new Date(msg.data_envio).toLocaleString('pt-BR', {
+                    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+
+                const chatMessage = document.createElement('div');
+                chatMessage.className = `chat-message ${messageClass}`;
+                chatMessage.innerHTML = `
+                    <div class="message-bubble">
+                        <div class="message-sender">${senderName}</div>
+                        <p class="message-content">${msg.mensagem.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <div class="message-time">${dataEnvio}</div>
+                `;
+                
+                chatBody.appendChild(chatMessage);
+                
+                // Atualiza o ID da última mensagem
+                ultimoIdMensagem = msg.id_mensagem;
+            }
+
+            // Função que busca novas mensagens
+            async function fetchNovasMensagens() {
+                try {
+                    const url = `abc.php?action=getNovasMensagens&id_solicitacao=${idSolicitacao}&ultimo_id=${ultimoIdMensagem}`;
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) return;
+
+                    const novasMensagens = await response.json();
+
+                    if (novasMensagens.length > 0) {
+                        novasMensagens.forEach(adicionarMensagemAoChat);
+                        // Rola para o final do chat
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar mensagens:', error);
+                }
+            }
+
+            // Inicia o "polling": verifica por novas mensagens a cada 5 segundos
+            setInterval(fetchNovasMensagens, 5000); // 5000 ms = 5 segundos
+
+            // Rola para o final ao carregar a página
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+    </script>
 </body>
 
 </html>

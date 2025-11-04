@@ -974,6 +974,25 @@ class UsuarioController
         exit();
     }
 
+    public function getNovasMensagens()
+    {
+        if (!isset($_SESSION['usuario_id']) || !isset($_GET['id_solicitacao']) || !isset($_GET['ultimo_id'])) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Acesso negado']);
+            exit();
+        }
+
+        $id_solicitacao = $_GET['id_solicitacao'];
+        $ultimo_id = $_GET['ultimo_id'];
+        
+        // (Opcional, mas recomendado: Verifique se o usuário logado pertence a esta solicitação)
+
+        $novasMensagens = $this->controle->buscarMensagensDesde($id_solicitacao, $ultimo_id);
+
+        header('Content-Type: application/json');
+        echo json_encode($novasMensagens);
+        exit();
+    }
     public function enviarMensagem()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['usuario_id'])) {

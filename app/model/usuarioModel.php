@@ -528,7 +528,6 @@ class UsuarioModel
         }
     }
 
-    // Busca todas as mensagens de uma solicitação específica
     public function buscarMensagensPorSolicitacao($id_solicitacao)
     {
         // Usamos JOIN para pegar o nome do remetente
@@ -547,7 +546,6 @@ class UsuarioModel
         }
     }
 
-    // Atualiza o status da solicitação (Ex: para 'respondido')
     public function atualizarStatusSolicitacao($id_solicitacao, $novo_status)
     {
         $sql = "UPDATE solicitacoes_orcamento SET status_solicitacao = ? WHERE id_solicitacao = ?";
@@ -561,7 +559,6 @@ class UsuarioModel
         }
     }
 
-    // (Você também precisará de uma função para o CLIENTE ver as solicitações DELE)
     public function getSolicitacoesPorCliente($id_cliente)
     {
         $sql = "SELECT s.*, p.id_usuario as id_usuario_profissional, u.nome as nome_profissional
@@ -579,6 +576,22 @@ class UsuarioModel
             return [];
         }
     }
-
+    
+    public function buscarMensagensDesde($id_solicitacao, $ultimo_id_mensagem)
+    {
+        $sql = "SELECT m.*, u.nome as nome_remetente 
+            FROM mensagens_conversa m
+            JOIN usuarios u ON m.id_remetente = u.id_usuario
+            WHERE m.id_solicitacao = ? AND m.id_mensagem > ?
+            ORDER BY m.data_envio ASC";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_solicitacao, $ultimo_id_mensagem]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar novas mensagens: " . $e->getMessage());
+            return [];
+        }
+    }
 }
 ?>

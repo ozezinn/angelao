@@ -164,6 +164,11 @@ switch ($action) {
         }
         break;
 
+
+    case 'getNovasMensagens':
+        $controle->getNovasMensagens();
+        break;
+
     default:
         echo "404 - Página não encontrada";
         break;
