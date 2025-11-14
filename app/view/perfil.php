@@ -173,21 +173,18 @@ function renderStars($nota) {
                             <?php else: ?>
                                 <div class="row g-3">
                                     <?php 
-                                    // ======================================================
-                                    // CORREÇÃO APLICADA AQUI
-                                    // $portfolio_imagens é um array de strings (caminhos)
-                                    // ======================================================
-                                    foreach ($portfolio_imagens as $imagem_path): 
+                                       // Corrigindo o loop: $portfolio_imagens é um array de arrays
+                                        foreach ($portfolio_imagens as $imagem): 
                                     ?>
                                         <div class="col-md-6 col-lg-4">
                                             <a href="#" class="portfolio-card-link" 
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#imageModal"
-                                                data-bs-image="../../<?= htmlspecialchars($imagem_path) ?>"
-                                                data-bs-title="Foto do Portfólio"> 
+                                                data-bs-image="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>"
+                                                data-bs-title="<?= htmlspecialchars($imagem['titulo']) ?>"> 
                                                 
-                                                <img src="../../<?= htmlspecialchars($imagem_path) ?>"
-                                                    class="portfolio-thumbnail" alt="Foto do Portfólio">
+                                                <img src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>"
+                                                    class="portfolio-thumbnail" alt="<?= htmlspecialchars($imagem['titulo']) ?>">
                                             </a>
                                         </div>
                                     <?php endforeach; ?>
