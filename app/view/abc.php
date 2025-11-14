@@ -131,6 +131,18 @@ switch ($action) {
         $controle->enviarMensagem();
         break;
 
+       case 'solicitarEncerramento':
+        $controle->solicitarEncerramento();
+        break;
+    
+    case 'showAvaliacao':
+        $controle->showAvaliacao();
+        break;
+
+    case 'submitAvaliacao':
+        $controle->submitAvaliacao();
+        break;
+
     case 'excluirProfissional':
         $id = $_GET['id'] ?? null;
         if ($id) {

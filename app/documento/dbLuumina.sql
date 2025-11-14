@@ -160,3 +160,50 @@ NOT NULL DEFAULT 'novo';
 
 ALTER TABLE solicitacoes_orcamento
 ADD COLUMN data_solicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+
+-- Tabela para armazenar as avaliações
+CREATE TABLE avaliacoes (
+    id_avaliacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_solicitacao INT NOT NULL COMMENT 'Link para a solicitação que gerou esta avaliação',
+    id_cliente INT NOT NULL COMMENT 'ID do usuário cliente que avaliou',
+    id_profissional INT NOT NULL COMMENT 'ID do profissional que foi avaliado',
+    nota_estrelas TINYINT NOT NULL COMMENT 'Nota de 1 a 5',
+    comentario TEXT NULL COMMENT 'Comentário do cliente',
+    data_avaliacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (id_solicitacao) REFERENCES solicitacoes_orcamento(id_solicitacao),
+    FOREIGN KEY (id_cliente) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_profissional) REFERENCES profissionais(id_profissional)
+) COMMENT 'Avaliações dos serviços concluídos';
+
+-- Tabela para as fotos enviadas pelo cliente na avaliação
+CREATE TABLE fotos_avaliacao (
+    id_foto INT AUTO_INCREMENT PRIMARY KEY,
+    id_avaliacao INT NOT NULL COMMENT 'Link para a avaliação principal',
+    caminho_arquivo VARCHAR(255) NOT NULL COMMENT 'Caminho para a foto enviada pelo cliente',
+
+    FOREIGN KEY (id_avaliacao) REFERENCES avaliacoes(id_avaliacao) ON DELETE CASCADE
+) COMMENT 'Fotos enviadas pelo cliente como parte de uma avaliação';
+
+-- ALTERAÇÃO NO ENUM da tabela solicitacoes_orcamento
+ALTER TABLE solicitacoes_orcamento
+MODIFY COLUMN status_solicitacao 
+ENUM(
+    'novo', 
+    'respondido', 
+    'em_negociacao', 
+
+    -- Novos status para o processo de fechamento
+    'concluido_aguardando_prof',   -- Cliente marcou como concluído
+    'concluido_aguardando_cliente', -- Profissional marcou como concluído
+    'dispensado_aguardando_prof',   -- Cliente marcou como dispensado
+    'dispensado_aguardando_cliente',-- Profissional marcou como dispensado
+
+    -- Status finais
+    'finalizado_concluido',       -- Ambos concordaram (trabalho feito, pode avaliar)
+    'finalizado_dispensado',      -- Ambos concordaram (trabalho não feito, arquivado)
+    'finalizado_avaliado',        -- Trabalho concluído E já avaliado
+    'arquivado'                   -- Status antigo (pode ser usado para disputas)
+) 
+NOT NULL DEFAULT 'novo';

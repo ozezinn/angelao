@@ -195,10 +195,11 @@ class UsuarioController
 
         if (!$id_usuario || !filter_var($id_usuario, FILTER_VALIDATE_INT)) {
             http_response_code(404);
-            echo "Perfil não encontrado.";
+            echo "Perfil não encontrado (ID inválido).";
             exit();
         }
 
+        // 1. Busca os dados base (nome, bio, etc.)
         $profissional_data = $this->controle->getProfissionalData($id_usuario);
 
         if (!$profissional_data) {
@@ -208,14 +209,37 @@ class UsuarioController
         }
 
         $id_profissional = $profissional_data['id_profissional'];
+
+        // 2. Desempacota os dados base
         $nome = $profissional_data['nome'] ?? 'Nome não encontrado';
         $foto_perfil = $profissional_data['foto_perfil'] ?? 'view/img/profile-placeholder.jpg';
-        $biografia = $profissional_data['biografia'] ?? '';
-        $localizacao = $profissional_data['localizacao'] ?? '';
+        $biografia = $profissional_data['biografia'] ?? 'Nenhuma biografia fornecida.';
+        $localizacao = $profissional_data['localizacao'] ?? 'Localização não informada';
 
+        // ==================================================================
+        // AQUI ESTÁ A CORREÇÃO PRINCIPAL
+        // Precisamos chamar as funções do Model para buscar estes dados.
+        // ==================================================================
         $especialidades = $this->controle->getProfissionalEspecialidades($id_profissional);
         $portfolio_imagens = $this->controle->getPortfolioItems($id_profissional);
+        $avaliacoes = $this->controle->getAvaliacoesComFotos($id_profissional);
+        // ==================================================================
 
+        // 4. Calcula as Estatísticas
+        $total_avaliacoes = count($avaliacoes);
+        $total_portfolio = count($portfolio_imagens);
+        $total_especialidades = count($especialidades);
+        $soma_estrelas = 0;
+        $media_estrelas = 0;
+
+        if ($total_avaliacoes > 0) {
+            foreach ($avaliacoes as $avaliacao) {
+                $soma_estrelas += (int) $avaliacao['nota_estrelas'];
+            }
+            $media_estrelas = round($soma_estrelas / $total_avaliacoes, 1);
+        }
+
+        // 5. Envia tudo para a view
         require_once '../view/perfil.php';
     }
 
@@ -241,9 +265,17 @@ class UsuarioController
             exit();
         }
 
+        // Garante que o ID do profissional está na sessão (força logout se não estiver)
+        if (!isset($_SESSION['profissional_id'])) {
+            echo "<script>alert('Sua sessão expirou ou é inválida. Por favor, faça login novamente.');
+                   window.location.href='abc.php?action=logout';</script>";
+            exit();
+        }
+
         $id_usuario = $_SESSION['usuario_id'];
         $id_profissional = $_SESSION['profissional_id'];
 
+        // Busca os dados
         $profissional_data = $this->controle->getProfissionalData($id_usuario);
 
         if (!$profissional_data) {
@@ -251,6 +283,7 @@ class UsuarioController
             exit();
         }
 
+        // Define as variáveis para a view
         $nome = $profissional_data['nome'] ?? 'Nome não encontrado';
         $foto_perfil = $profissional_data['foto_perfil'] ?? 'view/img/profile-placeholder.jpg';
         $biografia = $profissional_data['biografia'] ?? '';
@@ -266,11 +299,23 @@ class UsuarioController
 
         $especialidades = $this->controle->getProfissionalEspecialidades($id_profissional);
         $portfolio_imagens = $this->controle->getPortfolioItems($id_profissional);
-
-        $todas_especialidades = $this->controle->getAllEspecialidades();
-        $todos_servicos = $this->controle->getAllServicos();
+        $todas_especialidades = $this->controle->getAllEspecialidades(); // Para o modal
+        $todos_servicos = $this->controle->getAllServicos(); // Para o modal
         $solicitacoes = $this->controle->getSolicitacoesPorProfissional($id_profissional);
 
+        // =============================================================
+        // LÓGICA MOVIDA DO TOPO DA VIEW PARA CÁ (A CORREÇÃO)
+        // =============================================================
+        $abrirModalPerfil = false;
+        if (empty(trim($biografia)) || empty(trim($localizacao)) || $foto_perfil === 'view/img/profile-placeholder.jpg') {
+            $abrirModalPerfil = true;
+        }
+
+        $total_fotos = count($portfolio_imagens);
+        $total_solicitacoes = count($solicitacoes);
+        // =============================================================
+
+        // Envia tudo para a view
         require_once '../view/areaProfissional.php';
     }
 
@@ -681,7 +726,6 @@ class UsuarioController
         include '../view/recuperarSenha.php';
         exit();
     }
-
     public function handleRecuperarSenha()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['email'])) {
@@ -793,7 +837,6 @@ class UsuarioController
         include '../view/definirNovaSenha.php';
         exit();
     }
-
     public function handleDefinirNovaSenha()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -973,7 +1016,6 @@ class UsuarioController
         include '../view/conversa.php';
         exit();
     }
-
     public function getNovasMensagens()
     {
         if (!isset($_SESSION['usuario_id']) || !isset($_GET['id_solicitacao']) || !isset($_GET['ultimo_id'])) {
@@ -984,7 +1026,7 @@ class UsuarioController
 
         $id_solicitacao = $_GET['id_solicitacao'];
         $ultimo_id = $_GET['ultimo_id'];
-        
+
         // (Opcional, mas recomendado: Verifique se o usuário logado pertence a esta solicitação)
 
         $novasMensagens = $this->controle->buscarMensagensDesde($id_solicitacao, $ultimo_id);
@@ -1014,6 +1056,212 @@ class UsuarioController
             header('Location: abc.php?action=verConversa&id=' . $id_solicitacao);
             exit();
         }
+    }
+    public function solicitarEncerramento()
+    {
+        if (!isset($_SESSION['usuario_id']) || !isset($_GET['id']) || !isset($_GET['status'])) {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+
+        $id_solicitacao = $_GET['id'];
+        $acao_requerida = $_GET['status']; // 'concluido', 'dispensado', 'confirmar_concluido', 'confirmar_dispensado'
+        $id_usuario_logado = $_SESSION['usuario_id'];
+        $tipo_usuario = $_SESSION['usuario_tipo'];
+
+        // --- Verificação de segurança: O usuário pertence a esta conversa? ---
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
+        if (!$solicitacao) {
+            header('Location: abc.php?action=minhaCaixaDeEntrada');
+            exit();
+        }
+
+        $id_cliente = $solicitacao['id_cliente'];
+        $id_usuario_profissional = $this->controle->getUsuarioIdPorProfissionalId($solicitacao['id_profissional']);
+
+        if ($id_usuario_logado != $id_cliente && $id_usuario_logado != $id_usuario_profissional) {
+            echo "<script>alert('Acesso negado a esta conversa.'); window.location.href='abc.php?action=minhaCaixaDeEntrada';</script>";
+            exit();
+        }
+        // --- Fim da verificação de segurança ---
+
+        $status_atual = $solicitacao['status_solicitacao'];
+        $novo_status = $status_atual; // Começa com o status atual
+
+        // Lógica principal de transição de status
+        switch ($acao_requerida) {
+
+            // 1. AÇÃO: Marcar como CONCLUÍDO (Início do fluxo)
+            case 'concluido':
+                if (in_array($status_atual, ['novo', 'respondido', 'em_negociacao'])) {
+                    $novo_status = ($tipo_usuario === 'cliente') ? 'concluido_aguardando_prof' : 'concluido_aguardando_cliente';
+                }
+                break;
+
+            // 2. AÇÃO: Marcar como DISPENSADO (Início do fluxo)
+            case 'dispensado':
+                if (in_array($status_atual, ['novo', 'respondido', 'em_negociacao'])) {
+                    $novo_status = ($tipo_usuario === 'cliente') ? 'dispensado_aguardando_prof' : 'dispensado_aguardando_cliente';
+                }
+                break;
+
+            // 3. AÇÃO: CONFIRMAR que foi concluído (Fechamento do fluxo)
+            case 'confirmar_concluido':
+                // Se o profissional estava aguardando e o cliente confirma (ou vice-versa)
+                if (
+                    ($status_atual === 'concluido_aguardando_cliente' && $tipo_usuario === 'cliente') ||
+                    ($status_atual === 'concluido_aguardando_prof' && $tipo_usuario === 'profissional')
+                ) {
+
+                    $novo_status = 'finalizado_concluido';
+                }
+                break;
+
+            // 4. AÇÃO: CONFIRMAR que foi dispensado (Fechamento do fluxo)
+            case 'confirmar_dispensado':
+                if (
+                    ($status_atual === 'dispensado_aguardando_cliente' && $tipo_usuario === 'cliente') ||
+                    ($status_atual === 'dispensado_aguardando_prof' && $tipo_usuario === 'profissional')
+                ) {
+
+                    $novo_status = 'finalizado_dispensado';
+                }
+                break;
+        }
+
+        // Se o status mudou, atualiza o banco
+        if ($novo_status !== $status_atual) {
+            $this->controle->atualizarStatusSolicitacao($id_solicitacao, $novo_status);
+        }
+
+        // Redireciona de volta para a conversa
+        header('Location: abc.php?action=verConversa&id=' . $id_solicitacao);
+        exit();
+    }
+    public function showAvaliacao()
+    {
+        // 1. Verificações de segurança
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'cliente') {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+
+        $id_solicitacao = $_GET['id'] ?? 0;
+        $id_cliente = $_SESSION['usuario_id'];
+
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
+
+        // 2. Garante que a solicitação existe e pertence a este cliente
+        if (!$solicitacao || $solicitacao['id_cliente'] != $id_cliente) {
+            echo "<script>alert('Solicitação não encontrada ou não pertence a você.'); window.location.href='abc.php?action=minhaCaixaDeEntrada';</script>";
+            exit();
+        }
+
+        // 3. Garante que só pode avaliar no status correto
+        if ($solicitacao['status_solicitacao'] !== 'finalizado_concluido') {
+            echo "<script>alert('Este trabalho não pode ser avaliado ou já foi avaliado.'); window.location.href='abc.php?action=minhaCaixaDeEntrada';</script>";
+            exit();
+        }
+
+        // 4. Busca dados do profissional para exibir na página
+        $id_profissional = $solicitacao['id_profissional'];
+        $id_usuario_profissional = $this->controle->getUsuarioIdPorProfissionalId($id_profissional);
+        $profissional_data = $this->controle->getProfissionalData($id_usuario_profissional);
+
+        // 5. Inclui a view (que vamos criar agora)
+        include '../view/avaliar.php';
+        exit();
+    }
+
+    public function submitAvaliacao()
+    {
+        // 1. Verificações de segurança
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_tipo'] !== 'cliente' || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: abc.php?action=logar');
+            exit();
+        }
+
+        // 2. Validar dados do POST
+        $id_solicitacao = filter_input(INPUT_POST, 'id_solicitacao', FILTER_VALIDATE_INT);
+        $id_cliente = filter_input(INPUT_POST, 'id_cliente', FILTER_VALIDATE_INT);
+        $id_profissional = filter_input(INPUT_POST, 'id_profissional', FILTER_VALIDATE_INT);
+        $nota_estrelas = filter_input(INPUT_POST, 'nota_estrelas', FILTER_VALIDATE_INT);
+        $comentario = trim(filter_input(INPUT_POST, 'comentario', FILTER_SANITIZE_SPECIAL_CHARS));
+
+        // Verificação de segurança tripla
+        if (
+            !$id_solicitacao || !$id_cliente || !$id_profissional || !$nota_estrelas ||
+            $id_cliente != $_SESSION['usuario_id']
+        ) { // Garante que o cliente logado é quem está enviando
+            header('Location: abc.php?action=minhaCaixaDeEntrada&status=avaliacao_erro');
+            exit();
+        }
+
+        // 3. Re-verificar status da solicitação
+        $solicitacao = $this->controle->buscarSolicitacaoPorId($id_solicitacao);
+        if (!$solicitacao || $solicitacao['id_cliente'] != $id_cliente || $solicitacao['status_solicitacao'] !== 'finalizado_concluido') {
+            header('Location: abc.php?action=minhaCaixaDeEntrada&status=avaliacao_ja_feita');
+            exit();
+        }
+
+        // 4. Salvar no banco (Avaliação principal)
+        $id_avaliacao = $this->controle->inserirAvaliacao($id_solicitacao, $id_cliente, $id_profissional, $nota_estrelas, $comentario);
+
+        if (!$id_avaliacao) {
+            // Falha ao inserir a avaliação principal
+            header('Location: abc.php?action=minhaCaixaDeEntrada&status=avaliacao_db_erro');
+            exit();
+        }
+
+        // 5. Fazer upload das fotos (se houver)
+        if (isset($_FILES['fotos_avaliacao']) && !empty($_FILES['fotos_avaliacao']['name'][0])) {
+            $upload_dir = __DIR__ . '/../../public/uploads/avaliacoes/';
+            $tamanho_maximo = 5 * 1024 * 1024; // 5MB
+            $tipos_permitidos = ['image/jpeg', 'image/png', 'image/webp'];
+
+            if (!is_dir($upload_dir)) {
+                if (!mkdir($upload_dir, 0775, true)) {
+                    error_log("Falha ao criar diretório de uploads de avaliação: " . $upload_dir);
+                }
+            }
+
+            $total_files = count($_FILES['fotos_avaliacao']['name']);
+
+            // Limita a 3, mesmo que o usuário envie mais
+            for ($i = 0; $i < $total_files && $i < 3; $i++) {
+
+                if ($_FILES['fotos_avaliacao']['error'][$i] === UPLOAD_ERR_OK) {
+
+                    $tmp_name = $_FILES['fotos_avaliacao']['tmp_name'][$i];
+                    $size = $_FILES['fotos_avaliacao']['size'][$i];
+                    $name = $_FILES['fotos_avaliacao']['name'][$i];
+                    $type = mime_content_type($tmp_name);
+
+                    // Validações
+                    if ($size > $tamanho_maximo || !in_array($type, $tipos_permitidos)) {
+                        continue; // Pula este arquivo (muito grande ou tipo errado)
+                    }
+
+                    // Move o arquivo
+                    $extensao = pathinfo($name, PATHINFO_EXTENSION);
+                    $nome_arquivo_novo = uniqid('avaliacao_', true) . '.' . $extensao;
+                    $caminho_completo = $upload_dir . $nome_arquivo_novo;
+
+                    if (move_uploaded_file($tmp_name, $caminho_completo)) {
+                        $caminho_db = 'public/uploads/avaliacoes/' . $nome_arquivo_novo;
+                        // Salva no banco (tabela 'fotos_avaliacao')
+                        $this->controle->inserirFotoAvaliacao($id_avaliacao, $caminho_db);
+                    }
+                }
+            }
+        }
+
+        // 6. Atualizar status da solicitação
+        $this->controle->atualizarStatusSolicitacao($id_solicitacao, 'finalizado_avaliado');
+
+        // 7. Redirecionar
+        header('Location: abc.php?action=minhaCaixaDeEntrada&status=avaliacao_sucesso');
+        exit();
     }
 
 }

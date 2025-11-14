@@ -1,13 +1,34 @@
 <?php
-// Todas as variáveis ($nome, $foto_perfil, etc.) vêm do controller showPublicProfile().
+// O Controller 'showPublicProfile' (versão ACIMA) é quem envia TODAS estas variáveis:
+// $nome, $foto_perfil, $biografia, $localizacao, $id_usuario, $id_profissional,
+// $especialidades, $portfolio_imagens, $avaliacoes,
+// $media_estrelas, $total_avaliacoes, $total_portfolio, $total_especialidades
 
-// Pega o email do usuário logado (se houver) para preencher o formulário
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $email_solicitante_logado = $_SESSION['usuario_email'] ?? '';
-$isUserLoggedIn = isset($_SESSION['usuario_id']); // Verifica se o usuário está logado
+$isUserLoggedIn = isset($_SESSION['usuario_id']);
 
-// Contagens para os Stat Cards
-$total_fotos = count($portfolio_imagens);
-$total_especialidades = count($especialidades);
+// Função helper para exibir estrelas
+function renderStars($nota) {
+    $nota_int = intval(floor($nota)); // Pega a parte inteira
+    $decimal = $nota - $nota_int; // Pega a parte decimal
+    
+    $html = '<div class="review-stars text-warning">';
+    for ($i = 1; $i <= 5; $i++) {
+        if ($i <= $nota_int) {
+            $html .= '<i class="bi bi-star-fill"></i>'; // Estrela preenchida
+        } else if ($i == ($nota_int + 1) && $decimal >= 0.5) {
+             $html .= '<i class="bi bi-star-half"></i>'; // Meia estrela
+        } else {
+             $html .= '<i class="bi bi-star"></i>'; // Estrela vazia
+        }
+    }
+    $html .= '</div>';
+    return $html;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -19,15 +40,25 @@ $total_especialidades = count($especialidades);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../public/css/style4.css">
+    <link rel="stylesheet" href="../../public/css/style4.css?v=1.1">
     <style>
-        /* Estilo para a coluna "pegajosa" (sticky) */
         .sticky-top-column {
             position: -webkit-sticky;
             position: sticky;
             top: 100px;
-            /* 80px (navbar) + 20px (espaçamento) */
             z-index: 1000;
+        }
+        .portfolio-thumbnail {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .portfolio-thumbnail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
     </style>
 </head>
@@ -38,7 +69,6 @@ $total_especialidades = count($especialidades);
     </div>
 
     <?php
-    // Decide qual header carregar: o logado ou o deslogado
     if ($isUserLoggedIn) {
         require_once __DIR__ . '/layout/headerLog.php';
     } else {
@@ -61,9 +91,12 @@ $total_especialidades = count($especialidades);
                             <i class="bi bi-geo-alt-fill"></i> <?= htmlspecialchars($localizacao) ?>
                         </p>
                         <div class="profile-specialties">
-                            <?php foreach ($especialidades as $especialidade): ?>
+                            <?php foreach (array_slice($especialidades, 0, 5) as $especialidade): ?>
                                 <span class="badge bg-dark"><?= htmlspecialchars($especialidade) ?></span>
                             <?php endforeach; ?>
+                            <?php if (count($especialidades) > 5): ?>
+                                <span class="badge bg-secondary">+<?= count($especialidades) - 5 ?></span>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -74,70 +107,149 @@ $total_especialidades = count($especialidades);
 
             <div class="col-lg-8">
 
-                <section class="row g-4 mb-4">
-                    <div class="col-md-6">
-                        <div class="stat-card h-100">
-                            <div class="stat-card-body">
-                                <div class="stat-card-icon text-primary">
-                                    <i class="bi bi-images"></i>
-                                </div>
-                                <div>
-                                    <h5 class="stat-card-title"><?= $total_fotos ?></h5>
-                                    <p class="stat-card-text">Fotos no Portfólio</p>
-                                </div>
-                            </div>
-                        </div>
+                <div class="profile-stats-bar shadow-sm">
+                    <div class="stat-item">
+                        <span class="stat-number text-warning">
+                            <?= htmlspecialchars($media_estrelas) ?>
+                            <i class="bi bi-star-fill" style="font-size: 1.25rem;"></i>
+                        </span>
+                        <span class="stat-label">(<?= $total_avaliacoes ?> Avaliações)</span>
                     </div>
-                    <div class="col-md-6">
-                        <div class="stat-card h-100">
-                            <div class="stat-card-body">
-                                <div class="stat-card-icon text-success">
-                                    <i class="bi bi-star-fill"></i>
-                                </div>
-                                <div>
-                                    <h5 class="stat-card-title"><?= $total_especialidades ?></h5>
-                                    <p class="stat-card-text">Especialidades</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="stat-item">
+                        <span class="stat-number"><?= $total_portfolio ?></span>
+                        <span class="stat-label">Fotos no Portfólio</span>
                     </div>
-                </section>
+                    <div class="stat-item">
+                        <span class="stat-number"><?= $total_especialidades ?></span>
+                        <span class="stat-label">Especialidades</span>
+                    </div>
+                </div>
 
-                <section id="sobre-mim" class="content-card mb-4">
-                    <h2 class="mb-3">Sobre <?= htmlspecialchars(explode(' ', $nome)[0]) ?></h2>
-                    <p class="profile-bio-full">
-                        <?= nl2br(htmlspecialchars($biografia)) ?>
-                    </p>
-                </section>
 
-                <section id="portfolio-grid" class="content-card mb-4">
-                    <h2 class="mb-4">Portfólio</h2>
-                    <?php if (!empty($portfolio_imagens)): ?>
-                        <div class="row g-3">
-                            <?php foreach ($portfolio_imagens as $imagem): ?>
-                                <div class="col-md-6 col-lg-4">
-                                    <a href="#" class="portfolio-card-link" data-bs-toggle="modal"
-                                        data-bs-target="#portfolioModal"
-                                        data-bs-img-src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>"
-                                        data-bs-img-title="<?= htmlspecialchars($imagem['titulo']) ?>">
+                <ul class="nav nav-tabs profile-tabs mb-4" id="profileTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="sobre-tab" data-bs-toggle="tab" href="#sobre-content" role="tab" aria-controls="sobre-content" aria-selected="true">Sobre</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="portfolio-tab" data-bs-toggle="tab" href="#portfolio-content" role="tab" aria-controls="portfolio-content" aria-selected="false">Portfólio</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="avaliacoes-tab" data-bs-toggle="tab" href="#avaliacoes-content" role="tab" aria-controls="avaliacoes-content" aria-selected="false">Avaliações (<?= $total_avaliacoes ?>)</a>
+                    </li>
+                </ul>
 
-                                        <div class="card portfolio-card">
-                                            <img src="../../<?= htmlspecialchars($imagem['caminho_arquivo']) ?>"
-                                                class="card-img-top" alt="<?= htmlspecialchars($imagem['titulo']) ?>">
-                                            <div class="card-body-overlay">
-                                                <h5 class="card-title-overlay"><?= htmlspecialchars($imagem['titulo']) ?></h5>
-                                            </div>
+                <div class="tab-content" id="profileTabContent">
+
+                    <div class="tab-pane fade show active" id="sobre-content" role="tabpanel" aria-labelledby="sobre-tab">
+                        
+                        <section id="sobre" class="content-card mb-4">
+                            <h2 class="mb-3">Sobre <?= htmlspecialchars(explode(' ', $nome)[0]) ?></h2>
+                            <p class="profile-bio-full">
+                                <?= nl2br(htmlspecialchars($biografia)) ?>
+                            </p>
+                        </section>
+
+                        <section id="especialidades" class="content-card mb-4">
+                            <h2 class="mb-4">Todas as Especialidades</h2>
+                            <div class="d-flex flex-wrap gap-2">
+                                <?php if (empty($especialidades)): ?>
+                                    <p class="text-muted">Nenhuma especialidade cadastrada.</p>
+                                <?php else: ?>
+                                    <?php foreach ($especialidades as $especialidade): ?>
+                                        <span class="badge bg-dark rounded-pill fs-6 px-3 py-2">
+                                            <?= htmlspecialchars($especialidade) ?>
+                                        </span>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="portfolio-content" role="tabpanel" aria-labelledby="portfolio-tab">
+                        <section id="portfolio-grid" class="content-card mb-4">
+                            <h2 class="mb-4">Portfólio</h2>
+                            <?php if (empty($portfolio_imagens)): ?>
+                                <p class="text-center text-muted">Este profissional ainda não adicionou itens ao portfólio.</p>
+                            <?php else: ?>
+                                <div class="row g-3">
+                                    <?php 
+                                    // ======================================================
+                                    // CORREÇÃO APLICADA AQUI
+                                    // $portfolio_imagens é um array de strings (caminhos)
+                                    // ======================================================
+                                    foreach ($portfolio_imagens as $imagem_path): 
+                                    ?>
+                                        <div class="col-md-6 col-lg-4">
+                                            <a href="#" class="portfolio-card-link" 
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#imageModal"
+                                                data-bs-image="../../<?= htmlspecialchars($imagem_path) ?>"
+                                                data-bs-title="Foto do Portfólio"> 
+                                                
+                                                <img src="../../<?= htmlspecialchars($imagem_path) ?>"
+                                                    class="portfolio-thumbnail" alt="Foto do Portfólio">
+                                            </a>
                                         </div>
-                                    </a>
+                                    <?php endforeach; ?>
                                 </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php else: ?>
-                        <p class="text-center text-muted">Este profissional ainda não adicionou itens ao portfólio.</p>
-                    <?php endif; ?>
-                </section>
-            </div>
+                            <?php endif; ?>
+                        </section>
+                    </div>
 
+                    <div class="tab-pane fade" id="avaliacoes-content" role="tabpanel" aria-labelledby="avaliacoes-tab">
+                        <section id="avaliacoes" class="content-card mb-4">
+                            <h2 class="mb-4">Avaliações de Clientes</h2>
+                            
+                            <?php if (empty($avaliacoes)): ?>
+                                <p class="text-center text-muted">Este profissional ainda não recebeu avaliações.</p>
+                            <?php else: ?>
+                                <?php foreach ($avaliacoes as $avaliacao): ?>
+                                    <div class="review-card mb-4">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <?= renderStars($avaliacao['nota_estrelas']) ?>
+                                            <small class="text-muted">
+                                                <?= date('d/m/Y', strtotime($avaliacao['data_avaliacao'])) ?>
+                                            </small>
+                                        </div>
+                                        <div class="review-body mt-3">
+                                            <p class="review-comment">"<?= nl2br(htmlspecialchars($avaliacao['comentario'])) ?>"</p>
+                                            
+                                            <?php if (!empty($avaliacao['fotos'])): ?>
+                                                <div class="review-photos mt-3">
+                                                    <p class="small fw-bold mb-2">Fotos enviadas pelo cliente:</p>
+                                                    <div class="row g-2">
+                                                        <?php foreach ($avaliacao['fotos'] as $foto_path): ?>
+                                                            <div class="col-auto">
+                                                                <a href="#" 
+                                                                    data-bs-toggle="modal" 
+                                                                    data-bs-target="#imageModal"
+                                                                    data-bs-image="../../<?= htmlspecialchars($foto_path) ?>"
+                                                                    data-bs-title="Foto da Avaliação">
+                                                                    
+                                                                    <img src="../../<?= htmlspecialchars($foto_path) ?>" alt="Foto da avaliação" class="review-photo-thumbnail">
+                                                                </a>
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="review-footer mt-3">
+                                            <strong class="text-muted">
+                                                - <?= htmlspecialchars(explode(' ', $avaliacao['nome_cliente'])[0]) ?>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <?php if (next($avaliacoes)): ?>
+                                        <hr class="my-4">
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </section>
+                    </div>
+
+                </div> </div>
+            
             <div class="col-lg-4">
                 <div class="sticky-top-column">
                     <section id="solicitar-orcamento" class="content-card">
@@ -174,7 +286,7 @@ $total_especialidades = count($especialidades);
                                             name="telefone_solicitante" placeholder="(XX) XXXXX-XXXX">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="data_evento" class="form-label">Data do Evento (Opcional)</label>
+                                        <label for="data_evento" class="form-label">Data do Evento (Opcional)</albel>
                                         <input type="date" class="form-control" id="data_evento" name="data_evento"
                                             min="<?= date('Y-m-d') ?>">
                                     </div>
@@ -203,25 +315,25 @@ $total_especialidades = count($especialidades);
                     </section>
                 </div>
             </div>
-        </div> <?php
-        // Inclui o modal de ações do usuário APENAS se ele estiver logado
+        </div> 
+        
+        <?php
         if ($isUserLoggedIn) {
             include __DIR__ . '/modals/userActionsModal.php';
         }
         ?>
 
-        <div class="modal fade" id="portfolioModal" tabindex="-1" aria-labelledby="portfolioModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content" style="background-color: transparent; border: none;">
                     <div class="modal-header" style="border-bottom: none;">
-                        <h5 class="modal-title" id="portfolioModalLabel" style="color: white; font-weight: 600;"></h5>
+                        <h5 class="modal-title" id="imageModalLabel" style="color: white; font-weight: 600;"></h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body text-center">
-                        <img src="" class="img-fluid rounded modal-portfolio-img" alt="Foto do Portfólio"
-                            style="max-height: 80vh;">
+                    <div class="modal-body text-center p-0">
+                        <img src="" id="modalImage" class="img-fluid rounded modal-portfolio-img" alt="Foto Ampliada"
+                            style="max-height: 90vh; width: auto;">
                     </div>
                 </div>
             </div>
@@ -234,9 +346,8 @@ $total_especialidades = count($especialidades);
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Função para criar e exibir o alerta na tela
+            // Função de Alerta
             const showAlert = (message, type = 'success') => {
-                // (Código do alerta permanece o mesmo)
                 const alertPlaceholder = document.getElementById('alert-placeholder');
                 if (!alertPlaceholder) return;
                 alertPlaceholder.innerHTML = '';
@@ -258,34 +369,29 @@ $total_especialidades = count($especialidades);
                 }, 5000);
             };
 
-            // Verifica os parâmetros da URL para decidir qual alerta mostrar
+            // Status de Alerta (orçamento)
             const params = new URLSearchParams(window.location.search);
             const status = params.get('status');
-
             if (status === 'orcamento_success') {
                 showAlert('Sua solicitação de orçamento foi enviada com sucesso!', 'success');
             } else if (status === 'orcamento_error') {
                 showAlert('Ocorreu um erro ao enviar sua solicitação. Tente novamente.', 'danger');
             }
 
-            // NOVO: Script para o Modal Lightbox do Portfólio
-            const portfolioModal = document.getElementById('portfolioModal');
-            if (portfolioModal) {
-                portfolioModal.addEventListener('show.bs.modal', function (event) {
-                    // Botão que acionou o modal
+            // Script do Modal
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal) {
+                const modalTitleEl = imageModal.querySelector('.modal-title');
+                const modalImageEl = imageModal.querySelector('#modalImage');
+
+                imageModal.addEventListener('show.bs.modal', function (event) {
                     const link = event.relatedTarget;
+                    const imgSrc = link.getAttribute('data-bs-image');
+                    const imgTitle = link.getAttribute('data-bs-title') || 'Visualizar Imagem';
 
-                    // Extrai informações dos atributos data-bs-*
-                    const imgSrc = link.getAttribute('data-bs-img-src');
-                    const imgTitle = link.getAttribute('data-bs-img-title');
-
-                    // Atualiza o conteúdo do modal
-                    const modalTitle = portfolioModal.querySelector('.modal-title');
-                    const modalImage = portfolioModal.querySelector('.modal-portfolio-img');
-
-                    modalTitle.textContent = imgTitle;
-                    modalImage.src = imgSrc;
-                    modalImage.alt = imgTitle;
+                    modalTitleEl.textContent = imgTitle;
+                    modalImageEl.src = imgSrc;
+                    modalImageEl.alt = imgTitle;
                 });
             }
         });

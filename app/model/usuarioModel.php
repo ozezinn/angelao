@@ -576,7 +576,7 @@ class UsuarioModel
             return [];
         }
     }
-    
+
     public function buscarMensagensDesde($id_solicitacao, $ultimo_id_mensagem)
     {
         $sql = "SELECT m.*, u.nome as nome_remetente 
@@ -593,5 +593,75 @@ class UsuarioModel
             return [];
         }
     }
+
+    public function inserirAvaliacao($id_solicitacao, $id_cliente, $id_profissional, $nota_estrelas, $comentario)
+    {
+        $sql = "INSERT INTO avaliacoes (id_solicitacao, id_cliente, id_profissional, nota_estrelas, comentario) 
+                VALUES (?, ?, ?, ?, ?)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_solicitacao, $id_cliente, $id_profissional, $nota_estrelas, $comentario]);
+            return $this->pdo->lastInsertId(); // Retorna o ID da avaliação
+        } catch (PDOException $e) {
+            error_log("Erro ao inserir avaliação: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Insere o caminho de uma foto de avaliação, vinculada à avaliação principal.
+     */
+    public function inserirFotoAvaliacao($id_avaliacao, $caminho_arquivo)
+    {
+        $sql = "INSERT INTO fotos_avaliacao (id_avaliacao, caminho_arquivo) VALUES (?, ?)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([$id_avaliacao, $caminho_arquivo]);
+        } catch (PDOException $e) {
+            error_log("Erro ao inserir foto de avaliação: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+    public function getAvaliacoesComFotos($id_profissional)
+    {
+        // 1. Busca todas as avaliações e junta com o nome do cliente
+        $sql_avaliacoes = "SELECT 
+                                a.id_avaliacao, 
+                                a.nota_estrelas, 
+                                a.comentario, 
+                                a.data_avaliacao,
+                                u.nome as nome_cliente
+                           FROM avaliacoes a
+                           JOIN usuarios u ON a.id_cliente = u.id_usuario
+                           WHERE a.id_profissional = ?
+                           ORDER BY a.data_avaliacao DESC";
+
+        $avaliacoes = [];
+        try {
+            $stmt_avaliacoes = $this->pdo->prepare($sql_avaliacoes);
+            $stmt_avaliacoes->execute([$id_profissional]);
+            $avaliacoes = $stmt_avaliacoes->fetchAll(PDO::FETCH_ASSOC);
+
+            // 2. Para cada avaliação, busca as fotos correspondentes
+            $stmt_fotos = $this->pdo->prepare("SELECT caminho_arquivo FROM fotos_avaliacao WHERE id_avaliacao = ?");
+
+            foreach ($avaliacoes as $key => $avaliacao) {
+                $stmt_fotos->execute([$avaliacao['id_avaliacao']]);
+                $fotos = $stmt_fotos->fetchAll(PDO::FETCH_COLUMN); // Pega apenas os caminhos
+
+                // Adiciona as fotos ao array da avaliação
+                $avaliacoes[$key]['fotos'] = $fotos;
+            }
+
+            return $avaliacoes;
+
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar avaliações com fotos: " . $e->getMessage());
+            return [];
+        }
+    }
+
 }
 ?>

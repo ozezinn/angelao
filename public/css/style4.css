@@ -1,561 +1,216 @@
-/*
-  ========================================
-  PADRONIZAÇÃO BASEADA NO INPUT.CSS
-  ========================================
-  - Paleta de cores e variáveis unificadas
-  - Fontes consistentes e modernas
-  - Organização modular por seções
-  - Sombras, espaçamentos e efeitos padronizados
-*/
-
-/*
-  ========================================
-  VARIÁVEIS GLOBAIS
-  ========================================
-*/
-
-:root {
-  /* Paleta */
-  --cor-preto: #000;
-  --cor-branco: #fff;
-  --cor-cinza-claro: #f5f5f5;
-  --cor-cinza-medio: #bdbdbd;
-  --cor-cinza-escuro: #424242;
-
-  /* Fontes */
-  --fonte-corpo: "Yalta Sans W04 Light", sans-serif;
-  --fonte-titulos: "Poppins", sans-serif;
-
-  /* Sombras */
-  --sombra-suave: 0 2px 6px rgba(0, 0, 0, 0.08);
-  --sombra-media: 0 6px 14px rgba(0, 0, 0, 0.12);
-  --sombra-forte: 0 8px 22px rgba(0, 0, 0, 0.18);
-
-  /* Transição padrão */
-  --transicao-padrao: all 0.3s ease;
-}
-
-/*
-  ========================================
-  BODY
-  ========================================
-*/
+/* ========================================= */
+/* ESTILOS GERAIS DA ÁREA DE ADMIN/PERFIL    */
+/* ========================================= */
 
 body {
-  font-family: var(--fonte-corpo);
-  color: var(--cor-cinza-escuro);
-  /* ATUALIZADO: Cor de fundo estilo admin */
-  background-color: #f4f7f6; 
-  line-height: 1.6;
-  letter-spacing: 0.2px;
+    background-color: #f4f7f6; /* Fundo cinza claro */
+    font-family: 'Poppins', sans-serif;
 }
 
-/*
-  ========================================
-  NAVBAR
-  ========================================
+.admin-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding-top: 20px;
+}
+
+/* * ========================================= 
+ * A CLASSE QUE SUMIU E QUEBROU TUDO
+ * Esta é a correção principal.
+ * ========================================= 
 */
-
-.navbar {
-  padding: 1rem 0;
-  position: absolute;
-  background-color: transparent;
-  transition: background-color 0.4s ease, box-shadow 0.3s ease;
-}
-
-.navbar.scrolled,
-.navbar.navbar-internal {
-  box-shadow: var(--sombra-suave);
-  background-color: var(--cor-branco);
-}
-
-.navbar-brand {
-  margin-top: 20px;
-  margin-left: -140px;
-  font-family: var(--fonte-titulos);
-  font-weight: 700;
-  font-size: 1.3rem;
-  transition: var(--transicao-padrao);
-}
-
-.navbar-logo {
-  margin-top: 10px;
-  margin-left: 250px;
-  width: 77px;
-  height: 60px;
-}
-
-.nav-link {
-  margin-top: 20px;
-  font-family: var(--fonte-titulos);
-  font-weight: 500;
-  font-size: 0.95rem;
-  color: var(--cor-preto);
-  transition: var(--transicao-padrao);
-}
-
-.nav-link:hover {
-  color: var(--cor-cinza-escuro);
-}
-
-/*
-  ========================================
-  HERO SECTION (Não usado nesta página, mas mantido)
-  ========================================
-*/
-
-#hero {
-  height: 100vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('https://fotografiadicas.com.br/wp-content/uploads/2017/10/30-Fotografo-Profissional-Amador-fotografia-dicas-2-min.png') no-repeat center center;
-  background-size: cover;
-  color: var(--cor-branco);
-  position: relative;
-}
-
-.hero-content {
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 2rem;
-  border-radius: 10px;
-  font-family: var(--fonte-titulos);
-  box-shadow: var(--sombra-media);
-}
-
-.hero-contentt {
-  border-radius: 10px;
-}
-
-/*
-  ========================================
-  BOTÕES
-  ========================================
-*/
-
-.btn-primary-custom {
-  background-color: transparent;
-  border: 2px solid var(--cor-cinza-escuro);
-  color: var(--cor-cinza-escuro);
-  padding: 12px 30px;
-  font-weight: 600;
-  border-radius: 8px;
-  font-family: var(--fonte-titulos);
-  transition: var(--transicao-padrao);
-  cursor: pointer;
-}
-
-.btn-primary-custom:hover {
-  background-color: var(--cor-cinza-escuro);
-  color: var(--cor-branco);
-  box-shadow: var(--sombra-media);
-  transform: translateY(-2px);
-}
-
-.btn {
-  margin-top: 15px;
-  background-color: var(--cor-cinza-escuro);
-  padding: 14px 30px;
-  color: var(--cor-branco);
-  letter-spacing: 2px;
-  border-radius: 10px;
-  border: 2px solid #343a39;
-  box-shadow: var(--sombra-suave);
-  transition: var(--transicao-padrao);
-  font-family: var(--fonte-titulos);
-  font-weight: 600;
-}
-
-.btn span:last-child {
-  display: none;
-}
-
-.btn:hover {
-  background-color: var(--cor-cinza-medio);
-  color: var(--cor-preto);
-  transform: translateY(-3px);
-  box-shadow: var(--sombra-media);
-}
-
-.btn:active {
-  background-color: var(--cor-cinza-claro);
-  transform: translateY(0);
-  box-shadow: var(--sombra-suave);
-}
-
-/*
-  ========================================
-  FORMULÁRIOS E INPUTS (Não usados nesta página, mas mantidos)
-  ========================================
-*/
-
-.group {
-  display: flex;
-  line-height: 28px;
-  align-items: center;
-  position: relative;
-  max-width: 1900px;
-  margin: 0 auto;
-}
-
-.input {
-  width: 600px;
-  height: 40px;
-  line-height: 28px;
-  padding: 0 1rem 0 2.5rem;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  outline: none;
-  color: var(--cor-cinza-escuro);
-  background-color: var(--cor-branco);
-  transition: var(--transicao-padrao);
-  margin: 0 auto;
-  font-family: var(--fonte-corpo);
-  font-size: 0.95rem;
-}
-
-.input::placeholder {
-  color: #9e9ea7;
-}
-
-.input:focus,
-.input:hover {
-  border-color: var(--cor-cinza-medio);
-  background-color: var(--cor-branco);
-  box-shadow: 0 0 0 4px var(--cor-cinza-medio);
-}
-
-.icon {
-  position: absolute;
-  left: 1rem;
-  fill: #9e9ea7;
-  width: 1rem;
-  height: 1rem;
-  pointer-events: none;
-}
-
-/*
-  ========================================
-  SEÇÕES E TÍTULOS
-  ========================================
-*/
-
-.section-titlee {
-  font-family: var(--fonte-titulos);
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--cor-cinza-escuro);
-  margin-bottom: 1rem;
-}
-    
-/*
-  ========================================
-  CONTEÚDO DAS PÁGINAS
-  ========================================
-*/
-
-.page-content {
-  padding-top: 80px;
-  color: var(--cor-cinza-escuro);
-  font-family: var(--fonte-corpo);
-  line-height: 1.6;
-}
-/* ========================================= */
-/* ESTILOS PARA O NOVO CABEÇALHO DE PERFIL */
-/* ========================================= */
-
-/* ATUALIZADO: Estilo mesclado com o admin-header */
-.profile-header {
+.content-card {
     background-color: #ffffff;
     border-radius: 0.75rem; /* 12px */
-    padding: 2rem; /* Mais padding */
+    padding: 2rem 2.5rem; /* 32px de padding */
     margin-bottom: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e9ecef;
+}
+
+/* ========================================= */
+/* CABEÇALHO DO PERFIL (FOTO, NOME)          */
+/* ========================================= */
+.profile-header {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1px solid #e9ecef;
 }
 
 .profile-picture {
     width: 160px;
     height: 160px;
-    border-radius: 50%; /* Deixa a imagem perfeitamente redonda */
-    object-fit: cover; /* Garante que a imagem não fique distorcida */
-    border: 4px solid #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.profile-info {
-    text-align: left; /* Alinha o texto à esquerda em telas maiores */
-}
-
-/* Centraliza tudo em telas pequenas */
-@media (max-width: 991.98px) {
-    .profile-info {
-        text-align: center;
-        margin-top: 1.5rem;
-    }
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .profile-name {
     font-weight: 700;
-    margin-bottom: 0.25rem;
-}
-
-.profile-location {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-}
-
-.profile-bio {
-    font-size: 0.95rem;
-    color: #555;
-    line-height: 1.6;
-}
-
-/* NOVO: Estilo para a bio completa no card "Sobre Mim" */
-.profile-bio-full {
-    font-size: 1rem;
-    color: #333;
-    line-height: 1.7;
-}
-
-
-.profile-specialties .badge {
-    font-size: 0.8rem;
-    padding: 0.4em 0.8em;
-    margin-right: 0.5rem;
+    font-size: 2.5rem;
     margin-bottom: 0.5rem;
 }
 
-/* ========================================= */
-/* NOVO: CARDS DE ESTATÍSTICA (Do admin.css) */
-/* ========================================= */
-.stat-card {
-    background-color: #ffffff;
-    border: none;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.profile-location {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
-.stat-card-body {
-    display: flex;
-    align-items: center;
-    padding: 1.5rem;
-}
-
-.stat-card-icon {
-    font-size: 3rem;
-    margin-right: 1.5rem;
-    opacity: 0.8;
-}
-
-.stat-card-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0;
-}
-
-.stat-card-text {
-    font-size: 1rem;
-    color: #6c757d;
-    margin-bottom: 0;
-}
-
-
-/* ========================================= */
-/* ESTILOS PARA O CARROSSEL DE PORTFÓLIO    */
-/* (Mantido caso use em outro lugar)        */
-/* ========================================= */
-
-.portfolio-carousel-img {
-    height: 400px; /* Altura fixa para as imagens do carrossel */
-    object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
-    border-radius: 8px; /* Bordas arredondadas para as imagens */
-}
-
-/* Para ajustar a altura em telas menores se 400px for muito grande */
-@media (max-width: 767.98px) {
-    .portfolio-carousel-img {
-        height: 250px; /* Menor altura para dispositivos móveis */
-    }
-}
-
-/* Personalização das setas de navegação do carrossel */
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro para as setas */
-    border-radius: 50%; /* Setas redondas */
-    padding: 1.5rem; /* Aumenta o tamanho da seta */
-}
-
-/* Estilos para o Modal de Adicionar Foto (se quiser customizar) */
-#addPortfolioModal .modal-content {
-    border-radius: 12px;
-}
-/* ========================================= */
-/* ESTILOS PARA O MODAL DE GERENCIAMENTO      */
-/* ========================================= */
-
-.portfolio-thumb-wrapper {
-    position: relative;
-    overflow: hidden;
-    border-radius: 0.375rem; /* Mesma borda das imagens */
-}
-
-.portfolio-thumb-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
-    color: white;
-    padding: 1rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.portfolio-thumb-wrapper:hover .portfolio-thumb-overlay {
-    opacity: 1;
-}
-
-.portfolio-thumb-title {
-    margin: 0;
+.profile-specialties .badge {
+    font-size: 0.85rem;
     font-weight: 500;
-    font-size: 0.9rem;
+    padding: 0.5em 1em;
+}
+
+.profile-bio-full {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
 }
 
 /* ========================================= */
-/* ESTILOS PARA O GRID DE PORTFÓLIO          */
-/* (ATUALIZADO para Lightbox)                */
+/* BARRA DE ESTATÍSTICAS (NOVO)              */
 /* ========================================= */
-
-/* NOVO: Remove o sublinhado do link que envolve o card */
-.portfolio-card-link {
-    text-decoration: none;
-    display: block; /* Garante que o link preencha o espaço */
-}
-
-.portfolio-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden; /* Garante que a imagem não saia do card */
-    position: relative; /* Necessário para o overlay */
-    border: none; /* Remove a borda padrão do card */
-    border-radius: 0.5rem;
-}
-
-.portfolio-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-}
-
-.portfolio-card .card-img-top {
-    height: 250px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.portfolio-card:hover .card-img-top {
-    transform: scale(1.05); /* Efeito de zoom sutil na imagem */
-}
-
-/* NOVO: Overlay para o título, similar ao da home */
-.portfolio-card .card-body-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 20%, transparent 100%);
-    padding: 1.5rem 1rem 0.5rem 1rem;
-    transition: var(--transicao-padrao);
-}
-
-.portfolio-card .card-title-overlay {
-    color: var(--cor-branco);
-    font-weight: 600;
-    font-size: 1rem;
-    margin: 0;
-    /* Oculta o título e mostra no hover (opcional) */
-    /* opacity: 0; */ 
-    transform: translateY(10px);
-    transition: var(--transicao-padrao);
-}
-
-.portfolio-card:hover .card-title-overlay {
-    /* opacity: 1; */
-    transform: translateY(0);
-}
-
-/* REMOVIDO: O .card-body antigo não é mais necessário */
-/* .portfolio-card .card-body { ... } */
-
-
-/* ========================================= */
-/* NOVO: ESTILOS PARA CARDS DE SOLICITAÇÃO   */
-/* ========================================= */
-
-.solicitation-card .card-header {
-    background-color: #f8f9fa; /* Fundo leve */
-    border-bottom: 1px solid #e9ecef;
-}
-
-.solicitation-card .list-unstyled i {
-    width: 20px; /* Alinha os ícones */
+.profile-stats-bar {
+    display: flex;
+    justify-content: space-around;
     text-align: center;
-}
-
-.solicitation-card .solicitation-message {
-    max-height: 120px; /* Limita a altura da mensagem */
-    overflow-y: auto; /* Adiciona scroll se for longa */
-    background-color: #fdfdfd;
-    border: 1px solid #f0f0f0;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-/* ========================================= */
-/* ADICIONADO: CLASSES DE LAYOUT DO ADMIN    */
-/* ========================================= */
-
-.admin-container {
-    padding-top: 100px; 
-    padding-bottom: 3rem;
-    max-width: 1200px;
-    margin-left: auto; /* Garante centralização */
-    margin-right: auto; /* Garante centralização */
-}
-
-.content-card {
-    background-color: #ffffff;
-    border-radius: 0.75rem;
-    padding: 2rem;
+    padding: 1.25rem 1rem; /* Mais espaçado */
+    background-color: #f8f9fa; /* Um cinza bem claro */
+    border-radius: 0.5rem; /* 8px */
     margin-bottom: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     border: 1px solid #e9ecef;
 }
 
-/* Ajuste para o formulário de contato dentro do content-card */
-.content-card .form-control,
-.content-card .form-select {
-    background-color: #f8f9fa;
-    border-color: #e9ecef;
+.profile-stats-bar .stat-item {
+    padding: 0 1rem;
 }
 
-.content-card .form-control:focus,
-.content-card .form-select:focus {
-    background-color: #fff;
-    border-color: #aaa;
-    box-shadow: none;
+.profile-stats-bar .stat-item span {
+    display: block;
+    font-weight: 600;
 }
 
-@media (max-width: 991.98px) {
-  .sticky-top-column {
-    position: static; 
-    top: auto;     
-  }
+.profile-stats-bar .stat-item .stat-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0d6efd; /* Cor primária */
+    line-height: 1.2;
+}
+
+/* Cor especial para estrelas */
+.profile-stats-bar .stat-item .text-warning {
+    color: #ffc107 !important;
+}
+
+.profile-stats-bar .stat-item .stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========================================= */
+/* ABAS DE NAVEGAÇÃO (NOVO)                  */
+/* ========================================= */
+.profile-tabs {
+    border-bottom: 1px solid #dee2e6; /* Linha de separação */
+    margin-bottom: 2rem !important; /* Força a margem inferior */
+}
+
+.profile-tabs .nav-link {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6c757d;
+    padding: 0.75rem 1.25rem;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-tabs .nav-link:hover {
+    color: #333;
+}
+
+.profile-tabs .nav-link.active,
+.profile-tabs .nav-link:hover.active {
+    color: #0d6efd; /* Cor primária */
+    background-color: transparent;
+    border-bottom-color: #0d6efd;
+}
+
+/* ========================================= */
+/* ESTILOS DO PORTFÓLIO                      */
+/* ========================================= */
+.portfolio-thumbnail {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.portfolio-thumbnail:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modal-portfolio-img {
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================= */
+/* ESTILOS DAS AVALIAÇÕES                    */
+/* ========================================= */
+.review-card {
+    /* O card em si não precisa de estilo, pois está dentro de .content-card */
+}
+
+.review-stars {
+    font-size: 1.25rem; /* Tamanho das estrelas */
+}
+
+.review-body {
+    /* Estilos para o corpo da avaliação */
+}
+
+.review-comment {
+    font-size: 1.05rem;
+    font-style: italic;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+.review-footer {
+    text-align: right;
+}
+
+.review-photos .review-photo-thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0.375rem; /* 6px */
+    border: 1px solid #eee;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+}
+
+.review-photos .review-photo-thumbnail:hover {
+    opacity: 0.8;
+}
+
+/* ========================================= */
+/* COLUNA LATERAL FIXA                       */
+/* ========================================= */
+.sticky-top-column {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 100px;
+    /* 80px (navbar) + 20px (espaçamento) */
+    z-index: 1000;
 }
