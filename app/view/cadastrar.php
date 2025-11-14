@@ -76,12 +76,16 @@
                             </div>
                         </div>
 
-                        <div class="input-group" style="margin-top: 1.5rem; display: flex; align-items: center; flex-direction: row; gap: 10px;">
-                            <input type="checkbox" name="termos" id="termos" style="width: auto; height: auto;">
-                            <label for="termos" style="margin-bottom: 0; font-size: 0.85rem; font-weight: normal; line-height: 1.4;">
-                                Eu li e concordo com os 
-                                <a href="termos.php" target="_blank" style="color: var(--cor-preto); font-weight: 600;">Termos de Uso</a> e 
-                                <a href="politica.php" target="_blank" style="color: var(--cor-preto); font-weight: 600;">Política de Privacidade</a>.
+                        <div class="checkbox-item"
+                            style="margin-top: 1.5rem; background-color: transparent; padding: 0; border: none; align-items: center;">
+                            <input type="checkbox" name="termos" id="termos">
+                            <label for="termos"
+                                style="font-size: 0.85rem; font-weight: normal; line-height: 1.4; padding-left: 30px;">
+                                Eu li e concordo com os
+                                <a href="termos.php" target="_blank"
+                                    style="color: var(--cor-preto); font-weight: 600;">Termos de Uso</a> e
+                                <a href="politica.php" target="_blank"
+                                    style="color: var(--cor-preto); font-weight: 600;">Política de Privacidade</a>.
                             </label>
                         </div>
 
@@ -254,7 +258,7 @@
                         reqContainer.style.borderRadius = '5px';
                         showAlert('A senha não cumpre todos os requisitos.', 'danger');
                     }
-                    
+
                     if (!termosValido) { // <-- MOSTRA O ALERTA DOS TERMOS
                         showAlert('Você deve aceitar os Termos de Uso e a Política de Privacidade.', 'danger');
                     }
